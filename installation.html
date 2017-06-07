@@ -49,7 +49,7 @@
         </style>
     </head>
 
-    <body class="index">
+    <body class="installation">
 
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
@@ -63,8 +63,8 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="./">Home</a></li>
-                    <li><a href="documentation/">Documentation</a></li>
+                    <li><a href="./">Home</a></li>
+                    <li class="active"><a href="documentation/">Documentation</a></li>
                     <li><a href="tutorials/">Tutorials</a></li>
                     <li><a href="about.html">About</a></li>
                 </ul>
@@ -74,74 +74,46 @@
     <div class="container-fluid text-center">
         <div class="row content">
             <div class="col-sm-2 sidenav">
-                <span style="font-weight:bold;font-size:20px; ">Latest News</span>
-                <p> </p>
-                <p><a href="#join-the-force">Join the force!</a></p>
-                <p><a href="#getting-to-know-syskit">Getting to know Syskit</a></p>
-                <p><a href="#new-website">New Website</a></p>
+                <p><a href="transformations.html">Transformations</a></p>
             </div>
             <div class="col-sm-8 text-left">
-                <h1 id="building-robots-with-rock-and-syskit">Building robots with Rock and Syskit</h1>
+                <h1 id="managing-a-rock-installation">Managing a Rock installation</h1>
 
-<p>Rock is a software framework for the development of robotic systems. Rock
-provides all the tools required to set up and run high-performance and reliable
-robotic systems for wide variety of applications in research and industry. It
-contains a rich collection of ready to use drivers and modules for use in your
-own system, and can easily be extended by adding new components.</p>
+<p>A system can base itself on different "flavors" of Rock. One can basically
+choose one out of three:</p>
 
-<p>This website focusses on building robot systems based on Rock and Syskit,
-Rock's system management layer. It will not cover issues related to Rock's Ruby
-and C++ execution APIs, or only in cases where these plug Syskit limitations.</p>
+<ul>
+  <li><strong>the latest release</strong> version of the Rock Core software. Once released, it
+will not change, but may see subsequent point releases that would only differ
+by (important) bugfixes. The only way a release-based install will get modifications
+is if the developer changes the base release.</li>
+  <li><strong>the stable flavor</strong> is the last release plus bugfixes. Unlike the releases,
+updating a 'stable' system will always land you on the latest release, and
+in-between releases will get patched with bugfixes. This <strong>does</strong> include being
+updated automatically to new major releases.</li>
+  <li><strong>the master flavor</strong> is the development branch, and may break.</li>
+</ul>
 
-<p>The most important aspect of this documentation is to explain both the <em>how</em>
-and the <em>why</em>, i.e. describe the parts of Syskit that are relevant to manage a
-robot system, but also to explain the underlying design principles that allow
-you to build a <em>manageable</em> system.</p>
+<p>Rock's primary platform is Ubuntu. The only guarantee made by the Rock team is
+that Rock's current release and master branches work on the current Ubuntu LTS
+version and often works on the latest Ubuntu version.</p>
 
-<p>A Rock newcomer should read this documentation sequentially. Tutorials and
-examples are mixed with more detailed descriptions, with an aim at being progressive.</p>
+<p>Rock has no option to install from binary, the only currently supported method
+of install is from source.</p>
 
-<h2 id="basics">Basics</h2>
+<p>Other linux-based platforms (Debian, Arch, …) are known to work, but since they
+don't see regular use, installation may not be as streamlined as on Ubuntu.
+MacOS X also has seen some Rock usage, but is seldom used and therefore can
+cause problems. Windows has seen some preliminary usage.</p>
 
-<ol>
-  <li><a href="installation.html">Installing Rock, day-to-day handling of packages</a></li>
-  <li><a href="syskit_basics.html">Running a simple system using Gazebo and Syskit</a></li>
-  <li>The development and runtime workflows</li>
-</ol>
+<p>What will be covered here:</p>
 
-<h2 id="building-systems">Building systems</h2>
+<ul>
+  <li><a href="installation/install.html">Rock installation on a Linux system</a></li>
+  <li>day-to-day management of a Rock installation</li>
+  <li>debugging common problems</li>
+</ul>
 
-<ol>
-  <li>Writing components for easier system building and management</li>
-  <li>Generalizing and reusing component networks in Syskit</li>
-  <li>Advanced processing concepts: stream aligner and transformer</li>
-  <li>System coordination</li>
-</ol>
-
-<h2 id="development-workflow">Development Workflow</h2>
-
-<ol>
-  <li>Tests</li>
-  <li>Live data visualization</li>
-  <li>Inspecting coordination data</li>
-  <li>Logging</li>
-  <li>Debugging components</li>
-</ol>
-
-<h3 id="join-the-force">Join the force!</h3>
-<p><a href="#top">Top</a></p>
-
-<p>Bla bla bla.</p>
-
-<h3 id="getting-to-know-syskit">Getting to know Syskit</h3>
-<p><a href="#top">Top</a></p>
-
-<p>Bla bla bla.</p>
-
-<h3 id="new-website">New Website</h3>
-<p><a href="#top">Top</a></p>
-
-<p>Welcome to rock's new website.</p>
 
             </div>
         </div>
