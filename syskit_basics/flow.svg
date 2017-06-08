@@ -26,15 +26,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="336.93928"
-     inkscape:cy="784.99971"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="6.7985822"
+     inkscape:cy="879.17468"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1012"
+     inkscape:window-width="1550"
      inkscape:window-height="1037"
-     inkscape:window-x="896"
+     inkscape:window-x="358"
      inkscape:window-y="0"
      inkscape:window-maximized="0" />
   <metadata
@@ -45,7 +45,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -56,12 +56,12 @@
     <rect
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#dae8f5;fill-opacity:1;fill-rule:evenodd;stroke:#7daedb;stroke-width:0.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="rect7561"
-       width="229.2627"
-       height="66.676514"
-       x="257.41589"
-       y="144.19759"
+       width="229.4397"
+       height="79.808449"
+       x="256.82233"
+       y="144.1976"
        rx="7.8122015"
-       ry="7.8121996" />
+       ry="7.8122001" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -75,7 +75,7 @@
          y="37.663971" /></text>
     <a
        id="a6604"
-       xlink:href="/syskit_basics/sdf.html">
+       xlink:href="/syskit_basics/getting_started.html">
       <text
          sodipodi:linespacing="125%"
          id="text6409"
@@ -86,7 +86,7 @@
            y="182.9045"
            x="26.263968"
            id="tspan6411"
-           sodipodi:role="line">SDF: Robot and Scene</tspan></text>
+           sodipodi:role="line">Getting Started</tspan></text>
     </a>
     <text
        xml:space="preserve"
@@ -98,11 +98,15 @@
          sodipodi:role="line"
          id="tspan6415"
          x="281.21228"
-         y="173.5295">Create a SDF scene,</tspan><tspan
+         y="173.5295">Bundles, creating a SDF</tspan><tspan
          sodipodi:role="line"
          x="281.21228"
          y="192.2795"
-         id="tspan6417">run Gazebo and visualize it</tspan></text>
+         id="tspan6417">scene, run Gazebo and</tspan><tspan
+         sodipodi:role="line"
+         x="281.21228"
+         y="211.0295"
+         id="tspan4175">visualize the scene</tspan></text>
     <rect
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#dae8f5;fill-opacity:1;fill-rule:evenodd;stroke:#7daedb;stroke-width:0.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="rect7561-0"
@@ -157,7 +161,7 @@
        ry="7.8121996" />
     <a
        id="a6600"
-       xlink:href="/syskit_basics/concepts.html">
+       xlink:href="/syskit_basics/brief_introduction.html">
       <text
          sodipodi:linespacing="125%"
          id="text6409-2"
@@ -168,7 +172,7 @@
            y="88.038048"
            x="26.263968"
            id="tspan6411-1"
-           sodipodi:role="line">Basic Concepts</tspan></text>
+           sodipodi:role="line">A Brief Introduction</tspan></text>
     </a>
     <text
        xml:space="preserve"
@@ -180,11 +184,11 @@
          sodipodi:role="line"
          x="271.71277"
          y="78.575157"
-         id="tspan6417-8">Components, Networks,</tspan><tspan
+         id="tspan6417-8">Components, Networks</tspan><tspan
          sodipodi:role="line"
          x="271.71277"
          y="97.325157"
-         id="tspan6481">Syskit and Gazebo Integration</tspan></text>
+         id="tspan6481">and Syskit</tspan></text>
     <rect
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#dae8f5;fill-opacity:1;fill-rule:evenodd;stroke:#7daedb;stroke-width:0.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="rect7561-0-5"

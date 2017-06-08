@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+          /* Remove the navbar's default margin-bottom and rounded borders */
+          .navbar {
+              margin-bottom: 0;
+              border-radius: 0;
+
+          }
+
+          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+          .row.content {height: 450px}
+
+          /* Set gray background color and 100% height */
+          .sidenav {
+              padding-top: 20px;
+              background-color: #f1f1f1;
+              height: 100%;
+          }
+
+          /* Set black background color, white text and some padding */
+          footer {
+              background-color: #000000;
+              color: white;
+              padding: 5px;
+          }
+
+          /* On small screens, set height to 'auto' for sidenav and grid */
+          @media screen and (max-width: 767px) {
+              .sidenav {
+                  height: auto;
+                  padding: 15px;
+              }
+              .row.content {height:auto;}
+          }
+        </style>
+    </head>
+
+    <body class="syskit_basics syskit_basics_getting_started">
+
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li class="active"><a href="../documentation/">Documentation</a></li>
+                    <li><a href="../tutorials/">Tutorials</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <p><a href="transformations.html">Transformations</a></p>
+            </div>
+            <div class="col-sm-8 text-left">
+                <h1 id="getting-started">Getting Started</h1>
+
+<p>We'll be getting right into the meat of things by creating a system's
+integration package (a <code>bundle</code>), and setup a gazebo environment that will
+allow us to continue with actually doing something with the system.</p>
+
+<h2 id="bundles-and-bundles-file-structure">Bundles and bundles' file structure</h2>
+
+<p>In Rock, the central place where the system design and integration happens is a
+<em>bundle</em>. A bundle package is created in the <code>bundles/</code> folder of your Rock
+workspace.</p>
+
+<p>For all intents and purposes, so far, bundles are a collection of Syskit models
+(in <code>models/</code>), configuration files (in <code>config/</code>) and SDF scene (<code>scenes/</code>)
+and model descriptions (<code>models/sdf/</code>).</p>
+
+<p>The following assumes that you have a <a href="../installation.html">bootstrapped Rock
+installation</a>, and that you have a terminal in which this
+installation's <code>env.sh</code> file has been sourced.</p>
+
+<p>Let's create a new bundle. In your Rock's workspace do</p>
+
+<p><code>
+acd
+cd bundles
+syskit init syskit_basics
+cd syskit_basics
+</code></p>
+
+<h2 id="robot-and-scene-description-using-sdf">Robot and Scene description using SDF</h2>
+
+<p>The <a href="sdformat.org">Scene Description Format</a> is a XML format defined by the
+Gazebo developers to describe both scenes and objects in these scenes (as e.g.
+robots).</p>
+
+<p>What we're going to learn along this documentation is to leverage the
+information present in an SDF file as possible, with the goal of having the SDF
+be the authoritative information source for any information that can be
+represented in it.</p>
+
+<p>But for now, let's get to create ourselves a scene with a robot in it. This
+will <strong>not</strong> describe the SDF format in details, there's a lot of
+Gazebo-related documentation about that, <a href="http://sdformat.org/spec">including a reference of the format
+on sdformat.org</a></p>
+
+<p>SDF scenes are made of <em>models</em>. Loosely-speaking, each model represents one
+object in the scene. Moreover, models can be included in scenes through the
+<code>&lt;include&gt;</code> tags, allowing to reuse models in different scenes. In general,
+your robot should at least be described in a separate model to allow you to
+define different simulation scenarios.</p>
+
+<p>For the purpose of this part of the documentation, we'll use Gazebo's UR10 arm
+model as our robot.</p>
+
+<p>Usually, the first scene one creates is an empty one, which later will give us
+a basic environment in which to test basic functionality, without having to care
+about collisions.</p>
+
+<p>In the bundles, scenes are saved in <code>scenes/SCENE_NAME/SCENE_NAME.world</code>, e.g.
+<code>scenes/empty_world/empty_world.world</code>:</p>
+
+<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">"1.6"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">"empty_world"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;include&gt;</span>
+      <span class="nt">&lt;name&gt;</span>ur10<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>model://ur10<span class="nt">&lt;/uri&gt;</span>
+    <span class="nt">&lt;/include&gt;</span>
+    <span class="nt">&lt;include&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
+    <span class="nt">&lt;/include&gt;</span>
+  <span class="nt">&lt;/world&gt;</span>
+<span class="nt">&lt;/sdf&gt;</span>
+</code></pre>
+<p class="warning"><strong>Note</strong> the rock-gazebo integration does not know yet how to download models
+from Gazebo's model repository. Run <code>rock-gazebo</code> on this scene once first to
+make sure the models are downloaded. Wait for the scene to show up (Gazebo's
+splash screen disappears then), and quit it then.</p>
+
+<h2 id="running-and-visualizing-a-gazebo-environment">Running and visualizing a Gazebo environment</h2>
+
+<p>Rock offers <code>vizkit3d</code>, its own 3D visualization environment. Since we will
+definitely want to augment the visualization of the world with e.g. algorithm
+feedback and/or sensor data, we'll be using this environment for the Gazebo
+world as well, instead of using Gazebo's client.</p>
+
+<p>The Gazebo instance and visualizations are started separately. Gazebo-related
+tools automatically find scenes in the bundle's <code>scenes/</code> folder, so just the
+world name is enough:</p>
+
+<p><code>
+rock-gzserver empty_world
+</code></p>
+
+<p>Then start the visualization</p>
+
+<p><code>
+rock-gazebo-viz empty_world
+</code></p>
+
+<p>You're should be looking at the UR10 on the floor:</p>
+
+<p><img src="initial_rock_gazebo_viz.jpg" alt="rock-gazebo-viz window" /></p>
+
+<p>Let's go and <a href="arm_control.html">do something with it</a></p>
+
+            </div>
+        </div>
+    </div>
+
+
+        <footer class="container-fluid text-center">
+            <p>Rock in your own way!</p>
+        </footer>
+    </body>
+</html>
