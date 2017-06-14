@@ -99,13 +99,34 @@ installation's <code>env.sh</code> file has been sourced.</p>
 
 <p>Let's create a new bundle. In your Rock's workspace do</p>
 
-<p><code>
-acd
+<pre class="highlight plaintext"><code>acd
 cd bundles
-syskit init syskit_basics
+roby init syskit_basics
 cd syskit_basics
-</code></p>
+</code></pre>
+<p>This creates a Roby application, Roby being the underlying application framework
+and execution engine that Syskit is based on. To be able to use Syskit in this new
+application, we must explicitly load it in <code>config/init.rb</code> by adding</p>
 
+<pre class="highlight ruby"><code><span class="no">Roby</span><span class="p">.</span><span class="nf">app</span><span class="p">.</span><span class="nf">using</span> <span class="s1">'syskit'</span>
+</code></pre>
+<p>We can now verify that the generated application at loads with</p>
+
+<pre class="highlight plaintext"><code>$ syskit run
+Bundles[INFO]: Active bundles: syskit_basics
+default[INFO]: logs are in /home/doudou/dev/logs_area/syskit_basics/20170609-1609
+default[INFO]: loaded Roby on ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-linux]
+default[INFO]: done initialization
+default[INFO]: ready
+</code></pre>
+<p>Either hit CTRL+C, or run <code>syskit quit</code> in another terminal, to make it exit.</p>
+
+<pre class="highlight plaintext"><code>$ syskit quit
+Bundles[INFO]: Active bundles: syskit_basics
+default[INFO]: connected
+default[INFO]: waiting for remote app to terminate
+default[INFO]: closed communication
+</code></pre>
 <h2 id="robot-and-scene-description-using-sdf">Robot and Scene description using SDF</h2>
 
 <p>The <a href="sdformat.org">Scene Description Format</a> is a XML format defined by the
@@ -167,21 +188,82 @@ world as well, instead of using Gazebo's client.</p>
 tools automatically find scenes in the bundle's <code>scenes/</code> folder, so just the
 world name is enough:</p>
 
-<p><code>
-rock-gzserver empty_world
-</code></p>
-
+<pre class="highlight plaintext"><code>rock-gzserver empty_world
+</code></pre>
 <p>Then start the visualization</p>
 
-<p><code>
-rock-gazebo-viz empty_world
-</code></p>
-
+<pre class="highlight plaintext"><code>rock-gazebo-viz empty_world
+</code></pre>
 <p>You're should be looking at the UR10 on the floor:</p>
 
-<p><img src="initial_rock_gazebo_viz.jpg" alt="rock-gazebo-viz window" /></p>
+<p><img src="initial_rock_gazebo_viz.jpg" class="screenshot" /></p>
 
-<p>Let's go and <a href="arm_control.html">do something with it</a></p>
+<h2 id="preparing-the-gazebo-syskit-configuration">Preparing the <code>gazebo</code> Syskit configuration</h2>
+
+<p>Syskit configuration in bundles may be split into multiple configurations /
+environments called "robots". A common organization is to create one bundle
+per robot type or project, and create two robot configuration in it, one for
+the simulation (<code>gazebo</code>) and one for the live system (<code>live</code>).</p>
+
+<p>Let's create the <code>gazebo</code> configuration:</p>
+
+<pre class="highlight plaintext"><code>$ syskit gen robot gazebo
+Bundles[INFO]: Active bundles: syskit_basics
+      exists  config/robots
+      create  config/robots/gazebo.rb
+</code></pre>
+<p>In order to setup Syskit to use the Gazebo instance, we first have to require
+integration code and then load the environment. This is done by modifying the
+newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p>
+
+<pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">init</span> <span class="k">do</span>
+  <span class="c1"># Keep the existing code from the generated template</span>
+
+  <span class="c1"># The rock-gazebo bridge requires models from the 'common_models' bundle.</span>
+  <span class="c1"># It already depends on it, but we need to manually add the bundle to the</span>
+  <span class="c1"># Roby search path</span>
+  <span class="no">Roby</span><span class="p">.</span><span class="nf">app</span><span class="p">.</span><span class="nf">search_path</span> <span class="o">&lt;&lt;</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../../../common_models'</span><span class="p">,</span> <span class="n">__dir__</span><span class="p">)</span>
+  <span class="nb">require</span> <span class="s1">'rock_gazebo/syskit'</span>
+<span class="k">end</span>
+
+<span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>
+  <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_gazebo_world</span><span class="p">(</span><span class="s1">'empty_world'</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+<p>Now that we have a minimal scene and a working Gazebo installation, <a href="arm_control.html" class="btn btn-primary">let's do
+something with it</a></p>
+
+<div class="panel panel-warning">
+  <div class="panel-heading">
+
+    <p><a class="btn btn-warning" role="button" data-toggle="collapse" href="#under_the_hood" aria-expanded="false" aria-controls="under_the_hood">
+  Advanced
+</a><span class="advanced_description">Under the hood: how does the Rock/Gazebo bridge work</span></p>
+  </div>
+  <div class="collapse panel-body" id="under_the_hood">
+    <p>Under the hood, the objects in the Gazebo instance are exposed to the Rock
+system by means of <a href="http://gazebosim.org/tutorials?tut=system_plugin">a Gazebo system
+plugin</a>. Each model, link,
+sensor and some plugins are exposed this way. The plugin is implemented in the
+<a href="https://github.com/rock-gazebo/simulation-rock-gazebo"><code>simulation/rock_gazebo</code> package</a>. The components
+that implement this interface are implemented in the
+<a href="https://github.com/rock-gazebo/simulation-orogen-rock_gazebo"><code>simulation/orogen/rock_gazebo</code> package</a>,
+and are being run within the Gazebo process itself, synchronously with the
+Gazebo simulation loop. The <code>rock-gazebo</code> and <code>rock-gzserver</code> tools are simple
+shell wrappers around the <code>gazebo</code> and <code>gzserver</code> commands, but with the
+addition of the system plugin.</p>
+
+    <p>The task contexts in our scene can be visualized with rock-display:</p>
+
+    <p><img src="rock_gazebo_task_contexts.jpg" alt="Components exported by a Gazebo instance under Rock" /></p>
+
+    <p><code>rock-gazebo-viz</code> sets up the visualization to match the data in the SDF file and
+then listen to pose updates from the <code>rock_gazebo::ModelTask</code> components exposed by the
+Gazebo process. Given that this data is only output if the components are running,
+<code>rock-gazebo-viz</code> starts them automatically. Use <code>--no-start</code> to avoid this.</p>
+  </div>
+</div>
+
 
             </div>
         </div>
