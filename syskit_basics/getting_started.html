@@ -217,13 +217,14 @@ integration code and then load the environment. This is done by modifying the
 newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p>
 
 <pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">init</span> <span class="k">do</span>
-  <span class="c1"># Keep the existing code from the generated template</span>
+  <span class="c1"># IMPORTANT: do not delete the code from the generated template</span>
 
   <span class="c1"># The rock-gazebo bridge requires models from the 'common_models' bundle.</span>
   <span class="c1"># It already depends on it, but we need to manually add the bundle to the</span>
   <span class="c1"># Roby search path</span>
   <span class="no">Roby</span><span class="p">.</span><span class="nf">app</span><span class="p">.</span><span class="nf">search_path</span> <span class="o">&lt;&lt;</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../../../common_models'</span><span class="p">,</span> <span class="n">__dir__</span><span class="p">)</span>
   <span class="nb">require</span> <span class="s1">'rock_gazebo/syskit'</span>
+  <span class="no">Conf</span><span class="p">.</span><span class="nf">syskit</span><span class="p">.</span><span class="nf">transformer_enabled</span> <span class="o">=</span> <span class="kp">true</span>
 <span class="k">end</span>
 
 <span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>

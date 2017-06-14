@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+          /* Remove the navbar's default margin-bottom and rounded borders */
+          .navbar {
+              margin-bottom: 0;
+              border-radius: 0;
+
+          }
+
+          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+          .row.content {height: 450px}
+
+          /* Set gray background color and 100% height */
+          .sidenav {
+              padding-top: 20px;
+              background-color: #f1f1f1;
+              height: 100%;
+          }
+
+          /* Set black background color, white text and some padding */
+          footer {
+              background-color: #000000;
+              color: white;
+              padding: 5px;
+          }
+
+          /* On small screens, set height to 'auto' for sidenav and grid */
+          @media screen and (max-width: 767px) {
+              .sidenav {
+                  height: auto;
+                  padding: 15px;
+              }
+              .row.content {height:auto;}
+          }
+        </style>
+    </head>
+
+    <body class="syskit_basics syskit_basics_arm_cartesian_control_generator">
+
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li class="active"><a href="../documentation/">Documentation</a></li>
+                    <li><a href="../tutorials/">Tutorials</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid text-center">
+        <div class="row content">
+            <div class="col-sm-2 sidenav">
+                <p><a href="transformations.html">Transformations</a></p>
+            </div>
+            <div class="col-sm-8 text-left">
+                <h1 id="creating-our-command-generator">Creating our Command Generator</h1>
+
+<p><a href="arm_control.html">The control network we just created</a> does not have a command
+generator. The first generator one usually creates is a constant one, creating an
+interface to send a constant command from Syskit into a control network.</p>
+
+<p>We will create the command generator on this page, and then <a href="arm_control_deployment.html">deploy and run
+it</a>.</p>
+
+<p>We will also learn how to write unit tests.</p>
+
+<h2 id="the-constant-generator">The Constant Generator</h2>
+
+<p>For the command, let's generate a single constant command. It will allow us to
+move the arm tip from one point to another, expressed in the cartesian frame.</p>
+
+<p><code>bundles/common_models</code> provides <code>Compositions::ConstantGenerator</code>, a generic
+component that produces a constant command of a certain type. This generator is
+a <code>Syskit::RubyTaskContext</code>, which is like an oroGen component that is part of
+the Syskit process. It's useful to create very simple components without having
+to get through the whole oroGen step, or stub existing components.</p>
+
+<p><code>ConstantGenerator</code> is generic, so it's rarely used as-is. We will instead
+create a <code>Compositions::ArmCartesianConstantCommandGenerator</code> generator specialized
+for our purposes.</p>
+
+<p>First, generate the new model</p>
+
+<pre class="highlight plaintext"><code>$ syskit gen ruby_task arm_cartesian_constant_command_generator
+      exists  models/compositions
+      create  models/compositions/arm_cartesian_constant_command_generator.rb
+      exists  test/compositions
+      create  test/compositions/test_arm_cartesian_constant_command_generator.rb
+</code></pre>
+<p>The easiest way to reuse the constant generator is to subclass our generator
+from it, by using the <code>ConstantGenerator.for(type)</code> method:</p>
+
+<pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s1">'base'</span>
+<span class="nb">require</span> <span class="s1">'models/compositions/constant_generator'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianConstantCommandGenerator</span> <span class="o">&lt;</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Compositions</span><span class="o">::</span><span class="no">ConstantGenerator</span><span class="p">.</span>
+      <span class="nf">for</span><span class="p">(</span><span class="s1">'/base/samples/RigidBodyState'</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p>which gives us</p>
+
+<p><img src="constant_generator.png" alt="Cartesian constant generator" /></p>
+
+<p>The documentation of the <code>out</code> port tells us that its value is controlled by
+the 'values' arguments. Task arguments are ways to parametrize tasks from
+within Syskit, and are listed in the middle of the task rectangle. In the
+generator, we see for instance four: <code>period</code>, <code>orocos_name</code>, <code>conf</code> and
+<code>values</code>. <code>orocos_name</code> is set by Syskit itself, <code>period</code> is the period at
+which the value should be generated. We will see about <code>conf</code> later on this
+page.</p>
+
+<h2 id="improving-the-arguments">Improving the arguments</h2>
+
+<p>The format of the 'values' is actually awkward for a command generator. Let's
+provide better arguments. We need to update <code>#values</code> when position or
+orientation are set.</p>
+
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianConstantCommandGenerator</span> <span class="o">&lt;</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
+  <span class="c1"># The setpoint as a { position: p, orientation: q } hash</span>
+  <span class="n">argument</span> <span class="ss">:setpoint</span>
+
+  <span class="k">def</span> <span class="nf">setpoint</span><span class="o">=</span><span class="p">(</span><span class="n">setpoint</span><span class="p">)</span>
+    <span class="n">rbs</span> <span class="o">=</span> <span class="no">Types</span><span class="p">.</span><span class="nf">base</span><span class="p">.</span><span class="nf">samples</span><span class="o">.</span><span class="no">RigidBodyState</span><span class="o">.</span><span class="no">Invalid</span>
+    <span class="c1"># Use 'fetch' to generate an error if the key is not present</span>
+    <span class="c1"># in the hash</span>
+    <span class="n">rbs</span><span class="p">.</span><span class="nf">position</span> <span class="o">=</span> <span class="n">setpoint</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:position</span><span class="p">)</span>
+    <span class="n">rbs</span><span class="p">.</span><span class="nf">orientation</span> <span class="o">=</span> <span class="n">setpoint</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:orientation</span><span class="p">)</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">values</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">[</span><span class="s1">'out'</span> <span class="o">=&gt;</span> <span class="n">rbs</span><span class="p">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p class="callout callout-warning">This kind of "high-level argument shadowing low-level
+arguments must have a one-to-N relationship (usually one-to-one). It is
+possible but not trivial, under the Syskit argument handling, to "aggregate"
+multiple high-level arguments into a low-level one.</p>
+
+<p>Finally, the command is timestamped, so we need to update the timestamp
+each time the value is read</p>
+
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianConstantCommandGenerator</span> <span class="o">&lt;</span> <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+  <span class="nf">def</span> <span class="n">values</span>
+    <span class="k">if</span> <span class="n">v</span> <span class="o">=</span> <span class="k">super</span>
+      <span class="c1"># Do not change the argument "under the hood"</span>
+      <span class="n">sample</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">dup</span>
+      <span class="n">sample</span><span class="p">.</span><span class="nf">time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+      <span class="no">Hash</span><span class="p">[</span><span class="s1">'out'</span> <span class="o">=&gt;</span> <span class="n">sample</span><span class="p">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<h2 id="testing">Testing</h2>
+
+<p>Unlike the composition that created the arm control network, the
+<code>ArmCartesianConstantCommandGenerator</code> contains "active" code, that is code that will
+be evaluated at runtime. It is important to properly unit-test it to ensure
+its correctness.</p>
+
+<p>Each time we ran <code>syskit gen</code>, files were created both in <code>models/</code> and
+<code>test/</code>. The default Syskit test framework is the spec implementation of
+<a href="https://github.com/seattlerb/minitest">minitest</a></p>
+
+<p>Let's now write the tests for our generator.</p>
+
+<p>Start by deleting the boilerplate test from <code>test/compositions/test_arm_cartesian_constant_command_generator.rb</code>.</p>
+
+<p>The first step in each test usually is to get a deployed, ready-to-test instance
+of our component or composition model. The test harness provides a set of methods
+for this:</p>
+
+<ul>
+  <li><code>syskit_stub_and_deploy</code> will create this instance</li>
+  <li><code>syskit_configure</code> will then configure it, making it ready to be started</li>
+  <li><code>syskit_start</code> will then start it</li>
+</ul>
+
+<p>Commonly, one would use <code>syskit_stub_deploy_and_configure</code> and
+<code>syskit_stub_deploy_configure_and_start</code> as shortcuts for the sequential calls.</p>
+
+<p>The argument to these methods is the task model under test, that is
+<code>ArmCartesianConstantCommandGenerator</code> here. If arguments are needed, they are
+provided with the <code>.with_arguments(key: 'value')</code> call. Testing how <code>values</code> is
+set from <code>setpoint</code> therefore looks like:</p>
+
+<pre class="highlight ruby"><code><span class="n">it</span> <span class="s2">"propagates its position and orientation arguments to #values"</span> <span class="k">do</span>
+  <span class="nb">p</span> <span class="o">=</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+  <span class="n">q</span> <span class="o">=</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Quaternion</span><span class="p">.</span><span class="nf">from_angle_axis</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="o">.</span><span class="no">UnitX</span><span class="p">)</span>
+  <span class="n">task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+    <span class="no">ArmCartesianConstantCommandGenerator</span><span class="p">.</span>
+      <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">Hash</span><span class="p">[</span><span class="ss">position: </span><span class="nb">p</span><span class="p">,</span> <span class="ss">orientation: </span><span class="n">q</span><span class="p">]))</span>
+  <span class="n">assert_equal</span> <span class="nb">p</span><span class="p">,</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">position</span>
+  <span class="n">assert_equal</span> <span class="n">q</span><span class="p">,</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">orientation</span>
+<span class="k">end</span>
+</code></pre>
+<p>From the command line, one runs the tests on a single file with:</p>
+
+<pre class="highlight plaintext"><code>$ syskit test -rgazebo test/compositions/test_arm_cartesian_constant_command_generator.rb
+</code></pre>
+<p>and all the tests for a given robot configuration with</p>
+
+<pre class="highlight plaintext"><code>$ syskit test -rgazebo
+</code></pre>
+<p>The IDE also gives an interface to the tests. It will display all the tests for
+the given robot configuration and allow to start them separately.  It also
+allows to auto-run all the discovered tests, and re-run tests when the files
+change, like so:</p>
+
+<iframe width="853" height="480" src="https://www.youtube.com/embed/Z-asD-4yM8w?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+
+<p>Now, let's test if the timestamp is properly set. Given that time is a very common
+quantity in Syskit tests, the Syskit test harness integrates with the
+<a href="https://github.com/travisjeffery/timecop">timecop</a> library.</p>
+
+<pre class="highlight ruby"><code><span class="n">it</span> <span class="s2">"returns the value with an updated timestamp"</span> <span class="k">do</span>
+  <span class="nb">p</span> <span class="o">=</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+  <span class="n">q</span> <span class="o">=</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Quaternion</span><span class="p">.</span><span class="nf">from_angle_axis</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="o">.</span><span class="no">UnitX</span><span class="p">)</span>
+  <span class="n">task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+    <span class="no">ArmCartesianConstantCommandGenerator</span><span class="p">.</span>
+      <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">Hash</span><span class="p">[</span><span class="ss">position: </span><span class="nb">p</span><span class="p">,</span> <span class="ss">orientation: </span><span class="n">q</span><span class="p">]))</span>
+  <span class="no">Timecop</span><span class="p">.</span><span class="nf">freeze</span><span class="p">(</span><span class="n">expected_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
+  <span class="n">sample</span> <span class="o">=</span> <span class="n">expect_execution</span><span class="p">.</span><span class="nf">to</span> <span class="k">do</span>
+    <span class="n">have_one_new_sample</span> <span class="n">task</span><span class="p">.</span><span class="nf">out_port</span>
+  <span class="k">end</span>
+  <span class="n">assert_in_delta</span> <span class="n">expected_time</span><span class="p">,</span> <span class="n">sample</span><span class="p">.</span><span class="nf">time</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span>
+<span class="k">end</span>
+</code></pre>
+<p class="callout callout-info">The <code>expect_execution</code> construct is the Syskit starting point for all things
+asynchronous in tests. Sending and receiving samples requires the constant
+generator to be executed, and therefore Syskit's own execution loop.</p>
+
+<p class="callout callout-warning">Rock's time representation has a precision of one microseconds, while Linux
+(and therefore Ruby's Time class) go to the nanoseconds. This is why the
+time comparison is not done using <code>assert_equal</code>, but <code>assert_in_delta</code>.</p>
+
+<p>Given that the preamble of our two tests is the same, it would be best to move it into a <code>before</code> block:</p>
+
+<pre class="highlight ruby"><code><span class="n">describe</span> <span class="no">ArmCartesianConstantCommandGenerator</span> <span class="k">do</span>
+  <span class="kp">attr_reader</span> <span class="ss">:task</span><span class="p">,</span> <span class="ss">:p</span><span class="p">,</span> <span class="ss">:q</span>
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="vi">@p</span> <span class="o">=</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="vi">@q</span> <span class="o">=</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Quaternion</span><span class="p">.</span><span class="nf">from_angle_axis</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="p">,</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="o">.</span><span class="no">UnitX</span><span class="p">)</span>
+    <span class="vi">@task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+      <span class="no">ArmCartesianConstantCommandGenerator</span><span class="p">.</span>
+        <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">Hash</span><span class="p">[</span><span class="ss">position: </span><span class="nb">p</span><span class="p">,</span> <span class="ss">orientation: </span><span class="n">q</span><span class="p">]))</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"propagates its position and orientation arguments to #values"</span> <span class="k">do</span>
+    <span class="n">assert_equal</span> <span class="nb">p</span><span class="p">,</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">position</span>
+    <span class="n">assert_equal</span> <span class="n">q</span><span class="p">,</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">orientation</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"returns the value with an updated timestamp"</span> <span class="k">do</span>
+    <span class="no">Timecop</span><span class="p">.</span><span class="nf">freeze</span><span class="p">(</span><span class="n">expected_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">expect_execution</span><span class="p">.</span><span class="nf">to</span> <span class="k">do</span>
+      <span class="n">have_one_new_sample</span> <span class="n">task</span><span class="p">.</span><span class="nf">out_port</span>
+    <span class="k">end</span>
+    <span class="n">assert_in_delta</span> <span class="n">expected_time</span><span class="p">,</span> <span class="n">sample</span><span class="p">.</span><span class="nf">time</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<h2 id="creating-the-armcartesianconstantcontrolwdls-composition">Creating the ArmCartesianConstantControlWdls Composition</h2>
+
+<p>Whenever a control loop is created, it is common to also create both the corresponding
+constant generator (if it does not exist) and the corresponding composition.</p>
+
+<p>We'll create the composition now.</p>
+
+<pre class="highlight plaintext"><code>$ syskit gen cmp arm_cartesian_constant_control_wdls
+</code></pre>
+<p>Trivially, the network just binds the control network with the generator:</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_command_generator'</span>
+<span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_control_wdls'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianConstantControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">add</span> <span class="no">ArmCartesianConstantCommandGenerator</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'command'</span>
+      <span class="n">add</span> <span class="no">ArmCartesianControlWdls</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'control'</span>
+
+      <span class="n">command_child</span><span class="p">.</span><span class="nf">out_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">control_child</span><span class="p">.</span><span class="nf">command_port</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p>Inspect the resulting network in the IDE. See how the hierarchy view has two
+levels of composition, which is resolved at the dataflow level.</p>
+
+<p class="callout callout-info"><strong>Tip</strong>: One can hide the compositions in the dataflow view to help readability with the <code>Hide compositions</code> button</p>
+
+<p>Let's run the generated test now:</p>
+
+<pre class="highlight plaintext"><code>$ syskit test -rgazebo test/compositions/test_arm_cartesian_constant_control_wdls.rb
+Run options: --seed 31835
+
+# Running:
+
+E
+
+Finished in 0.341306s, 2.9299 runs/s, 5.8598 assertions/s.
+
+  1) Error:
+SyskitBasics::Compositions::ArmCartesianConstantControlWdls#test_0001_starts:
+
+cannot find an ordering to configure 1 tasks
+SyskitBasics::Compositions::ArmCartesianConstantCommandGenerator:0x2714010
+  owners: 
+  arguments: 
+    orocos_name: "stub3",
+    period: 0.1,
+    conf: ["default"]
+  ready_for_setup? false
+  missing_arguments: setpoint, values
+  has no should_configure_after constraint
+    …manipulation.rb:788:in `syskit_configure'
+    …manipulation.rb:1047:in `syskit_configure_and_start'
+    …manipulation.rb:1006:in `syskit_stub_deploy_configure_and_start'
+    test/compositions/test_arm_cartesian_constant_control_wdls.rb:10:in `block (2 levels) in &lt;module:Compositions&gt;'
+</code></pre>
+<p>As-is, the test generated by the template fails. The test looks like:</p>
+
+<pre class="highlight ruby"><code><span class="n">cmp_task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+  <span class="no">ArmCartesianConstantControlWdls</span><span class="p">)</span>
+</code></pre>
+<p>The error message is that <code>cannot find an ordering to configure 1 tasks</code>, the task being <code>SyskitBasics::Compositions::ArmCartesianConstantCommandGenerator:0x2714010</code>. This is not our composition, but the constant generator. What's going on ?</p>
+
+<p>Syskit tasks can only be configured and started if all their arguments are set.
+Having unset arguments is a very common cause for the error we're having here,
+and indeed we can see that <code>missing_arguments: setpoint, values</code>.</p>
+
+<p>In order to be able to see the encompassing <code>ArmCartesianConstantControlWdls</code>
+as a single component for the outside system, we would need to define a
+setpoint argument on it and forward it to the generator. This is a very common
+pattern, and Syskit supports it:</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_command_generator'</span>
+<span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_control_wdls'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianConstantControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">argument</span> <span class="ss">:setpoint</span>
+
+      <span class="n">add</span><span class="p">(</span><span class="no">ArmCartesianConstantCommandGenerator</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'command'</span><span class="p">).</span>
+        <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">setpoint</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
+    <span class="nf">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p>Let's modify the test to actually set the setpoint, and verify it is forwarded.
+Delete the <code>it "starts"</code> test and replace it with</p>
+
+<pre class="highlight ruby"><code><span class="n">it</span> <span class="s2">"forwards its setpoint argument to the generator child"</span> <span class="k">do</span>
+  <span class="n">setpoint</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">[</span>
+    <span class="ss">position: </span><span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="ss">orientation: </span><span class="no">Eigen</span><span class="o">::</span><span class="no">Quaternion</span><span class="p">.</span><span class="nf">from_angle_axis</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="p">,</span> <span class="no">Eigen</span><span class="o">::</span><span class="no">Vector3</span><span class="o">.</span><span class="no">UnitZ</span><span class="p">)]</span>
+  <span class="n">cmp</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+    <span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="n">setpoint</span><span class="p">))</span>
+  <span class="n">assert_equal</span> <span class="n">setpoint</span><span class="p">,</span> <span class="n">cmp</span><span class="p">.</span><span class="nf">command_child</span><span class="p">.</span><span class="nf">setpoint</span>
+<span class="k">end</span>
+</code></pre>
+<p>We can now put those to good use … and <a href="arm_control_deployment.html" class="btn btn-primary">finally run our networks in simulation</a></p>
+
+            </div>
+        </div>
+    </div>
+
+
+        <footer class="container-fluid text-center">
+            <p>Rock in your own way!</p>
+        </footer>
+    </body>
+</html>

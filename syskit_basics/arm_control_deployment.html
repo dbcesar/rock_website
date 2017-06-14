@@ -77,14 +77,19 @@
                 <p><a href="transformations.html">Transformations</a></p>
             </div>
             <div class="col-sm-8 text-left">
-                <h1 id="profiles-actions-and-deployments-running-the-arm-control-network">Profiles, Actions and Deployments: Running the arm control network</h1>
+                <h1 id="profiles-actions-and-deployments">Profiles, Actions and Deployments:</h1>
 
-<p>A few things are missing before we can actually run <a href="arm_control.html">the network we just
-created</a>:
-1. Components need to be deployed
-2. The network has no command
-3. The network needs to be bound to the actual Gazebo arm
-4. It needs to be exported as an action so that we can instruct Syskit to start it</p>
+<h2 id="running-the-arm-control-network">Running the arm control network</h2>
+
+<p>A few things are missing before we can actually run <a href="arm_cartesian_control_generator.html">the network we just
+created</a>:</p>
+
+<ol>
+  <li>Deploy the components</li>
+  <li>Configure the components</li>
+  <li>Bind the network to the actual arm in Gazebo</li>
+  <li>Export the network as a Syskit Action so that we can instruct Syskit to start it</li>
+</ol>
 
 <h2 id="component-deployment">Component deployment</h2>
 
@@ -117,11 +122,24 @@ in the robot's config file with:</p>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'robot_frames::SingleChainPublisher'</span> <span class="o">=&gt;</span> <span class="s1">'arm_chain_publisher'</span>
 <span class="k">end</span>
 </code></pre>
-<h2 id="generating-a-command">Generating a Command</h2>
+<p>Let's finally integrate the generator and the control network in a
+<code>ArmCartesianConstantControl</code> composition. Generate it and link the command to
+the control.</p>
 
-<p>For the command, let's generate a single constant command. It will allow us to
-move the arm tip from one point to another, expressed in the cartesian frame.</p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_generator'</span>
+<span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_control_wdls'</span>
 
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianConstantControl</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">add</span> <span class="no">ArmCartesianConstantGenerator</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'command'</span>
+      <span class="n">add</span> <span class="no">ArmCartesianControlWdls</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'control'</span>
+      <span class="n">command_child</span><span class="p">.</span><span class="nf">out_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">control_child</span><span class="p">.</span><span class="nf">command_port</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
             </div>
         </div>
     </div>
