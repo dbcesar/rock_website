@@ -49,7 +49,7 @@
         </style>
     </head>
 
-    <body class="syskit_basics syskit_basics_arm_control">
+    <body class="syskit_basics syskit_basics_composition">
 
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
@@ -64,19 +64,17 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="../">Home</a></li>
-                    <li class="active"><a href="../documentation/">Documentation</a></li>
-                    <li><a href="../tutorials/">Tutorials</a></li>
                     <li><a href="../about.html">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <p><a href="transformations.html">Transformations</a></p>
+            <div class="col-sm-3 sidenav">
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
-            <div class="col-sm-8 text-left">
+            <div class="col-sm-7 text-left">
                 <h1 id="compositions-designing-the-network-for-the-cartesian-control-of-an-arm">Compositions: designing the network for the cartesian control of an arm</h1>
 
 <p>We are now going to try and do simple control <a href="getting_started.html">of our simulated
@@ -88,7 +86,9 @@ reused.</p>
 <p>In Syskit, one has to <em>declare</em> how components must be connected together to
 form a function, and then can request the system to actually run that function.</p>
 
-<p>This page deals with the first step (design). The <a href="arm_cartesian_control_generator.html">next page</a> will create the command generator, and we will then <a href="arm_control_deployment.html"><em>deploy</em> the network</a> and run it.</p>
+<p>This page deals with the first step (design). The <a href="constant_generator.html">next
+page</a> will create the command generator, and we
+will then <a href="deployment.html"><em>deploy</em> the network</a> and run it.</p>
 
 <p>But let's not get too ahead of ourselves, and install the control package that
 will implement the control.</p>
@@ -171,7 +171,7 @@ compositions.</p>
     <h4 id="orogen-packages-in-syskit">OroGen packages in Syskit</h4>
   </div>
   <div class="panel-body">
-    <p>As described in our <a href="brief_introduction.html">brief introduction</a>, oroGen packages are
+    <p>As described in our <a href="./">brief introduction</a>, oroGen packages are
 where the functionality implemented in the library packages are "packaged" into things
 that can be used at runtime.</p>
 
@@ -192,7 +192,7 @@ in a file and load it with <code>syskit ide</code>. If we do so in our newly cre
 
 <pre class="highlight plaintext"><code>syskit ide models/compositions/arm_cartesian_control_wdls.rb
 </code></pre>
-    <p><img src="syskit_name_mapping.png" alt="Name mapping between oroGen and Syskit" /></p>
+    <p><img src="media/syskit_name_mapping.png" alt="Name mapping between oroGen and Syskit" /></p>
   </div>
 </div>
 
@@ -200,7 +200,7 @@ in a file and load it with <code>syskit ide</code>. If we do so in our newly cre
 the <code>cart_ctrl_wdls</code> project can be found by reading the documentation displayed
 in the IDE (at the top of each component's page), and the documentation of the ports (displayed as tooltips).</p>
 
-<p><img src="wdls_solver_page.png" alt="Component information page" /></p>
+<p><img src="media/wdls_solver_page.png" alt="Component information page" /></p>
 
 <p>We will want to run the
 control components, and the simulated arm. The latter is represented by a
@@ -311,9 +311,9 @@ with the <code>export</code> keyword, in the composition class context:</p>
 between this port and the exported port. These are the only connections that can
 bind two input ports or two input ports together.</p>
 
-<p><img src="arm_cartesian_control_export.png" alt="Example or a port export" /></p>
+<p><img src="media/arm_cartesian_control_export.png" alt="Example or a port export" /></p>
 
-<p>Before we can actually run the whole thing, <a href="arm_cartesian_control_generator.html" class="btn btn-primary">we must create a command generator for it</a></p>
+<p>Before we can actually run the whole thing, <a href="constant_generator.html" class="btn btn-primary">we must create a command generator for it</a></p>
 
             </div>
         </div>

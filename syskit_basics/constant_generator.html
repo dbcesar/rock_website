@@ -49,7 +49,7 @@
         </style>
     </head>
 
-    <body class="syskit_basics syskit_basics_arm_cartesian_control_generator">
+    <body class="syskit_basics syskit_basics_constant_generator">
 
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
@@ -64,26 +64,24 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="../">Home</a></li>
-                    <li class="active"><a href="../documentation/">Documentation</a></li>
-                    <li><a href="../tutorials/">Tutorials</a></li>
                     <li><a href="../about.html">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <p><a href="transformations.html">Transformations</a></p>
+            <div class="col-sm-3 sidenav">
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
-            <div class="col-sm-8 text-left">
+            <div class="col-sm-7 text-left">
                 <h1 id="creating-our-command-generator">Creating our Command Generator</h1>
 
-<p><a href="arm_control.html">The control network we just created</a> does not have a command
+<p><a href="composition.html">The control network we just created</a> does not have a command
 generator. The first generator one usually creates is a constant one, creating an
 interface to send a constant command from Syskit into a control network.</p>
 
-<p>We will create the command generator on this page, and then <a href="arm_control_deployment.html">deploy and run
+<p>We will create the command generator on this page, and then <a href="deployment.html">deploy and run
 it</a>.</p>
 
 <p>We will also learn how to write unit tests.</p>
@@ -127,7 +125,7 @@ from it, by using the <code>ConstantGenerator.for(type)</code> method:</p>
 </code></pre>
 <p>which gives us</p>
 
-<p><img src="constant_generator.png" alt="Cartesian constant generator" /></p>
+<p><img src="media/constant_generator.png" alt="Cartesian constant generator" /></p>
 
 <p>The documentation of the <code>out</code> port tells us that its value is controlled by
 the 'values' arguments. Task arguments are ways to parametrize tasks from
@@ -388,7 +386,7 @@ Delete the <code>it "starts"</code> test and replace it with</p>
   <span class="n">assert_equal</span> <span class="n">setpoint</span><span class="p">,</span> <span class="n">cmp</span><span class="p">.</span><span class="nf">command_child</span><span class="p">.</span><span class="nf">setpoint</span>
 <span class="k">end</span>
 </code></pre>
-<p>We can now put those to good use … and <a href="arm_control_deployment.html" class="btn btn-primary">finally run our networks in simulation</a></p>
+<p>We can now put those to good use … and <a href="deployment.html" class="btn btn-primary">finally run our networks in simulation</a></p>
 
             </div>
         </div>

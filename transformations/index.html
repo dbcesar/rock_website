@@ -49,7 +49,7 @@
         </style>
     </head>
 
-    <body class="documentation documentation_transformations">
+    <body class="transformations transformations_index">
 
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
@@ -64,19 +64,17 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="../">Home</a></li>
-                    <li class="active"><a href="./">Documentation</a></li>
-                    <li><a href="../tutorials/">Tutorials</a></li>
                     <li><a href="../about.html">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <p><a href="transformations.html">Transformations</a></p>
+            <div class="col-sm-3 sidenav">
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child '><a href="../syskit_basics/">Introduction</a></li><li class='child '><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="../syskit_basics/devices.html">Devices</a></li><li class='child '><a href="../syskit_basics/deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Transformations</a></span><ul><li class='child active'><a href="./">Geometric Relations</a></li></ul></li></ul>
             </div>
-            <div class="col-sm-8 text-left">
+            <div class="col-sm-7 text-left">
                 <h1 id="geometric-relations">Geometric Relations</h1>
 
 <p>One of the most common tasks in a robotic systems is to represent the
@@ -304,7 +302,7 @@ between the frames declared and the component ports.</p>
 component is <a href="https://github.com/rock-slam/slam-orogen-uwv_kalman_filters">the <code>uwv_kalman_filters::VelocityProvider</code></a>
 component).</p>
 
-<p><img src="transformations/VelocityProvider_plain_transformer.svg" alt="Plain transformer information" /></p>
+<p><img src="VelocityProvider_plain_transformer.svg" alt="Plain transformer information" /></p>
 
 <p>In this view, the frames are oval shaped, with the component-local frame name on
 the left of the equal sign, and the global frame name assigned to it on the
@@ -345,7 +343,7 @@ frame. It is expressed in the body frame itself.</p>
     <p>After reloading, this new relation is represented by an edge between the port
 and the frame:</p>
 
-    <p><img src="transformations/VelocityProvider_body_efforts.svg" alt="body_efforts annotation" /></p>
+    <p><img src="VelocityProvider_body_efforts.svg" alt="body_efforts annotation" /></p>
   </li>
   <li>
     <p><code>dvl_velocity_samples</code> is a <code>RigidBodyState</code> which represents the velocity of
@@ -357,7 +355,7 @@ transform:</p>
     <p>The port-to-transform relation is represented by an edge between the port and
 the white dot in the middle of the transform:</p>
 
-    <p><img src="transformations/VelocityProvider_dvl.svg" alt="body_efforts annotation" /></p>
+    <p><img src="VelocityProvider_dvl.svg" alt="body_efforts annotation" /></p>
   </li>
   <li>
     <p><code>imu_sensor_samples</code> is represented in the sensor's frame</p>
@@ -380,7 +378,7 @@ the component's configuration, we can add a new frame to represent it.</p>
 
 <p>The final model looks like this:</p>
 
-<p><img src="transformations/VelocityProvider_all_annotations.svg" alt="All inputs modelled" /></p>
+<p><img src="VelocityProvider_all_annotations.svg" alt="All inputs modelled" /></p>
 
 <h3 id="enabling-propagation-adding-geometry-modelling-in-components-that-do-not-use-the-transformer">Enabling propagation: adding geometry modelling in components that do not use the transformer</h3>
 
@@ -443,7 +441,7 @@ this driver's own frame definitions - assuming that the device driver has the
 right <code>associate_frame_to...</code> annotations. In the case of the GPS, it would end
 up looking like:</p>
 
-<p><img src="transformations/GPS_device_to_port.svg" alt="GPS task with annotations" /></p>
+<p><img src="GPS_device_to_port.svg" alt="GPS task with annotations" /></p>
 
 <p>Where the device-assigned frames are shown with the <code>dev(...).frame_name</code>
 syntax.</p>
@@ -454,7 +452,7 @@ are shown by default, visualizing transforms in a profile (as, in this case,
 a device definition), requires to show the transforms explicitly by clicking
 the "Show transforms" link:</p>
 
-  <p><img src="transformations/SyskitIDE_show_transforms.jpg" alt="&quot;Show transforms&quot; button" /></p>
+  <p><img src="SyskitIDE_show_transforms.jpg" alt="&quot;Show transforms&quot; button" /></p>
 </div>
 
 <h3 id="use_frames_in_profiles">Setting frames that can't be deduced by propagation</h3>
@@ -472,7 +470,7 @@ tests:</p>
 <p>This can be inspected in e.g. the profile page in the Syskit IDE (see the red
 'body' frame in the VelocityProvider component)</p>
 
-<p><img src="transformations/VelocityProvider_no_body_frame.svg" alt="Missing body frame" /></p>
+<p><img src="VelocityProvider_no_body_frame.svg" alt="Missing body frame" /></p>
 
 <p>To fix this, one must explicitly set the body frame in the profile with the
 <code>.use_frames</code> statement. Frame selection is recursive (a frame selected in a

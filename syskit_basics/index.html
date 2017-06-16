@@ -8,8 +8,8 @@
 
         <title>Robot Construction Toolkit</title>
 
-        <link href="images/favicon.ico" rel="icon" type="image/ico" relative="true" />
-        <link href="stylesheets/site.css" rel="stylesheet" />
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -49,7 +49,7 @@
         </style>
     </head>
 
-    <body class="syskit_basics">
+    <body class="syskit_basics syskit_basics_index">
 
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
@@ -63,20 +63,18 @@
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="./">Home</a></li>
-                    <li class="active"><a href="documentation/">Documentation</a></li>
-                    <li><a href="tutorials/">Tutorials</a></li>
-                    <li><a href="about.html">About</a></li>
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <p><a href="transformations.html">Transformations</a></p>
+            <div class="col-sm-3 sidenav">
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
-            <div class="col-sm-8 text-left">
+            <div class="col-sm-7 text-left">
                 <h1 id="running-a-simple-system-using-gazebo-and-syskit">Running a simple system using Gazebo and Syskit</h1>
 
 <p>Rock and Syskit provide a seamless integration with Gazebo. We will leverage
@@ -87,7 +85,7 @@ offers at runtime as well as the basics of package and component management.</p>
 <p>This will cover building a simple system and simulating using Gazebo. It will
 only base itself on existing components (no new components will be developed).</p>
 
-<p>This section assumes that you have a <a href="installation.html">bootstrapped Rock
+<p>This section assumes that you have a <a href="../workspace/">bootstrapped Rock
 installation</a>.  All examples that have to be run inside a
 terminal assume that you have sourced this installation's <code>env.sh</code> file in the
 current terminal.</p>
@@ -143,6 +141,53 @@ a box, just like this one.</p>
   </g>
 </svg>
 
+<h2 id="basic-concepts">Basic Concepts</h2>
+
+<p><strong>Design and runtime</strong> Rock is a model-based architecture. A Rock system is
+described <strong>at design time</strong>, that is before any piece of the actual
+processing code needs to be run, and can verify properties regarding the
+final system then. <strong>Runtime</strong> then refers to the point where the actual data
+processing code runs – which involves hardware or simulation in case of
+robotics.</p>
+
+<p><strong>Libraries, Components and System</strong> Deep-down, the bulk of the code that
+makes a Rock system is organized in libraries. Libraries propose APIs -
+interfaces - to solve particular problems, e.g. OpenCV to process images, PCL
+to process point clouds, a GPS driver to control a GPS device and read GPS
+positions, … This way to organize software development is nothing specific to
+Rock or even robotics. It's the principal way software is developed <em>period</em>.</p>
+
+<p>However, libraries <em>offer</em> functionality, but do not specify how this
+functionality should be integrated to offer a "runtime", i.e. how the actual
+data being processed can be passed to the processing code in the libraries,
+from the sensors to the actuators, to turn all that code into a robot.</p>
+
+<p>The paradigm that Rock follows is the one of <strong>components</strong>. Components are
+black boxes that have inputs and produce outputs. It's by meshing these
+components together - connecting outputs to inputs - that an active
+sensor-processing-actuator loop is created and that the robot can act and react
+in its environment. In addition to this <em>dataflow interface</em> (data inputs and
+outputs), Rock components also offer a <em>configuration</em> interface where parameters
+can be chosen and tested. In Rock, these components are implemented in <strong>oroGen
+packages</strong>. They are described in an orogen file, which code-generates the
+skeleton of the components. oroGen packages also define the datatypes that
+can be transferred between the components.</p>
+
+<p>What sets Rock apart from other component-based systems is the ability to
+reconfigure the component network to fit the situation as best as possible.
+This is made possible by explicitly choosing at any point in time both which
+components are active, and which output-input connections are present in the
+network. <strong>Syskit</strong> is the tool that makes such a design feasible, pushing most
+of the complexity of such a dynamic system into the tool, leaving the developer
+make higher-level design decisions.</p>
+
+<p><strong>Software Packages</strong> A software package is a way to distribute code (software).
+Rock's only convention is to have a one library = one package correspondence or
+one component = one package. Libraries should be "fat", components "slim" (i.e.
+most of the functionality should be implemented as a component-independent
+library.</p>
+
+<p>That's all for now … <a href="getting_started.html" class="btn btn-primary">let's get started with our Syskit/Gazebo system</a></p>
 
             </div>
         </div>

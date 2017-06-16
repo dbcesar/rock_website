@@ -64,19 +64,17 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="../">Home</a></li>
-                    <li class="active"><a href="../documentation/">Documentation</a></li>
-                    <li><a href="../tutorials/">Tutorials</a></li>
                     <li><a href="../about.html">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <p><a href="transformations.html">Transformations</a></p>
+            <div class="col-sm-3 sidenav">
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
-            <div class="col-sm-8 text-left">
+            <div class="col-sm-7 text-left">
                 <h1 id="getting-started">Getting Started</h1>
 
 <p>We'll be getting right into the meat of things by creating a system's
@@ -93,7 +91,7 @@ workspace.</p>
 (in <code>models/</code>), configuration files (in <code>config/</code>) and SDF scene (<code>scenes/</code>)
 and model descriptions (<code>models/sdf/</code>).</p>
 
-<p>The following assumes that you have a <a href="../installation.html">bootstrapped Rock
+<p>The following assumes that you have a <a href="../workspace/">bootstrapped Rock
 installation</a>, and that you have a terminal in which this
 installation's <code>env.sh</code> file has been sourced.</p>
 
@@ -129,7 +127,7 @@ default[INFO]: closed communication
 </code></pre>
 <h2 id="robot-and-scene-description-using-sdf">Robot and Scene description using SDF</h2>
 
-<p>The <a href="sdformat.org">Scene Description Format</a> is a XML format defined by the
+<p>The <a href="http://sdformat.org">Scene Description Format</a> is a XML format defined by the
 Gazebo developers to describe both scenes and objects in these scenes (as e.g.
 robots).</p>
 
@@ -196,7 +194,7 @@ world name is enough:</p>
 </code></pre>
 <p>You're should be looking at the UR10 on the floor:</p>
 
-<p><img src="initial_rock_gazebo_viz.jpg" class="screenshot" /></p>
+<p><img src="media/initial_rock_gazebo_viz.jpg" alt="Visualization of the simulation state with rock-gazebo-viz" /></p>
 
 <h2 id="preparing-the-gazebo-syskit-configuration">Preparing the <code>gazebo</code> Syskit configuration</h2>
 
@@ -231,7 +229,7 @@ newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_gazebo_world</span><span class="p">(</span><span class="s1">'empty_world'</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre>
-<p>Now that we have a minimal scene and a working Gazebo installation, <a href="arm_control.html" class="btn btn-primary">let's do
+<p>Now that we have a minimal scene and a working Gazebo installation, <a href="composition.html" class="btn btn-primary">let's do
 something with it</a></p>
 
 <div class="panel panel-warning">
@@ -246,7 +244,7 @@ something with it</a></p>
 system by means of <a href="http://gazebosim.org/tutorials?tut=system_plugin">a Gazebo system
 plugin</a>. Each model, link,
 sensor and some plugins are exposed this way. The plugin is implemented in the
-<a href="https://github.com/rock-gazebo/simulation-rock-gazebo"><code>simulation/rock_gazebo</code> package</a>. The components
+<a href="https://github.com/rock-gazebo/simulation-rock_gazebo"><code>simulation/rock_gazebo</code> package</a>. The components
 that implement this interface are implemented in the
 <a href="https://github.com/rock-gazebo/simulation-orogen-rock_gazebo"><code>simulation/orogen/rock_gazebo</code> package</a>,
 and are being run within the Gazebo process itself, synchronously with the
@@ -256,7 +254,7 @@ addition of the system plugin.</p>
 
     <p>The task contexts in our scene can be visualized with rock-display:</p>
 
-    <p><img src="rock_gazebo_task_contexts.jpg" alt="Components exported by a Gazebo instance under Rock" /></p>
+    <p><img src="media/rock_gazebo_task_contexts.jpg" alt="Components exported by a Gazebo instance under Rock" /></p>
 
     <p><code>rock-gazebo-viz</code> sets up the visualization to match the data in the SDF file and
 then listen to pose updates from the <code>rock_gazebo::ModelTask</code> components exposed by the

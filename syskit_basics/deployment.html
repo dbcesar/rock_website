@@ -49,7 +49,7 @@
         </style>
     </head>
 
-    <body class="syskit_basics syskit_basics_arm_control_deployment">
+    <body class="syskit_basics syskit_basics_deployment">
 
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
@@ -64,24 +64,22 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="../">Home</a></li>
-                    <li class="active"><a href="../documentation/">Documentation</a></li>
-                    <li><a href="../tutorials/">Tutorials</a></li>
                     <li><a href="../about.html">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
         <div class="row content">
-            <div class="col-sm-2 sidenav">
-                <p><a href="transformations.html">Transformations</a></p>
+            <div class="col-sm-3 sidenav">
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
-            <div class="col-sm-8 text-left">
+            <div class="col-sm-7 text-left">
                 <h1 id="profiles-actions-and-deployments">Profiles, Actions and Deployments:</h1>
 
 <h2 id="running-the-arm-control-network">Running the arm control network</h2>
 
-<p>A few things are missing before we can actually run <a href="arm_cartesian_control_generator.html">the network we just
+<p>A few things are missing before we can actually run <a href="constant_generator.html">the network we just
 created</a>:</p>
 
 <ol>
@@ -140,6 +138,61 @@ the control.</p>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
+<h3 id="configuring-the-components">Configuring the components</h3>
+
+<p>Configuration of components in a Syskit system is split into two parts:</p>
+
+<ul>
+  <li>"dynamic" configuration: parameters that cannot be known at design
+time, will be changed each time an action is started, or are to be
+extracted from other information such as the world definition (SDF model).
+These are represented as <strong>task arguments</strong>. This is the mean <a href="constant_generator.html">we just
+saw</a> to parametrize the setpoint of the
+cartesian controller.</li>
+  <li>"static" configuration: parameters that are known at design time. Most
+of the algorithm parameters fit into this category. These are the subject
+of this section.</li>
+</ul>
+
+<p>The static configuration is stored within YAML files in <code>config/orogen/</code>. Each
+file is named after the component model that is configured, so for instance
+<code>config/orogen/cart_ctrl_wdls::WDLSSolver</code> stores the configuration of all
+components under that name. Each file can contain multiple configurations
+within sections, but for now we'll only use the <code>default</code> configuration,
+which is the one that is loaded by default unless specified otherwise.</p>
+
+<p>Let's generate configuration file templates for the components we are using. The
+files are generated with the default configuration exposed by the components.</p>
+
+<pre class="highlight plaintext"><code>$ syskit gen orogenconf cart_ctrl_wdls::WDLSSolver
+      create  config/orogen/
+      create  config/orogen/cart_ctrl_wdls::WDLSSolver.yml
+$ syskit gen orogenconf cart_ctrl_wdls::CartCtrl
+      exists  config/orogen/
+      create  config/orogen/cart_ctrl_wdls::CartCtrl.yml
+$ syskit gen orogenconf robot_frames::SingleChainProducer
+      exists  config/orogen/
+      create  config/orogen/robot_frames::SingleChainPublisher.yml
+</code></pre>
+<p>Each properties in the generated files have their corresponding configuration.
+Let's look at them one by one, to see what needs to actually be configured.</p>
+
+<ul>
+  <li><code>cart_ctrl_wdls::WDLSSolver</code>. There are robot model parameters as well as tip
+and root, but as we described above, these are best handled within Syskit
+itself.  The only algorithm parameter that does not seem to have a sane
+default is the <code>lambda</code> parameter. The documentation mentions 0.1 has a
+known-good parameter for some arm, let's pick that and keep in mind that it
+might be wrong.</li>
+  <li><code>cart_ctrl_wdls::CartCtrl</code>. The one parameter that is probably best changed is
+the max output. The component's designer decided to pick <code>RigidBodyState</code> to
+represent a twist, which means that we only need to update the velocity
+and angular velocity fields. Let's set <code>0.1</code> in linear and <code>2.deg</code> in angular
+(the <code>.deg</code> suffix will convert a degree value in radians).</li>
+  <li><code>robot_frames::SingleChainPublisher</code> only has robot model and tip/root parameters.</li>
+</ul>
+
+
             </div>
         </div>
     </div>
