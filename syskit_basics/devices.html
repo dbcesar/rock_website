@@ -75,7 +75,120 @@
                 <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child active'><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
-                
+                <h1 id="devices">Devices</h1>
+
+<p>So far, we have a control composition. But as we noticed when we created <a href="composition.html">the
+arm control network</a>, it is not using a real component as the
+arm, only a device model. This page will be talking about devices, and telling
+how one replaces the device model by something that can be run.</p>
+
+<p>One can partition a component network into three categories:</p>
+
+<ul>
+  <li>source of data</li>
+  <li>sinks of data</li>
+  <li>transformation of data</li>
+</ul>
+
+<p>Within a robotic system, the source and sinks of data are the sensors and
+actuators of the robot itself. What makes them unique when building the system's
+component network is that they are indeed <em>unique</em>.</p>
+
+<p>While the data processing components can easily be duplicated - an image
+preprocessing component can be instantiated multiple times to process multiple
+streams of data - one cannot duplicate devices.  They are bound to hardware,
+and we still don't know how to grow new devices on the robot on-demand.</p>
+
+<p>This difference also exists in the Syskit system. The robot interface, the
+devices, are described separately. We will just see how this is done, and
+how we can use these devices within our arm control network, binding the
+simulated arm with the control network.</p>
+
+<h2 id="defining-devices-for-the-gazebo-system">Defining devices for the Gazebo system</h2>
+
+<p>The robot definition is done within a Syskit <em>profile</em>. Profiles are the models
+that bind network definitions (compositions) with devices and other
+compositions. It's also where the robot definition happens.</p>
+
+<p>As a matter of convention, one usually creates a per-robot <code>Base</code> profile that
+contains the robot definition.  Let's do that now.</p>
+
+<pre class="highlight plaintext"><code>$ syskit gen profile -rgazebo base
+      create  models/profiles/gazebo
+      create  models/profiles/gazebo/base.rb
+      create  test/profiles/gazebo
+      create  test/profiles/gazebo/test_base.rb
+</code></pre>
+<p class="callout callout-warning">Note how the addition of <code>-rgazebo</code> to the command line ensured that the model
+is generated within the <code>gazebo/</code> subdirectory of the <code>profiles/</code> folder and
+within the <code>Gazebo</code> namespace of <code>Profiles</code>. This is a general convention (e.g.
+compositions specific to our <code>gazebo</code> robot would be in <code>compositions/gazebo/</code> and
+within the <code>Compositions::Gazebo</code> namespace.</p>
+
+<p>Now, here's the catch: we will actually not really learn to define devices, since
+the mapping from the simulation model to devices is done automatically from the
+robot model. One only has to declare the robot model in the <code>Base</code> profile:</p>
+
+<pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="k">module</span> <span class="nn">Gazebo</span>
+      <span class="n">profile</span> <span class="s1">'Base'</span> <span class="k">do</span>
+        <span class="n">use_gazebo_model</span> <span class="s1">'model://ur10/ur10.sdf'</span>
+        <span class="n">use_sdf_world</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p>And have a look at the generated devices:</p>
+
+<p><img src="media/devices.png" alt="Devices from the UR10 model" /></p>
+
+<p>One can see that there is one device definition per link in the model, and one
+for the model itself. Let's click on the model and have a look at the dataflow.
+Enable both "Show all ports" and "Show task info" to get port information .</p>
+
+<p><img src="media/device_dataflow.png" alt="ModelTask interface" /></p>
+
+<h2 id="injecting-the-device-into-the-arm-control-network">Injecting the device into the arm control network</h2>
+
+<p>As said, profiles is where this kind of injection is done. But let's keep <code>Base</code>
+for really low-level stuff like devices. Let's create an <code>ArmControl</code> profile to
+integrate the arm control stuff.</p>
+
+<pre class="highlight plaintext"><code>syskit gen profile -rgazebo ArmControl
+</code></pre>
+<p>We need to require the <code>Base</code> profile and <code>ArmCartesianControlWdls</code> composition definition.
+Then, <code>define</code> the cartesian control <em>for our UR10 robot in gazebo</em> by injecting the UR10 device
+as the 'arm' child of the composition.</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
+<span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_control_wdls'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="k">module</span> <span class="nn">Gazebo</span>
+      <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
+        <span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span> <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
+          <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p class="callout callout-info">A device model is accessed using the device's name with a <code>_dev</code> suffix on the
+profile it is defined. Here <code>Base.ur10_dev</code> is the <code>ur10</code> device defined on
+the robot definition in <code>Base</code>.</p>
+
+<p class="callout callout-info"><strong>Note</strong> when building profiles, the require lines as well as the names of
+models and roles that can be used in the <code>use</code> statement can easily be browsed
+using the IDE</p>
+
+<p>Let's have a look at the final definition.</p>
+
+<p><img src="media/injected_arm_control_network.png" alt="Final injected arm control network" /></p>
+
+<p>We're almost there, just need now to map the components to actual processes, <a href="deployment.html" class="btn btn-primary">a.k.a. deploy the network</a></p>
 
             </div>
         </div>
