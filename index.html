@@ -10,7 +10,6 @@
 
         <link href="images/favicon.ico" rel="icon" type="image/ico" relative="true" />
         <link href="stylesheets/site.css" rel="stylesheet" />
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
@@ -72,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child '><a href="workspace/">Introduction</a></li><li class='child '><a href="workspace/install.html">Installing Rock</a></li><li class='child '><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="syskit_basics/">Basics</a></span><ul><li class='child '><a href="syskit_basics/">Introduction</a></li><li class='child '><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="syskit_basics/devices.html">Devices</a></li><li class='child '><a href="syskit_basics/deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="transformations/">Transformations</a></span><ul><li class='child '><a href="transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child '><a href="workspace/">Introduction</a></li><li class='child '><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="syskit_basics/">Basics</a></span><ul><li class='child '><a href="syskit_basics/">Introduction</a></li><li class='child '><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="syskit_basics/devices.html">Devices</a></li><li class='child '><a href="syskit_basics/deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="transformations/">Transformations</a></span><ul><li class='child '><a href="transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="building-robots-with-rock-and-syskit">Building robots with Rock and Syskit</h1>
@@ -94,6 +93,15 @@ you to build a <em>manageable</em> system.</p>
 
 <p>A Rock newcomer should read this documentation sequentially. Tutorials and
 examples are mixed with more detailed descriptions, with an aim at being progressive.</p>
+
+<div class="alert alert-warning" role="alert">
+  <p>As of today (June 2017), not all the software used in this guide has reached
+Rock mainline repositories. For this reason, one needs to start using the
+buildconf repository on GitHub's
+<a href="https://github.com/rock-gazebo/buildconf"><code>rock-gazebo/buildconf</code></a> instead of
+the default one at
+<a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. The <a href="workspace/">installation guide</a> already reflects this.</p>
+</div>
 
 <h2 id="basics">Basics</h2>
 

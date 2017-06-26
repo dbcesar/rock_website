@@ -10,7 +10,6 @@
 
         <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
         <link href="../stylesheets/site.css" rel="stylesheet" />
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
@@ -72,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="compositions-designing-the-network-for-the-cartesian-control-of-an-arm">Compositions: designing the network for the cartesian control of an arm</h1>
@@ -229,7 +228,9 @@ files. The alternative is to open the <code>syskit ide</code> and inspect the co
 file as follows (<code>-rgazebo</code> is necessary because we are importing models from
 <code>common_models</code>). <strong>Leave the IDE open after this, we will reuse it</strong></p>
 
+<div class="fluid-video">
 <iframe width="853" height="480" src="https://www.youtube.com/embed/hTBYnlc0J3Q?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
 
 <p>We may now start adding connections in the composition definition. The following
 code snippets will only reproduce the composition definition itself, omitting

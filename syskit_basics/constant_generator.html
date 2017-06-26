@@ -10,7 +10,6 @@
 
         <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
         <link href="../stylesheets/site.css" rel="stylesheet" />
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
@@ -72,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="creating-our-command-generator">Creating our Command Generator</h1>
@@ -86,7 +85,7 @@ it</a>.</p>
 
 <p>We will also learn how to write unit tests.</p>
 
-<h2 id="the-constant-generator">The Constant Generator</h2>
+<h2 id="the-cartesian-constant-generator">The Cartesian Constant Generator</h2>
 
 <p>For the command, let's generate a single constant command. It will allow us to
 move the arm tip from one point to another, expressed in the cartesian frame.</p>
@@ -183,7 +182,7 @@ its correctness.</p>
 
 <p>Each time we ran <code>syskit gen</code>, files were created both in <code>models/</code> and
 <code>test/</code>. The default Syskit test framework is the spec implementation of
-<a href="https://github.com/seattlerb/minitest">minitest</a></p>
+<a href="https://github.com/seattlerb/minitest">minitest</a> {#run_test_command_line}</p>
 
 <p>Let's now write the tests for our generator.</p>
 
@@ -228,9 +227,11 @@ set from <code>setpoint</code> therefore looks like:</p>
 <p>The IDE also gives an interface to the tests. It will display all the tests for
 the given robot configuration and allow to start them separately.  It also
 allows to auto-run all the discovered tests, and re-run tests when the files
-change, like so:</p>
+change, like so: {#run_test_ide}</p>
 
+<div class="fluid-video">
 <iframe width="853" height="480" src="https://www.youtube.com/embed/Z-asD-4yM8w?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
 
 <p>Now, let's test if the timestamp is properly set. Given that time is a very common
 quantity in Syskit tests, the Syskit test harness integrates with the
@@ -314,7 +315,7 @@ levels of composition, which is resolved at the dataflow level.</p>
 
 <p class="callout callout-info"><strong>Tip</strong>: One can hide the compositions in the dataflow view to help readability with the <code>Hide compositions</code> button</p>
 
-<p>Let's run the generated test now:</p>
+<p>Let's run the generated test now: {#missing_arguments}</p>
 
 <pre class="highlight plaintext"><code>$ syskit test -rgazebo test/compositions/test_arm_cartesian_constant_control_wdls.rb
 Run options: --seed 31835
@@ -348,7 +349,10 @@ SyskitBasics::Compositions::ArmCartesianConstantCommandGenerator:0x2714010
 <pre class="highlight ruby"><code><span class="n">cmp_task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
   <span class="no">ArmCartesianConstantControlWdls</span><span class="p">)</span>
 </code></pre>
-<p>The error message is that <code>cannot find an ordering to configure 1 tasks</code>, the task being <code>SyskitBasics::Compositions::ArmCartesianConstantCommandGenerator:0x2714010</code>. This is not our composition, but the constant generator. What's going on ?</p>
+<p>The error message is that <code>cannot find an ordering to configure 1 tasks</code>, the
+task being
+<code>SyskitBasics::Compositions::ArmCartesianConstantCommandGenerator:0x2714010</code>.
+This is not our composition, but the constant generator. What's going on ?</p>
 
 <p>Syskit tasks can only be configured and started if all their arguments are set.
 Having unset arguments is a very common cause for the error we're having here,
@@ -357,7 +361,7 @@ and indeed we can see that <code>missing_arguments: setpoint, values</code>.</p>
 <p>In order to be able to see the encompassing <code>ArmCartesianConstantControlWdls</code>
 as a single component for the outside system, we would need to define a
 setpoint argument on it and forward it to the generator. This is a very common
-pattern, and Syskit supports it:</p>
+pattern, and Syskit supports it: {#composition_forward_argument}</p>
 
 <pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_command_generator'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_control_wdls'</span>
@@ -386,8 +390,150 @@ Delete the <code>it "starts"</code> test and replace it with</p>
   <span class="n">assert_equal</span> <span class="n">setpoint</span><span class="p">,</span> <span class="n">cmp</span><span class="p">.</span><span class="nf">command_child</span><span class="p">.</span><span class="nf">setpoint</span>
 <span class="k">end</span>
 </code></pre>
-<p>We need now to map the composition's <code>arm</code> child to the arm within the simulation. Let's do
-<a href="devices.html" class="btn btn-primary">a detour to device models</a> to then finally <a href="deployment.html" class="btn btn-primary">run our network</a></p>
+<h2 id="joint_position_constant_generator">The Joint Position Constant Generator</h2>
+
+<p>There's another control mode that we need. In order to either hold a position,
+or go into a safe position, one needs a joint position constant generator and
+the corresponding composition.</p>
+
+<p>The creation of this generator is left to the reader.</p>
+
+<p class="callout callout-info"><strong>Tip</strong>: a good representation for the setpoint would be a <code>joint_name=&gt;joint_position</code> hash.</p>
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+
+    <p><a class="btn btn-info" role="button" data-toggle="collapse" href="#under_the_hood" aria-expanded="false" aria-controls="under_the_hood">
+  Solution
+</a><span class="advanced_description">The JointPositionConstantGenerator</span></p>
+  </div>
+  <div class="collapse panel-body" id="under_the_hood">
+    <p>Let's generate the files</p>
+
+<pre class="highlight plaintext"><code>syskit gen ruby_task joint_position_constant_generator
+</code></pre>
+    <p><code>models/compositions/joint_position_constant_generator.rb</code>:</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/constant_generator'</span>
+<span class="n">import_types_from</span> <span class="s1">'base'</span>
+<span class="nb">require</span> <span class="s1">'base/float'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">JointPositionConstantGenerator</span> <span class="o">&lt;</span>
+      <span class="no">CommonModels</span><span class="o">::</span><span class="no">Compositions</span><span class="o">::</span><span class="no">ConstantGenerator</span><span class="p">.</span>
+        <span class="nf">for</span><span class="p">(</span><span class="s1">'/base/commands/Joints'</span><span class="p">)</span>
+
+      <span class="c1"># The setpoint as a hash of joint names to joint positions</span>
+      <span class="n">argument</span> <span class="ss">:setpoint</span>
+
+      <span class="k">def</span> <span class="nf">setpoint</span><span class="o">=</span><span class="p">(</span><span class="n">setpoint</span><span class="p">)</span>
+        <span class="n">joint_names</span>    <span class="o">=</span> <span class="n">setpoint</span><span class="p">.</span><span class="nf">keys</span>
+        <span class="n">joint_commands</span> <span class="o">=</span> <span class="n">setpoint</span><span class="p">.</span><span class="nf">each_value</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">position</span><span class="o">|</span>
+          <span class="no">Types</span><span class="p">.</span><span class="nf">base</span><span class="o">.</span><span class="no">JointState</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+            <span class="ss">position: </span><span class="n">position</span><span class="p">,</span>
+            <span class="ss">speed: </span><span class="no">Base</span><span class="p">.</span><span class="nf">unset</span><span class="p">,</span>
+            <span class="ss">effort: </span><span class="no">Base</span><span class="p">.</span><span class="nf">unset</span><span class="p">,</span>
+            <span class="ss">raw: </span><span class="no">Base</span><span class="p">.</span><span class="nf">unset</span><span class="p">,</span>
+            <span class="ss">acceleration: </span><span class="no">Base</span><span class="p">.</span><span class="nf">unset</span><span class="p">)</span>
+        <span class="k">end</span>
+        <span class="nb">self</span><span class="p">.</span><span class="nf">values</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">[</span><span class="s1">'out'</span> <span class="o">=&gt;</span>
+          <span class="no">Types</span><span class="p">.</span><span class="nf">base</span><span class="p">.</span><span class="nf">commands</span><span class="o">.</span><span class="no">Joints</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+            <span class="ss">time: </span><span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+            <span class="ss">names: </span><span class="n">joint_names</span><span class="p">,</span>
+            <span class="ss">values: </span><span class="n">joint_commands</span><span class="p">)]</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nf">values</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">=</span> <span class="k">super</span>
+          <span class="c1"># Do not change the argument "under the hood"</span>
+          <span class="n">sample</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">dup</span>
+          <span class="n">sample</span><span class="p">.</span><span class="nf">time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+          <span class="no">Hash</span><span class="p">[</span><span class="s1">'out'</span> <span class="o">=&gt;</span> <span class="n">sample</span><span class="p">]</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+    <p>and the test <code>test/compositions/test_joint_position_constant_generator.rb</code>:</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/joint_position_constant_generator'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="n">describe</span> <span class="no">JointPositionConstantGenerator</span> <span class="k">do</span>
+      <span class="n">it</span> <span class="s2">"sets the names and positions based on the given hash"</span> <span class="k">do</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+          <span class="no">JointPositionConstantGenerator</span><span class="p">.</span>
+            <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">Hash</span><span class="p">[</span><span class="s1">'j0'</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'j1'</span> <span class="o">=&gt;</span> <span class="mi">20</span><span class="p">]))</span>
+        <span class="n">assert_equal</span> <span class="p">[</span><span class="s1">'j0'</span><span class="p">,</span> <span class="s1">'j1'</span><span class="p">],</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">names</span>
+        <span class="n">assert_equal</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">elements</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:position</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="n">it</span> <span class="s2">"returns the value with an updated timestamp"</span> <span class="k">do</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+          <span class="no">JointPositionConstantGenerator</span><span class="p">.</span>
+            <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">Hash</span><span class="p">[</span><span class="s1">'j0'</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'j1'</span> <span class="o">=&gt;</span> <span class="mi">20</span><span class="p">]))</span>
+        <span class="no">Timecop</span><span class="p">.</span><span class="nf">freeze</span><span class="p">(</span><span class="n">expected_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">expect_execution</span><span class="p">.</span><span class="nf">to</span> <span class="k">do</span>
+          <span class="n">have_one_new_sample</span> <span class="n">task</span><span class="p">.</span><span class="nf">out_port</span>
+        <span class="k">end</span>
+        <span class="n">assert_in_delta</span> <span class="n">expected_time</span><span class="p">,</span> <span class="n">sample</span><span class="p">.</span><span class="nf">time</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+    <p>Let's now create the corresponding composition:</p>
+
+<pre class="highlight plaintext"><code>syskit gen cmp joint_position_constant_control
+</code></pre>
+    <p>Fill the implementation in <code>models/compositions/joint_position_constant_control.rb</code>:</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/devices/gazebo/model'</span>
+<span class="nb">require</span> <span class="s1">'models/compositions/joint_position_constant_generator'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">JointPositionConstantControl</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="c1"># The setpoint as a 'joint_name' =&gt; position_in_radians hash</span>
+      <span class="n">argument</span> <span class="ss">:setpoint</span>
+
+      <span class="n">add</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Model</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'arm'</span>
+      <span class="n">add</span><span class="p">(</span><span class="no">JointPositionConstantGenerator</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'command'</span><span class="p">).</span>
+        <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">setpoint</span><span class="p">)</span>
+
+      <span class="n">command_child</span><span class="p">.</span><span class="nf">out_port</span><span class="p">.</span><span class="nf">connect_to</span> <span class="p">\</span>
+        <span class="n">arm_child</span><span class="p">.</span><span class="nf">joints_cmd_port</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+    <p>And modify the test:</p>
+
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/joint_position_constant_control'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="n">describe</span> <span class="no">JointPositionConstantControl</span> <span class="k">do</span>
+      <span class="n">it</span> <span class="s2">"forwards its setpoint argument to the constant generator"</span> <span class="k">do</span>
+        <span class="n">cmp_task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+            <span class="no">JointPositionConstantControl</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">Hash</span><span class="p">[</span><span class="s1">'j0'</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">]))</span>
+        <span class="n">assert_equal</span> <span class="no">Hash</span><span class="p">[</span><span class="s1">'j0'</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">],</span> <span class="n">cmp_task</span><span class="p">.</span><span class="nf">command_child</span><span class="p">.</span><span class="nf">setpoint</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+  </div>
+</div>
+
+<h2 id="finally">Finally</h2>
+
+<p>We can now map the composition's <code>arm</code> child to the arm within the simulation.
+Let's do <a href="devices.html" class="btn btn-primary">a detour to device models</a> to then
+finally <a href="deployment.html" class="btn btn-primary">run our network</a></p>
 
 
             </div>

@@ -10,7 +10,6 @@
 
         <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
         <link href="../stylesheets/site.css" rel="stylesheet" />
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
@@ -72,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/install.html">Installing Rock</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="getting-started">Getting Started</h1>
@@ -145,13 +144,41 @@ on sdformat.org</a></p>
 object in the scene. Moreover, models can be included in scenes through the
 <code>&lt;include&gt;</code> tags, allowing to reuse models in different scenes. In general,
 your robot should at least be described in a separate model to allow you to
-define different simulation scenarios.</p>
+reuse it in different simulation scenes.</p>
 
 <p>For the purpose of this part of the documentation, we'll use Gazebo's UR10 arm
-model as our robot.</p>
+model as our robot. We however need to integrate it in another model so that its
+base is fixed (using <a href="http://answers.gazebosim.org/question/5065/how-to-attach-arm-to-a-static-base-using-sdf/">this method</a>)</p>
 
+<p>Let's create a new model. The models are saved in <code>models/sdf/</code>, let's create
+<code>models/sdf/ur10_fixed</code> and create a Gazebo model description file <code>models/sdf/ur10_fixed/model.config</code> with</p>
+
+<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+
+<span class="nt">&lt;model&gt;</span>
+  <span class="nt">&lt;name&gt;</span>Universal Robotics UR10 robot arm on a fixed base<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0.2<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;sdf&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
+<span class="nt">&lt;/model&gt;</span>
+</code></pre>
+<p>and the corresponding SDF model in <code>models/sdf/ur10_fixed/model.sdf</code></p>
+
+<pre class="highlight xml"><code><span class="cp">&lt;?xml version='1.0'?&gt;</span>
+<span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">'1.5'</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">"ur10_fixed"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;include&gt;</span>
+          <span class="nt">&lt;name&gt;</span>ur10<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;uri&gt;</span>model://ur10<span class="nt">&lt;/uri&gt;</span>
+        <span class="nt">&lt;/include&gt;</span>
+        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">"attached_to_ground"</span> <span class="na">type=</span><span class="s">"fixed"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;parent&gt;</span>world<span class="nt">&lt;/parent&gt;</span>
+            <span class="nt">&lt;child&gt;</span>ur10::base<span class="nt">&lt;/child&gt;</span>
+        <span class="nt">&lt;/joint&gt;</span>
+    <span class="nt">&lt;/model&gt;</span>
+<span class="nt">&lt;/sdf&gt;</span>
+</code></pre>
 <p>Usually, the first scene one creates is an empty one, which later will give us
-a basic environment in which to test basic functionality, without having to care
+an environment in which to test basic functionality, without having to care
 about collisions.</p>
 
 <p>In the bundles, scenes are saved in <code>scenes/SCENE_NAME/SCENE_NAME.world</code>, e.g.
@@ -161,8 +188,7 @@ about collisions.</p>
 <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">"1.6"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">"empty_world"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;include&gt;</span>
-      <span class="nt">&lt;name&gt;</span>ur10<span class="nt">&lt;/name&gt;</span>
-      <span class="nt">&lt;uri&gt;</span>model://ur10<span class="nt">&lt;/uri&gt;</span>
+      <span class="nt">&lt;uri&gt;</span>model://ur10_fixed<span class="nt">&lt;/uri&gt;</span>
     <span class="nt">&lt;/include&gt;</span>
     <span class="nt">&lt;include&gt;</span>
       <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
@@ -170,8 +196,8 @@ about collisions.</p>
   <span class="nt">&lt;/world&gt;</span>
 <span class="nt">&lt;/sdf&gt;</span>
 </code></pre>
-<p class="warning"><strong>Note</strong> the rock-gazebo integration does not know yet how to download models
-from Gazebo's model repository. Run <code>rock-gazebo</code> on this scene once first to
+<p class="callout callout-warning"><strong>Note</strong> the rock-gazebo integration does not know yet how to download models
+from Gazebo's model repository. Run <code>rock-gazebo --gui=gzclient empty_world</code> once first to
 make sure the models are downloaded. Wait for the scene to show up (Gazebo's
 splash screen disappears then), and quit it then.</p>
 
@@ -182,21 +208,15 @@ definitely want to augment the visualization of the world with e.g. algorithm
 feedback and/or sensor data, we'll be using this environment for the Gazebo
 world as well, instead of using Gazebo's client.</p>
 
-<p>The Gazebo instance and visualizations are started separately. Gazebo-related
-tools automatically find scenes in the bundle's <code>scenes/</code> folder, so just the
-world name is enough:</p>
+<p>The <code>rock-gazebo</code> tool starts a Vizkit3D visualization for the Gazebo scene.</p>
 
-<pre class="highlight plaintext"><code>rock-gzserver empty_world
+<pre class="highlight plaintext"><code>rock-gazebo empty_world
 </code></pre>
-<p>Then start the visualization</p>
-
-<pre class="highlight plaintext"><code>rock-gazebo-viz empty_world
-</code></pre>
-<p>You're should be looking at the UR10 on the floor:</p>
+<p>Starts both a Gazebo simulation and displays it:</p>
 
 <p><img src="media/initial_rock_gazebo_viz.jpg" alt="Visualization of the simulation state with rock-gazebo-viz" /></p>
 
-<h2 id="preparing-the-gazebo-syskit-configuration">Preparing the <code>gazebo</code> Syskit configuration</h2>
+<h2 id="syskit_gazebo_configuration">Preparing the <code>gazebo</code> Syskit configuration</h2>
 
 <p>Syskit configuration in bundles may be split into multiple configurations /
 environments called "robots". A common organization is to create one bundle
