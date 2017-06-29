@@ -71,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child active'><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child active'><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="devices">Devices</h1>
@@ -99,7 +99,7 @@ streams of data - one cannot duplicate devices.  They are bound to hardware,
 and we still don't know how to grow new devices on the robot on-demand.</p>
 
 <p>This difference also exists in the Syskit system. The robot interface, the
-devices, are described separately. We will just see how this is done, and
+devices, are described separately. We will now see how this is done, and
 how we can use these devices within our arm control network, binding the
 simulated arm with the control network.</p>
 
@@ -132,14 +132,14 @@ robot model. One only has to declare the robot model in the <code>Base</code> pr
   <span class="k">module</span> <span class="nn">Profiles</span>
     <span class="k">module</span> <span class="nn">Gazebo</span>
       <span class="n">profile</span> <span class="s1">'Base'</span> <span class="k">do</span>
-        <span class="n">use_gazebo_model</span> <span class="s1">'model://ur10/ur10.sdf'</span>
+        <span class="n">use_gazebo_model</span> <span class="s1">'model://ur10_fixed/model.sdf'</span>
         <span class="n">use_sdf_world</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
-<p>And have a look at the generated devices:</p>
+<p>And have a look at the generated devices with <code>syskit ide -rgazebo models/profiles/gazebo/base.rb</code>:</p>
 
 <p><img src="media/devices.png" alt="Devices from the UR10 model" /></p>
 
@@ -161,6 +161,11 @@ integrate the arm control stuff.</p>
 definition.  Then, <code>define</code> the cartesian and joint position controls <em>for our
 UR10 robot in gazebo</em> by injecting the UR10 device as the 'arm' child of the
 composition.</p>
+
+<p class="callout callout-warning">The model name given to <code>define</code> in a profile is made out of a <a href="https://martinfowler.com/bliki/FluentInterface.html">demeter
+chain</a>. In Ruby, one can
+easily break the chain with a newline after each method call. Don't forget the
+dots !</p>
 
 <pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_control_wdls'</span>

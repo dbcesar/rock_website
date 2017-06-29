@@ -71,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="creating-our-command-generator">Creating our Command Generator</h1>
@@ -80,8 +80,8 @@
 generator. The first generator one usually creates is a constant one, creating an
 interface to send a constant command from Syskit into a control network.</p>
 
-<p>We will create the command generator on this page, and then <a href="deployment.html">deploy and run
-it</a>.</p>
+<p>We will create the command generator now, then bind the result <a href="devices.html">to the simulation</a>
+and finally <a href="deployment.html">deploy and run it</a>.</p>
 
 <p>We will also learn how to write unit tests.</p>
 
@@ -91,14 +91,15 @@ it</a>.</p>
 move the arm tip from one point to another, expressed in the cartesian frame.</p>
 
 <p><code>bundles/common_models</code> provides <code>Compositions::ConstantGenerator</code>, a generic
-component that produces a constant command of a certain type. This generator is
+implementation of a component that periodically emits a value of a certain type. This generator is
 a <code>Syskit::RubyTaskContext</code>, which is like an oroGen component that is part of
 the Syskit process. It's useful to create very simple components without having
-to get through the whole oroGen step, or stub existing components.</p>
+to get through the whole oroGen step. It is also used in tests to stub existing components.</p>
 
-<p><code>ConstantGenerator</code> is generic, so it's rarely used as-is. We will instead
-create a <code>Compositions::ArmCartesianConstantCommandGenerator</code> generator specialized
-for our purposes.</p>
+<p><code>ConstantGenerator</code> is generic, so it's not used as-is. One instead
+creates a specific component for the task at hand. In our case, we'll create
+the <code>Compositions::ArmCartesianConstantCommandGenerator</code> generator specialized for
+our purposes.</p>
 
 <p>First, generate the new model</p>
 
@@ -137,8 +138,7 @@ page.</p>
 <h2 id="improving-the-arguments">Improving the arguments</h2>
 
 <p>The format of the 'values' is actually awkward for a command generator. Let's
-provide better arguments. We need to update <code>#values</code> when position or
-orientation are set.</p>
+provide a better <code>setpoint</code> argument that is transformed to set <code>values</code>.</p>
 
 <pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianConstantCommandGenerator</span> <span class="o">&lt;</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span>
   <span class="c1"># The setpoint as a { position: p, orientation: q } hash</span>
@@ -182,9 +182,8 @@ its correctness.</p>
 
 <p>Each time we ran <code>syskit gen</code>, files were created both in <code>models/</code> and
 <code>test/</code>. The default Syskit test framework is the spec implementation of
-<a href="https://github.com/seattlerb/minitest">minitest</a> {#run_test_command_line}</p>
-
-<p>Let's now write the tests for our generator.</p>
+<a href="https://github.com/seattlerb/minitest">minitest</a>. Let's now adapt these
+templates for our generator.</p>
 
 <p>Start by deleting the boilerplate test from <code>test/compositions/test_arm_cartesian_constant_command_generator.rb</code>.</p>
 
@@ -216,7 +215,7 @@ set from <code>setpoint</code> therefore looks like:</p>
   <span class="n">assert_equal</span> <span class="n">q</span><span class="p">,</span> <span class="n">task</span><span class="p">.</span><span class="nf">values</span><span class="p">[</span><span class="s1">'out'</span><span class="p">].</span><span class="nf">orientation</span>
 <span class="k">end</span>
 </code></pre>
-<p>From the command line, one runs the tests on a single file with:</p>
+<p id="run_test_command_line">From the command line, one runs the tests on a single file with:</p>
 
 <pre class="highlight plaintext"><code>$ syskit test -rgazebo test/compositions/test_arm_cartesian_constant_command_generator.rb
 </code></pre>
@@ -224,10 +223,10 @@ set from <code>setpoint</code> therefore looks like:</p>
 
 <pre class="highlight plaintext"><code>$ syskit test -rgazebo
 </code></pre>
-<p>The IDE also gives an interface to the tests. It will display all the tests for
+<p id="run_test_ide">The IDE also gives an interface to the tests. It will display all the tests for
 the given robot configuration and allow to start them separately.  It also
 allows to auto-run all the discovered tests, and re-run tests when the files
-change, like so: {#run_test_ide}</p>
+change, like so:</p>
 
 <div class="fluid-video">
 <iframe width="853" height="480" src="https://www.youtube.com/embed/Z-asD-4yM8w?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
@@ -286,8 +285,8 @@ time comparison is not done using <code>assert_equal</code>, but <code>assert_in
 </code></pre>
 <h2 id="creating-the-armcartesianconstantcontrolwdls-composition">Creating the ArmCartesianConstantControlWdls Composition</h2>
 
-<p>Whenever a control loop is created, it is common to also create both the corresponding
-constant generator (if it does not exist) and the corresponding composition.</p>
+<p>Now that we have a generator, let's bind it to our control loop to have
+something that can move and hold our arm to a given pose.</p>
 
 <p>We'll create the composition now.</p>
 
@@ -315,7 +314,7 @@ levels of composition, which is resolved at the dataflow level.</p>
 
 <p class="callout callout-info"><strong>Tip</strong>: One can hide the compositions in the dataflow view to help readability with the <code>Hide compositions</code> button</p>
 
-<p>Let's run the generated test now: {#missing_arguments}</p>
+<p id="missing_arguments">Let's run the generated test now:</p>
 
 <pre class="highlight plaintext"><code>$ syskit test -rgazebo test/compositions/test_arm_cartesian_constant_control_wdls.rb
 Run options: --seed 31835
@@ -358,10 +357,10 @@ This is not our composition, but the constant generator. What's going on ?</p>
 Having unset arguments is a very common cause for the error we're having here,
 and indeed we can see that <code>missing_arguments: setpoint, values</code>.</p>
 
-<p>In order to be able to see the encompassing <code>ArmCartesianConstantControlWdls</code>
+<p id="composition_forward_argument">In order to be able to see the encompassing <code>ArmCartesianConstantControlWdls</code>
 as a single component for the outside system, we would need to define a
 setpoint argument on it and forward it to the generator. This is a very common
-pattern, and Syskit supports it: {#composition_forward_argument}</p>
+pattern, and Syskit supports it:</p>
 
 <pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_command_generator'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_control_wdls'</span>
@@ -441,7 +440,7 @@ the corresponding composition.</p>
           <span class="no">Types</span><span class="p">.</span><span class="nf">base</span><span class="p">.</span><span class="nf">commands</span><span class="o">.</span><span class="no">Joints</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
             <span class="ss">time: </span><span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
             <span class="ss">names: </span><span class="n">joint_names</span><span class="p">,</span>
-            <span class="ss">values: </span><span class="n">joint_commands</span><span class="p">)]</span>
+            <span class="n">elements</span> <span class="n">joint_commands</span><span class="p">)]</span>
       <span class="k">end</span>
 
       <span class="k">def</span> <span class="nf">values</span>

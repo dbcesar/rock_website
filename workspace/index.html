@@ -71,10 +71,23 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="./">The Workspace</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child '><a href="day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child '><a href="../syskit_basics/">Introduction</a></li><li class='child '><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="../syskit_basics/devices.html">Devices</a></li><li class='child '><a href="../syskit_basics/deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="./">The Workspace</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child '><a href="day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child '><a href="../syskit_basics/">Introduction</a></li><li class='child '><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="../syskit_basics/devices.html">Devices</a></li><li class='child '><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child '><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="managing-a-rock-installation">Managing a Rock installation</h1>
+
+<div class="alert alert-warning" role="alert" id="not_mainline">
+  <p>As of today (June 2017), not all the software used in this guide has reached
+Rock mainline repositories. For this reason, one needs to start using the
+buildconf repository on GitHub's
+<a href="https://github.com/rock-gazebo/buildconf"><code>rock-gazebo/buildconf</code></a> instead of
+the default one at
+<a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. This
+installation guide already reflects this. This configuration automatically
+selects the 'master' flavor as described in this section</p>
+</div>
+
+<h2 id="rock-versions-and-flavors">Rock Versions and Flavors</h2>
 
 <p>A system can base itself on different "flavors" of Rock. One can basically
 choose one out of three:</p>
@@ -113,16 +126,7 @@ cause problems. Windows has seen some preliminary usage.</p>
 
 <h2 id="install">Installation</h2>
 
-<div class="alert alert-warning" role="alert">
-  <p>As of today (June 2017), not all the software used in this guide has reached
-Rock mainline repositories. For this reason, one needs to start using the
-buildconf repository on GitHub's
-<a href="https://github.com/rock-gazebo/buildconf"><code>rock-gazebo/buildconf</code></a> instead of
-the default one at
-<a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. The <a href="workspace/index.html">installation guide</a> already reflects this.</p>
-</div>
-
-<p>Rock's current release requires <strong>Ruby 2.1 or later</strong></p>
+<p>Rock's current release is 2017.6, and requires <strong>Ruby 2.1 or later</strong></p>
 
 <ol>
   <li>
@@ -144,34 +148,27 @@ cd dev
 </code></pre>  </li>
   <li>
     <p>Bootstrap your installation. This installs autoproj and checks out
-the build configuration, but does not check out packages</p>
-
-    <ul>
-      <li>
-        <p>if you want to create a new workspace based on the latest release, do</p>
-
-<pre class="highlight plaintext"><code>ruby autoproj_bootstrap \
-    git https://github.com/rock-gazebo/buildconf \
-    tag=&lt;%= config[:latest_release] %&gt;
-</code></pre>      </li>
-      <li>
-        <p>if you want to use the <code>stable</code> or <code>master</code> flavors, do</p>
+the main build configuration, but does not check out packages. As
+<a href="#not_mainline">previously mentioned</a>, one must use the master flavor
+of Rock to go through this documentation. Select the defaults for all
+the proposed configuration options.</p>
 
 <pre class="highlight plaintext"><code>ruby autoproj_bootstrap \
     git https://github.com/rock-gazebo/buildconf
-</code></pre>      </li>
-    </ul>
-  </li>
-  <li>
-    <p>Update and build the installation's default packages.</p>
-
-<pre class="highlight plaintext"><code>aup --all -k
-amake --all -k
 </code></pre>  </li>
   <li>
-    <p>Important: as the build tool tells you, you <strong>must</strong> load the generated env.sh script at the end of the build !!! You must also do in new terminals before you can interact with the Rock installation</p>
-  </li>
+    <p>Update and build the installation's default packages.Select the defaults for all
+the proposed configuration options.</p>
+
+<pre class="highlight plaintext"><code>source env.sh
+aup --all -k
+amake --all -k
+</code></pre>  </li>
 </ol>
+
+<p class="callout callout-warning">You <strong>must</strong> remember to source the generated env.sh script at the end of the
+update !!! You must also do in new terminals before you can interact with the
+Rock installation</p>
 
 <p><strong>Next</strong>: <a href="day_to_day.html">day-to-day interaction</a></p>
 

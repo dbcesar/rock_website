@@ -71,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child '><a href="workspace/">Introduction</a></li><li class='child '><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="syskit_basics/">Basics</a></span><ul><li class='child '><a href="syskit_basics/">Introduction</a></li><li class='child '><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="syskit_basics/devices.html">Devices</a></li><li class='child '><a href="syskit_basics/deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="transformations/">Transformations</a></span><ul><li class='child '><a href="transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child '><a href="workspace/">Introduction</a></li><li class='child '><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="syskit_basics/">Basics</a></span><ul><li class='child '><a href="syskit_basics/">Introduction</a></li><li class='child '><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="syskit_basics/devices.html">Devices</a></li><li class='child '><a href="syskit_basics/deployment.html">Deployment</a></li><li class='child '><a href="syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="transformations/">Transformations</a></span><ul><li class='child '><a href="transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="building-robots-with-rock-and-syskit">Building robots with Rock and Syskit</h1>
@@ -82,14 +82,20 @@ robotic systems for wide variety of applications in research and industry. It
 contains a rich collection of ready to use drivers and modules for use in your
 own system, and can easily be extended by adding new components.</p>
 
-<p>This website focusses on building robot systems based on Rock and Syskit,
-Rock's system management layer. It will not cover issues related to Rock's Ruby
-and C++ execution APIs, or only in cases where these plug Syskit limitations.</p>
+<p>This documentation's focus is on building robot systems based on Rock and
+Syskit, Rock's system management layer. It will not cover issues related to
+Rock's lower-level Ruby and C++ execution APIs, or only in cases where these
+plug Syskit limitations.</p>
 
 <p>The most important aspect of this documentation is to explain both the <em>how</em>
 and the <em>why</em>, i.e. describe the parts of Syskit that are relevant to manage a
 robot system, but also to explain the underlying design principles that allow
-you to build a <em>manageable</em> system.</p>
+you to build a <em>manageable</em> system. The documentation does not assume any prior
+knowledge about Rock, but does assume that you have more than basic knowledge
+on general software development practices. The tools being implemented in Ruby
+and C++, it's best to know about these languages. However, documentation on
+the basics and principles of a Rock-Syskit system can be followed with basic
+programming knowledge.</p>
 
 <p>A Rock newcomer should read this documentation sequentially. Tutorials and
 examples are mixed with more detailed descriptions, with an aim at being progressive.</p>

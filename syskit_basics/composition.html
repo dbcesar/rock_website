@@ -71,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="compositions-designing-the-network-for-the-cartesian-control-of-an-arm">Compositions: designing the network for the cartesian control of an arm</h1>
@@ -167,7 +167,7 @@ compositions.</p>
 </code></pre>
 <div class="panel panel-info">
   <div class="panel-heading">
-    <h4 id="orogen-packages-in-syskit">OroGen packages in Syskit</h4>
+    <h4 id="orogen">OroGen packages in Syskit</h4>
   </div>
   <div class="panel-body">
     <p>As described in our <a href="./">brief introduction</a>, oroGen packages are
@@ -232,14 +232,14 @@ file as follows (<code>-rgazebo</code> is necessary because we are importing mod
 <iframe width="853" height="480" src="https://www.youtube.com/embed/hTBYnlc0J3Q?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
-<p>We may now start adding connections in the composition definition. The following
-code snippets will only reproduce the composition definition itself, omitting
-what is around it. The <code>as</code> arguments when adding composition elements create an
-accessor for the children. The children ports are then accessible with a <code>_port</code>
-accessor. For instance, the <code>ctrl_out</code> port of the <code>CartCtrl</code> component is
-accessed with <code>position2twist_child.ctrl_out_port</code>.</p>
+<p>We may now start adding connections in the composition definition. The <code>as</code>
+arguments when adding composition elements create an accessor for the children.
+The children ports are then accessible with a <code>_port</code> accessor. For instance,
+the <code>ctrl_out</code> port of the <code>CartCtrl</code> component is accessed with
+<code>position2twist_child.ctrl_out_port</code>.</p>
 
-<p>Let's connect that one to the <code>WDLSSolver</code> twist input, and the WDLSSolver command to the actual arm command input:</p>
+<p>Let's connect that one to the <code>WDLSSolver</code> twist input, and the WDLSSolver
+command to the actual arm command input:</p>
 
 <pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
   <span class="n">add</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span>
@@ -262,13 +262,13 @@ to something. <code>joint_status</code> is the direct joint feedback from the ar
   <span class="nf">connect_to</span> <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">joint_status_port</span>
 </code></pre>
 <p>However, the cartesian position feedback is not directly provided by the Gazebo
-model. Fortunately, the <code>control/orogen/robot_frames</code> component does the
-joint-to-cartesian conversion.</p>
+model. Fortunately, the <code>control/orogen/robot_frames</code> project provides components
+to do the joint-to-cartesian conversion.</p>
 
 <p>Let's add it to our workspace <a href="#add_package">in the same way we added
 <code>control/orogen/cart_ctrl_wdls</code></a>, import it in the composition
-file with <code>using_task_library</code> and finally add it to the composition. You must
-restart the IDE after this.</p>
+file with <code>using_task_library</code> and reload the models in the IDE.
+Then, finally add it to the composition.</p>
 
 <pre class="highlight ruby"><code><span class="c1"># This is in bundles/common_models</span>
 <span class="nb">require</span> <span class="s1">'models/devices/gazebo/model'</span>
@@ -282,16 +282,18 @@ restart the IDE after this.</p>
       <span class="n">add</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span>
       <span class="n">add</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">CartCtrl</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'position2twist'</span>
       <span class="n">add</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Model</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'arm'</span>
-      <span class="n">add</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">RobotFrames</span><span class="o">::</span><span class="no">SingleChainProducer</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'joint2pose'</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">RobotFrames</span><span class="o">::</span><span class="no">SingleChainPublisher</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'joint2pose'</span>
 
       <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">ctrl_out_port</span><span class="p">.</span>
         <span class="nf">connect_to</span> <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">desired_twist_port</span>
       <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">solver_output_port</span><span class="p">.</span>
         <span class="nf">connect_to</span> <span class="n">arm_child</span><span class="p">.</span><span class="nf">joints_cmd_port</span>
       <span class="n">arm_child</span><span class="p">.</span><span class="nf">joints_status_port</span><span class="p">.</span>
-          <span class="nf">connect_to</span> <span class="n">joint2pose_child</span><span class="p">.</span><span class="nf">joints_samples_port</span>
+        <span class="nf">connect_to</span> <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">joint_status_port</span>
+      <span class="n">arm_child</span><span class="p">.</span><span class="nf">joints_status_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">joint2pose_child</span><span class="p">.</span><span class="nf">joints_samples_port</span>
       <span class="n">joint2pose_child</span><span class="p">.</span><span class="nf">tip_pose_port</span><span class="p">.</span>
-          <span class="nf">connect_to</span> <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">cartesian_status_port</span>
+        <span class="nf">connect_to</span> <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">cartesian_status_port</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -306,7 +308,7 @@ us to reuse it with different command producers.</p>
 by <strong>exporting</strong> the command port on the composition interface. This is done
 with the <code>export</code> keyword, in the composition class context:</p>
 
-<pre class="highlight ruby"><code><span class="n">export</span> <span class="n">position2twist</span><span class="p">.</span><span class="nf">command_child</span>
+<pre class="highlight ruby"><code><span class="n">export</span> <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">command_port</span>
 </code></pre>
 <p>In the IDE, this is represented as a port on the composition, and a connection
 between this port and the exported port. These are the only connections that can

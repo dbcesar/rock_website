@@ -71,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="deployment">Deployment</h1>
@@ -103,9 +103,10 @@ can be found in the data logged at runtime.</p>
 process. The triggering mechanism does not have a default, but the
 <code>port_driven</code> scheme (where the component is triggered whenever data is
 received on its inputs) is a very common scheme. If you look into the
-<code>cart_ctrl_wdls</code> package, you would see that</p>
+<code>cart_ctrl_wdls</code> package, you would see that it's what the package's components
+use.</p>
 
-<p>One usually starts with the defaults defined in the oroGen file. We therefore
+<p id="requires">One usually starts with the defaults defined in the oroGen file. We therefore
 only have left to give a name to the components Syskit is using. This is done
 in the robot's config file with:</p>
 
@@ -120,10 +121,10 @@ in the robot's config file with:</p>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_ruby_tasks</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantGenerator</span> <span class="o">=&gt;</span> <span class="s1">'joint_position_setpoint'</span>
 <span class="k">end</span>
 </code></pre>
-<p>Now that we've required our toplevel profile in the robot configuration file,
+<p class="callout callout-info">Now that we've required our toplevel profile in the robot configuration file,
 we can inspect our app using the IDE by simply providing the <code>-rgazebo</code> flag.
 Only new files, not yet required by the config file, must be specified on the
-command line.  {: .callout .callout-info}</p>
+command line.</p>
 
 <h2 id="configuration">Component configuration</h2>
 
@@ -159,7 +160,7 @@ files are generated with the default configuration exposed by the components.</p
 $ syskit gen orogenconf cart_ctrl_wdls::CartCtrl
       exists  config/orogen/
       create  config/orogen/cart_ctrl_wdls::CartCtrl.yml
-$ syskit gen orogenconf robot_frames::SingleChainProducer
+$ syskit gen orogenconf robot_frames::SingleChainPublisher
       exists  config/orogen/
       create  config/orogen/robot_frames::SingleChainPublisher.yml
 </code></pre>
@@ -169,7 +170,7 @@ Let's look at them one by one, to see what needs to actually be configured.</p>
 <ul>
   <li><code>cart_ctrl_wdls::WDLSSolver</code>. There are robot model parameters as well as tip
 and root. The former should be extracted from the SDF configuration, but the
-tip and root can be set. The only algorithm parameter that does not seem to
+tip and root have to be set. The only algorithm parameter that does not seem to
 have a sane default is the <code>lambda</code> parameter. The documentation mentions 0.1
 has a known-good parameter for some arm, let's pick that and keep in mind
 that it might be wrong.</li>
@@ -178,14 +179,18 @@ the max output. The component's designer decided to pick <code>RigidBodyState</c
 represent a twist, which means that we only need to update the velocity
 and angular velocity fields. Let's set <code>0.1</code> in linear and <code>2.deg</code> in angular
 (the <code>.deg</code> suffix will convert a degree value in radians).</li>
-  <li><code>robot_frames::SingleChainPublisher</code> only has robot model and tip/root parameters.</li>
+  <li><code>robot_frames::SingleChainPublisher</code> only has robot model that we will
+extract from the SDF model, and the tip/root parameters that have to be set</li>
 </ul>
 
+<p class="callout callout-info"><strong>Note</strong> in order to ensure consistency between the tip and root parameters of
+<code>SingleChainPublisher</code> and <code>WDLSSolver</code>, another way to handle this is to make
+them parameters of the compositions.</p>
+
 <p>The root and tip in our case are the base and hand of the robot. The link names are prefixed
-with the model name (here, <code>ur10</code>) so <code>root</code> should
+with the model name (here, <code>ur10_fixed</code>) so <code>root</code> should
 be <code>ur10_fixed::ur10::base</code> and <code>tip</code> should be <code>ur10_fixed::ur10::wrist_3</code>. One can find this out by looking at
-the SDF file - which is downloaded by Gazebo in
-<code>$HOME/.gazebo/models/ur10/ur10.sdf</code>.  Alternatively, the chain can be
+the SDF file.  Alternatively, the chain can be
 inspected using the <code>rock-transformer</code> tool:</p>
 
 <div class="fluid-video">
@@ -267,10 +272,10 @@ the relevant robot in the profile directly:</p>
     <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="no">Base</span><span class="p">)</span>
 </code></pre>
-<p>We now need to modify the oroGen component models to use the robot argument.
+<p id="orogen_extension_files">We now need to modify the oroGen component models to use the robot argument.
 Since oroGen components are auto-generated by Syskit, there's a special
 mechanism to allow modifying the generated classes after the fact. When Syskit
-loads an oroGen, and after it has created the task classes, it will attempt to
+loads an oroGen package, and after it has created the task classes, it will attempt to
 load a file named like the project in <code>models/orogen/</code>. In the case of the
 <code>robot_frames</code> project, this would be <code>models/orogen/robot_frames.rb</code>.</p>
 
@@ -307,7 +312,7 @@ the task's properties.</p>
   <span class="k">def</span> <span class="nf">configure</span>
     <span class="k">super</span> <span class="c1"># call super as described in the template</span>
 
-    <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span><span class="p">.</span><span class="nf">to_s</span>
+    <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span><span class="p">.</span><span class="nf">to_xml_string</span>
     <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -319,7 +324,7 @@ the task's properties.</p>
   <span class="k">def</span> <span class="nf">configure</span>
     <span class="k">super</span> <span class="c1"># call super as described in the template</span>
 
-    <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span><span class="p">.</span><span class="nf">to_s</span>
+    <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span><span class="p">.</span><span class="nf">to_xml_string</span>
     <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -338,19 +343,23 @@ properties are set to actual links in the provided model. Let's do this in
 <span class="c1"># @param [String] property_name the name of the property being</span>
 <span class="c1">#   verified</span>
 <span class="c1"># @raise [ArgumentError] if the link is not in the model</span>
-<span class="k">def</span> <span class="nf">verify_link_in_model</span><span class="p">(</span><span class="n">link_name</span><span class="p">)</span>
-  <span class="k">if</span> <span class="o">!</span><span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">any?</span> <span class="p">{</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span> <span class="n">link</span><span class="p">.</span><span class="nf">name</span> <span class="o">==</span> <span class="n">link_name</span> <span class="p">}</span>
-    <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">"link name '</span><span class="si">#{</span><span class="n">link_name</span><span class="si">}</span><span class="s2">' is not a link of the robot model. Available links: </span><span class="si">#{</span><span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">).</span><span class="nf">sort</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="k">def</span> <span class="nf">verify_link_in_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">link_name</span><span class="p">)</span>
+  <span class="k">if</span> <span class="o">!</span><span class="n">model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">any?</span> <span class="p">{</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span> <span class="n">link</span><span class="p">.</span><span class="nf">full_name</span> <span class="o">==</span> <span class="n">link_name</span> <span class="p">}</span>
+    <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">"link name '</span><span class="si">#{</span><span class="n">link_name</span><span class="si">}</span><span class="s2">' is not a link of the robot model. Existing links: </span><span class="si">#{</span><span class="n">model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:full_name</span><span class="p">).</span><span class="nf">sort</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">configure</span>
   <span class="k">super</span>
 
-  <span class="n">verify_link_in_model</span><span class="p">(</span><span class="n">properties</span><span class="p">.</span><span class="nf">root</span><span class="p">)</span>
-  <span class="n">verify_link_in_model</span><span class="p">(</span><span class="n">properties</span><span class="p">.</span><span class="nf">tip</span><span class="p">)</span>
+  <span class="c1"># Extract the model into its own SDF document</span>
+  <span class="n">as_root</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span>
+  <span class="c1"># And get the new model</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="n">as_root</span><span class="p">.</span><span class="nf">each_model</span><span class="p">.</span><span class="nf">first</span>
+  <span class="n">verify_link_in_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">properties</span><span class="p">.</span><span class="nf">root</span><span class="p">)</span>
+  <span class="n">verify_link_in_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">properties</span><span class="p">.</span><span class="nf">tip</span><span class="p">)</span>
 
-  <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span><span class="p">.</span><span class="nf">to_s</span>
+  <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">as_root</span><span class="p">.</span><span class="nf">to_xml_string</span>
   <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
 <span class="k">end</span>
 </code></pre>
@@ -399,13 +408,20 @@ The modifications for <code>SingleChainPublisher</code> will be left to the read
         &lt;link name="tip_test" /&gt;
       &lt;/model&gt;
 </span><span class="no">      EOSDF</span>
-    <span class="vi">@profile</span> <span class="o">=</span> <span class="n">flexmock</span><span class="p">(</span><span class="ss">sdf_model: </span><span class="no">SDF</span><span class="o">::</span><span class="no">Element</span><span class="p">.</span><span class="nf">from_xml_string</span><span class="p">(</span><span class="n">xml</span><span class="p">))</span>
+    <span class="c1"># We don't really need a full profile object, only an object</span>
+    <span class="c1"># that provides a Model object from a '#sdf_model' attribute</span>
+    <span class="c1">#</span>
+    <span class="c1"># Let's fake one using flexmock. Flexmock is loaded as part</span>
+    <span class="c1"># Of Syskit's test harness</span>
+    <span class="c1">#</span>
+    <span class="c1"># https://github.com/doudou/flexmock</span>
+    <span class="vi">@profile</span> <span class="o">=</span> <span class="n">flexmock</span><span class="p">(</span><span class="ss">sdf_model: </span><span class="no">SDF</span><span class="o">::</span><span class="no">Model</span><span class="p">.</span><span class="nf">from_xml_string</span><span class="p">(</span><span class="n">xml</span><span class="p">))</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"sets the robot model from its 'robot' argument"</span> <span class="k">do</span>
     <span class="c1"># Create a fake test configuration with valid root and tip</span>
     <span class="n">syskit_stub_conf</span> <span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
-      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'tip_test'</span> <span class="p">}</span>
+      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'test::root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'test::tip_test'</span> <span class="p">}</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span>
       <span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">profile</span><span class="p">))</span>
     <span class="n">assert_equal</span> <span class="s2">"&lt;sdf&gt;</span><span class="si">#{</span><span class="n">profile</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">to_xml_string</span><span class="si">}</span><span class="s2">&lt;/sdf&gt;"</span><span class="p">,</span>
@@ -414,23 +430,23 @@ The modifications for <code>SingleChainPublisher</code> will be left to the read
 
   <span class="n">it</span> <span class="s2">"raises if the root link does not exist"</span> <span class="k">do</span>
     <span class="n">syskit_stub_conf</span> <span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
-      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'invalid'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'tip_test'</span> <span class="p">}</span>
+      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'invalid'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'test::tip_test'</span> <span class="p">}</span>
     <span class="n">e</span> <span class="o">=</span> <span class="n">assert_raises</span><span class="p">(</span><span class="no">ArgumentError</span><span class="p">)</span> <span class="k">do</span>
       <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span>
         <span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">profile</span><span class="p">))</span>
     <span class="k">end</span>
-    <span class="n">assert_equal</span> <span class="s2">"link name 'invalid' is not a link of the robot model. Existing links: root_test, tip_test"</span><span class="p">,</span>
+    <span class="n">assert_equal</span> <span class="s2">"link name 'invalid' is not a link of the robot model. Existing links: test::root_test, test::tip_test"</span><span class="p">,</span>
       <span class="n">e</span><span class="p">.</span><span class="nf">message</span>
   <span class="k">end</span>
 
   <span class="n">it</span> <span class="s2">"raises if the tip link does not exist"</span> <span class="k">do</span>
     <span class="n">syskit_stub_conf</span> <span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
-      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'invalid'</span> <span class="p">}</span>
+      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'test::root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'invalid'</span> <span class="p">}</span>
     <span class="n">e</span> <span class="o">=</span> <span class="n">assert_raises</span><span class="p">(</span><span class="no">ArgumentError</span><span class="p">)</span> <span class="k">do</span>
       <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span>
         <span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">profile</span><span class="p">))</span>
     <span class="k">end</span>
-    <span class="n">assert_equal</span> <span class="s2">"link name 'invalid' is not a link of the robot model. Existing links: root_test, tip_test"</span><span class="p">,</span>
+    <span class="n">assert_equal</span> <span class="s2">"link name 'invalid' is not a link of the robot model. Existing links: test::root_test, test::tip_test"</span><span class="p">,</span>
       <span class="n">e</span><span class="p">.</span><span class="nf">message</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -468,7 +484,7 @@ OroGen::CartCtrlWdls::AdaptiveWDLSSolver:0x5e5bbb8
 <code>AdaptiveWDLSSolver</code> does inherit the <code>configure</code> method we just wrote. Given
 that it does not overload this method itself, we can just delete the test.</p>
 
-<h2 id="building-the-systems-action-interface">Building the system's action interface</h2>
+<h2 id="actions">Building the system's action interface</h2>
 
 <p>A Syskit application exports functionality to the outside world as <em>actions</em>.
 For now, the only thing we'll see about actions is that they have a name,
@@ -483,15 +499,18 @@ interface so that we can finally start it.</p>
 file. Syskit profiles are added in the action interface there, so that their
 definitions are exported as an action with a <code>_def</code> suffix.</p>
 
-<p>Let's modify the <code>actions</code> block in <code>config/robots/gazebo.rb</code> to have:</p>
+<p id="main">Let's modify the <code>actions</code> block in <code>config/robots/gazebo.rb</code> to have:</p>
 
 <pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">actions</span> <span class="k">do</span>
   <span class="n">use_profile</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Profiles</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">use_profile</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Profiles</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">ArmControl</span>
 <span class="k">end</span>
 </code></pre>
+<p class="callout callout-info"><strong>Note</strong>: the profile is available in the actions block because <a href="#requires">we've required it in the requires block</a></p>
+
 <p>After modifying the config file, the IDE needs to be quit and started again. We
-can then look at the <code>Main</code> interface and see that it indeed has a <code>arm_cartesian_constant_control_def</code> action:</p>
+can then look at the <code>Main</code> interface and see that it indeed has <code>_dev</code> actions for
+the devices in <code>Base</code>, and <code>_def</code> actions for the definitions in <code>ArmControl</code>.</p>
 
 <p><img src="media/main_action_with_arm_control_def.png" alt="The Main interface with the arm control definition" /></p>
 
@@ -504,14 +523,15 @@ can then look at the <code>Main</code> interface and see that it indeed has a <c
 <pre class="highlight plaintext"><code>rock-gazebo empty_world
 </code></pre>
 <p>Once started, the simulation can stay running regardless of whether the Syskit
-app itself gets restarted. You can then start the app either on the command
-line with</p>
+app itself gets restarted. You can then start the app using the IDE, and
+send the command through the Syskit shell. The following video show you the process. Its goal
+is to give you a feeling for Syskit's runtime workflow. Detailed explanations will come later <a href="../syskit_runtime/index.html">in the runtime part of this documentation</a></p>
 
-<pre class="highlight plaintext"><code>syskit run -rgazebo
-</code></pre>
-<p>Or, if you prefer, in the IDE as in the following video. Start then the action within the IDE.</p>
+<div class="fluid-video">
+<iframe width="853" height="480" src="https://www.youtube.com/embed/wXYb7f_xNZo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
 
-<p>TODO: video</p>
+<p>Before we move on to the Syskit runtime aspects, <a href="recap.html" class="btn btn-primary">let's recap what we've just seen</a></p>
 
             </div>
         </div>

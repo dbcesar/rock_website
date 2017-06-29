@@ -71,7 +71,7 @@
     <div class="container-fluid">
         <div class="row content">
             <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
             </div>
             <div class="col-sm-7 text-left">
                 <h1 id="getting-started">Getting Started</h1>
@@ -84,11 +84,9 @@ allow us to continue with actually doing something with the system.</p>
 
 <p>In Rock, the central place where the system design and integration happens is a
 <em>bundle</em>. A bundle package is created in the <code>bundles/</code> folder of your Rock
-workspace.</p>
-
-<p>For all intents and purposes, so far, bundles are a collection of Syskit models
-(in <code>models/</code>), configuration files (in <code>config/</code>) and SDF scene (<code>scenes/</code>)
-and model descriptions (<code>models/sdf/</code>).</p>
+workspace. For the time being, you can see bundles as a collection of
+Syskit models (in <code>models/</code>), configuration files (in <code>config/</code>), SDF scenes
+(<code>scenes/</code>) and SDF models (<code>models/sdf/</code>).</p>
 
 <p>The following assumes that you have a <a href="../workspace/">bootstrapped Rock
 installation</a>, and that you have a terminal in which this
@@ -128,14 +126,11 @@ default[INFO]: closed communication
 
 <p>The <a href="http://sdformat.org">Scene Description Format</a> is a XML format defined by the
 Gazebo developers to describe both scenes and objects in these scenes (as e.g.
-robots).</p>
+robots). We're going to learn how to leverage the information present in an SDF
+file as possible, with the goal of having the SDF be the authoritative
+information source for any information that can be represented in it.</p>
 
-<p>What we're going to learn along this documentation is to leverage the
-information present in an SDF file as possible, with the goal of having the SDF
-be the authoritative information source for any information that can be
-represented in it.</p>
-
-<p>But for now, let's get to create ourselves a scene with a robot in it. This
+<p>But for now, let's get to create ourselves a scene with a robot in it. We
 will <strong>not</strong> describe the SDF format in details, there's a lot of
 Gazebo-related documentation about that, <a href="http://sdformat.org/spec">including a reference of the format
 on sdformat.org</a></p>
@@ -147,17 +142,16 @@ your robot should at least be described in a separate model to allow you to
 reuse it in different simulation scenes.</p>
 
 <p>For the purpose of this part of the documentation, we'll use Gazebo's UR10 arm
-model as our robot. We however need to integrate it in another model so that its
-base is fixed (using <a href="http://answers.gazebosim.org/question/5065/how-to-attach-arm-to-a-static-base-using-sdf/">this method</a>)</p>
-
-<p>Let's create a new model. The models are saved in <code>models/sdf/</code>, let's create
+model as our robot. We however need to integrate it in another model so that
+its base is fixed (using <a href="http://answers.gazebosim.org/question/5065/how-to-attach-arm-to-a-static-base-using-sdf/">this
+method</a>) Models are saved in <code>models/sdf/</code>, let's create
 <code>models/sdf/ur10_fixed</code> and create a Gazebo model description file <code>models/sdf/ur10_fixed/model.config</code> with</p>
 
 <pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
 
 <span class="nt">&lt;model&gt;</span>
   <span class="nt">&lt;name&gt;</span>Universal Robotics UR10 robot arm on a fixed base<span class="nt">&lt;/name&gt;</span>
-  <span class="nt">&lt;version&gt;</span>1.0.2<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;sdf&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
 <span class="nt">&lt;/model&gt;</span>
 </code></pre>
@@ -235,7 +229,13 @@ integration code and then load the environment. This is done by modifying the
 newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p>
 
 <pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">init</span> <span class="k">do</span>
-  <span class="c1"># IMPORTANT: do not delete the code from the generated template</span>
+  <span class="c1">## You can load plugins here</span>
+  <span class="c1"># Roby.app.using 'fault_injection'</span>
+  <span class="c1"># Roby.app.using 'syskit'</span>
+
+  <span class="c1">## Change the scheduler</span>
+  <span class="nb">require</span> <span class="s1">'roby/schedulers/temporal'</span>
+  <span class="no">Roby</span><span class="p">.</span><span class="nf">scheduler</span> <span class="o">=</span> <span class="no">Roby</span><span class="o">::</span><span class="no">Schedulers</span><span class="o">::</span><span class="no">Temporal</span><span class="p">.</span><span class="nf">new</span>
 
   <span class="c1"># The rock-gazebo bridge requires models from the 'common_models' bundle.</span>
   <span class="c1"># It already depends on it, but we need to manually add the bundle to the</span>
