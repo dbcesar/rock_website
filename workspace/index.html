@@ -12,44 +12,9 @@
         <link href="../stylesheets/site.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-          /* Remove the navbar's default margin-bottom and rounded borders */
-          .navbar {
-              margin-bottom: 0;
-              border-radius: 0;
-
-          }
-
-          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-          .row.content {height: 450px}
-
-          /* Set gray background color and 100% height */
-          .sidenav {
-              padding-top: 20px;
-              background-color: #f1f1f1;
-              height: 100%;
-          }
-
-          /* Set black background color, white text and some padding */
-          footer {
-              background-color: #000000;
-              color: white;
-              padding: 5px;
-          }
-
-          /* On small screens, set height to 'auto' for sidenav and grid */
-          @media screen and (max-width: 767px) {
-              .sidenav {
-                  height: auto;
-                  padding: 15px;
-              }
-              .row.content {height:auto;}
-          }
-        </style>
     </head>
 
     <body class="workspace workspace_index">
-
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -68,12 +33,15 @@
             </div>
         </div>
     </nav>
+
     <div class="container-fluid">
-        <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="./">The Workspace</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child '><a href="day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child '><a href="../syskit_basics/">Introduction</a></li><li class='child '><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="../syskit_basics/devices.html">Devices</a></li><li class='child '><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child '><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">The Workspace</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child'><a href="day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child'><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                </nav>
             </div>
-            <div class="col-sm-7 text-left">
+            <div class="col-md-9" role="main">
                 <h1 id="managing-a-rock-installation">Managing a Rock installation</h1>
 
 <div class="alert alert-warning" role="alert" id="not_mainline">
@@ -135,20 +103,20 @@ cause problems. Windows has seen some preliminary usage.</p>
   <li>
     <p>Install Ruby and verify that the version matches</p>
 
-<pre class="highlight plaintext"><code>sudo apt-get install ruby
+<div class="highlight"><pre class="highlight plaintext"><code>sudo apt-get install ruby
 ruby --version
-</code></pre>  </li>
+</code></pre></div>  </li>
   <li>
     <p>Create and "cd" into the directory in which you want to install the toolchain.</p>
 
-<pre class="highlight plaintext"><code>mkdir dev
+<div class="highlight"><pre class="highlight plaintext"><code>mkdir dev
 cd dev
-</code></pre>  </li>
+</code></pre></div>  </li>
   <li>
     <p>Download autoproj's bootstrap script</p>
 
-<pre class="highlight plaintext"><code>wget http://rock-robotics.org/autoproj_bootstrap
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight plaintext"><code>wget http://rock-robotics.org/autoproj_bootstrap
+</code></pre></div>  </li>
   <li>
     <p>Bootstrap your installation. This installs autoproj and checks out
 the main build configuration, but does not check out packages. As
@@ -156,17 +124,17 @@ the main build configuration, but does not check out packages. As
 of Rock to go through this documentation. Select the defaults for all
 the proposed configuration options.</p>
 
-<pre class="highlight plaintext"><code>ruby autoproj_bootstrap \
+<div class="highlight"><pre class="highlight plaintext"><code>ruby autoproj_bootstrap \
     git https://github.com/rock-gazebo/buildconf
-</code></pre>  </li>
+</code></pre></div>  </li>
   <li>
     <p>Update and build the installation's default packages.Select the defaults for all
 the proposed configuration options.</p>
 
-<pre class="highlight plaintext"><code>source env.sh
+<div class="highlight"><pre class="highlight plaintext"><code>source env.sh
 aup --all -k
 amake --all -k
-</code></pre>  </li>
+</code></pre></div>  </li>
 </ol>
 
 <p class="callout callout-warning">You <strong>must</strong> remember to source the generated env.sh script at the end of the
@@ -180,9 +148,16 @@ Rock installation</p>
         </div>
     </div>
 
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
 
         <footer class="container-fluid text-center">
-            <p>Rock in your own way!</p>
         </footer>
     </body>
 </html>

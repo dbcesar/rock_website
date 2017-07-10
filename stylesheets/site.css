@@ -1703,7 +1703,7 @@ figure {
 img {
   vertical-align: middle; }
 
-.img-responsive {
+.img-responsive, img.fullwidth {
   display: block;
   max-width: 100%;
   height: auto; }
@@ -4160,33 +4160,33 @@ tbody.collapse.in {
     z-index: 2;
     margin-left: -1px; }
 
-.nav {
+.nav, ul.nav li ul {
   margin-bottom: 0;
   padding-left: 0;
   list-style: none; }
-  .nav:before, .nav:after {
+  .nav:before, ul.nav li ul:before, .nav:after, ul.nav li ul:after {
     content: " ";
     display: table; }
-  .nav:after {
+  .nav:after, ul.nav li ul:after {
     clear: both; }
-  .nav > li {
+  .nav > li, ul.nav li ul > li {
     position: relative;
     display: block; }
-    .nav > li > a {
+    .nav > li > a, ul.nav li ul > li > a {
       position: relative;
       display: block;
       padding: 10px 15px; }
-      .nav > li > a:hover, .nav > li > a:focus {
+      .nav > li > a:hover, ul.nav li ul > li > a:hover, .nav > li > a:focus, ul.nav li ul > li > a:focus {
         text-decoration: none;
         background-color: #eeeeee; }
-    .nav > li.disabled > a {
+    .nav > li.disabled > a, ul.nav li ul > li.disabled > a {
       color: #777777; }
-      .nav > li.disabled > a:hover, .nav > li.disabled > a:focus {
+      .nav > li.disabled > a:hover, ul.nav li ul > li.disabled > a:hover, .nav > li.disabled > a:focus, ul.nav li ul > li.disabled > a:focus {
         color: #777777;
         text-decoration: none;
         background-color: transparent;
         cursor: not-allowed; }
-  .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+  .nav .open > a, ul.nav li ul .open > a, .nav .open > a:hover, ul.nav li ul .open > a:hover, .nav .open > a:focus, ul.nav li ul .open > a:focus {
     background-color: #eeeeee;
     border-color: #337ab7; }
   .nav .nav-divider {
@@ -4194,7 +4194,7 @@ tbody.collapse.in {
     margin: 9px 0;
     overflow: hidden;
     background-color: #e5e5e5; }
-  .nav > li > a > img {
+  .nav > li > a > img, ul.nav li ul > li > a > img {
     max-width: none; }
 
 .nav-tabs {
@@ -6201,7 +6201,7 @@ button.close {
 .clearfix:after {
   clear: both; }
 
-.center-block {
+.center-block, img.fullwidth {
   display: block;
   margin-left: auto;
   margin-right: auto; }
@@ -6481,5 +6481,134 @@ button.close {
 .callout-info h4 {
   color: #5bc0de; }
 
+/* First level of nav */
+.docs-sidenav {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
+/* All levels of nav */
+.docs-sidebar .nav > li > a, .docs-sidebar ul.nav li ul > li > a, ul.nav li .docs-sidebar ul > li > a,
+.docs-sidebar .nav > li > span > a,
+.docs-sidebar ul.nav li ul > li > span > a,
+ul.nav li .docs-sidebar ul > li > span > a {
+  display: block;
+  padding: 4px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #767676; }
+
+.docs-sidebar .nav > li > a:hover, .docs-sidebar ul.nav li ul > li > a:hover, ul.nav li .docs-sidebar ul > li > a:hover,
+.docs-sidebar .nav > li > a:focus,
+.docs-sidebar ul.nav li ul > li > a:focus,
+ul.nav li .docs-sidebar ul > li > a:focus,
+.docs-sidebar .nav > li > span > a:hover,
+.docs-sidebar ul.nav li ul > li > span > a:hover,
+ul.nav li .docs-sidebar ul > li > span > a:hover,
+.docs-sidebar .nav > li > span > a:focus,
+.docs-sidebar ul.nav li ul > li > span > a:focus,
+ul.nav li .docs-sidebar ul > li > span > a:focus {
+  padding-left: 19px;
+  color: #563d7c;
+  text-decoration: none;
+  background-color: transparent;
+  border-left: 1px solid #563d7c; }
+
+.docs-sidebar .nav > .active > a, .docs-sidebar ul.nav li ul > .active > a, ul.nav li .docs-sidebar ul > .active > a,
+.docs-sidebar .nav > .active:hover > a,
+.docs-sidebar ul.nav li ul > .active:hover > a,
+ul.nav li .docs-sidebar ul > .active:hover > a,
+.docs-sidebar .nav > .active:focus > a,
+.docs-sidebar ul.nav li ul > .active:focus > a,
+ul.nav li .docs-sidebar ul > .active:focus > a,
+.docs-sidebar .nav > .active > span > a,
+.docs-sidebar ul.nav li ul > .active > span > a,
+ul.nav li .docs-sidebar ul > .active > span > a,
+.docs-sidebar .nav > .active:hover > span > a,
+.docs-sidebar ul.nav li ul > .active:hover > span > a,
+ul.nav li .docs-sidebar ul > .active:hover > span > a,
+.docs-sidebar .nav > .active:focus > span > a,
+.docs-sidebar ul.nav li ul > .active:focus > span > a,
+ul.nav li .docs-sidebar ul > .active:focus > span > a {
+  padding-left: 18px;
+  font-weight: bold;
+  color: #563d7c;
+  background-color: transparent;
+  border-left: 2px solid #563d7c; }
+
+/* Nav: second level (shown on .active) */
+.docs-sidebar .nav .nav, ul.nav li .docs-sidebar ul .nav, .docs-sidebar ul.nav li ul, .docs-sidebar ul.nav li ul ul, ul.nav li .docs-sidebar ul ul {
+  display: none;
+  /* Hide by default, but at >768px, show it */
+  padding-bottom: 10px; }
+
+.docs-sidebar .nav .nav > li > a, ul.nav li .docs-sidebar ul .nav > li > a, .docs-sidebar ul.nav li ul > li > a, .docs-sidebar ul.nav li ul ul > li > a, ul.nav li .docs-sidebar ul ul > li > a,
+.docs-sidebar .nav .nav > li > span > a,
+ul.nav li .docs-sidebar ul .nav > li > span > a,
+.docs-sidebar ul.nav li ul > li > span > a,
+.docs-sidebar ul.nav li ul ul > li > span > a,
+ul.nav li .docs-sidebar ul ul > li > span > a {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 30px;
+  font-size: 12px;
+  font-weight: normal; }
+
+.docs-sidebar .nav .nav > li > a:hover, ul.nav li .docs-sidebar ul .nav > li > a:hover, .docs-sidebar ul.nav li ul > li > a:hover, .docs-sidebar ul.nav li ul ul > li > a:hover, ul.nav li .docs-sidebar ul ul > li > a:hover,
+.docs-sidebar .nav .nav > li > a:focus,
+ul.nav li .docs-sidebar ul .nav > li > a:focus,
+.docs-sidebar ul.nav li ul > li > a:focus,
+.docs-sidebar ul.nav li ul ul > li > a:focus,
+ul.nav li .docs-sidebar ul ul > li > a:focus,
+.docs-sidebar .nav .nav > li > span > a:hover,
+ul.nav li .docs-sidebar ul .nav > li > span > a:hover,
+.docs-sidebar ul.nav li ul > li > span > a:hover,
+.docs-sidebar ul.nav li ul ul > li > span > a:hover,
+ul.nav li .docs-sidebar ul ul > li > span > a:hover,
+.docs-sidebar .nav .nav > li > span > a:focus,
+ul.nav li .docs-sidebar ul .nav > li > span > a:focus,
+.docs-sidebar ul.nav li ul > li > span > a:focus,
+.docs-sidebar ul.nav li ul ul > li > span > a:focus,
+ul.nav li .docs-sidebar ul ul > li > span > a:focus {
+  padding-left: 29px; }
+
+.docs-sidebar .nav .nav > .active > a, ul.nav li .docs-sidebar ul .nav > .active > a, .docs-sidebar ul.nav li ul > .active > a, .docs-sidebar ul.nav li ul ul > .active > a, ul.nav li .docs-sidebar ul ul > .active > a,
+.docs-sidebar .nav .nav > .active:hover > a,
+ul.nav li .docs-sidebar ul .nav > .active:hover > a,
+.docs-sidebar ul.nav li ul > .active:hover > a,
+.docs-sidebar ul.nav li ul ul > .active:hover > a,
+ul.nav li .docs-sidebar ul ul > .active:hover > a,
+.docs-sidebar .nav .nav > .active:focus > a,
+ul.nav li .docs-sidebar ul .nav > .active:focus > a,
+.docs-sidebar ul.nav li ul > .active:focus > a,
+.docs-sidebar ul.nav li ul ul > .active:focus > a,
+ul.nav li .docs-sidebar ul ul > .active:focus > a,
+.docs-sidebar .nav .nav > .active > span > a,
+ul.nav li .docs-sidebar ul .nav > .active > span > a,
+.docs-sidebar ul.nav li ul > .active > span > a,
+.docs-sidebar ul.nav li ul ul > .active > span > a,
+ul.nav li .docs-sidebar ul ul > .active > span > a,
+.docs-sidebar .nav .nav > .active:hover > span > a,
+ul.nav li .docs-sidebar ul .nav > .active:hover > span > a,
+.docs-sidebar ul.nav li ul > .active:hover > span > a,
+.docs-sidebar ul.nav li ul ul > .active:hover > span > a,
+ul.nav li .docs-sidebar ul ul > .active:hover > span > a,
+.docs-sidebar .nav .nav > .active:focus > span > a,
+ul.nav li .docs-sidebar ul .nav > .active:focus > span > a,
+.docs-sidebar ul.nav li ul > .active:focus > span > a,
+.docs-sidebar ul.nav li ul ul > .active:focus > span > a,
+ul.nav li .docs-sidebar ul ul > .active:focus > span > a {
+  padding-left: 28px;
+  font-weight: 500; }
+
+.docs-sidebar .nav li.active ul, ul.nav li .docs-sidebar ul li.active ul {
+  display: block; }
+
 h2, h3 {
   margin-top: 30px; }
+
+nav.docs-sidebar.affix {
+  top: 20px; }
+
+.carousel {
+  margin-top: 2em;
+  margin-bottom: 2em; }

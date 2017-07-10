@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="syskit_runtime syskit_runtime_task_structure">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child'><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 id="task-structures">Task Structures</h1>
+
+<p>Key to the scheduler and garbage collection mechanisms is Syskit's ability to
+maintain the set of components that are useful for the currently active jobs.</p>
+
+<p>Internally, Syskit maintains a set of directed graphs that represent the
+relationship between the components. These graphs are built so that the target
+of an edge is "useful" to the source of the edge. Obviously, this "usefulness"
+relationship is transitive, that is the target-of-a-target is useful to the
+root.</p>
+
+<p>In addition to representing a notion of usefulness, these relations also generally
+encode temporal relationships between the tasks. This page will hint at these, but
+we will see it later on <a href="exceptions.html">when we talk about exceptions</a>.</p>
+
+<h2 id="dependency">Dependency Graph</h2>
+
+<p>We've actually already seen one of these graphs: the <em>dependency graph</em> is what
+binds compositions to the composition children.  The tree structure we can see
+in the IDE when displaying information about a composition is a representation
+of this graph. The composition child (target in the edge) is useful to the
+parent (the source):</p>
+
+<p><img src="media/composition_dependency_graph.svg" alt="A composition dependency graph" class="fullwidth" /></p>
+
+<p>An edge in this graph encodes that the child must be "running" for its parent
+to function nominally.</p>
+
+<p class="callout callout-info">Note that the dependency graph is not necessarily a tree. A task can be shared
+among multiple functions, that is have multiple parents.</p>
+
+<h2 id="execution_agents">Execution Agents</h2>
+
+<p>The other graph that is of importance for us right now is the <em>execution agent</em>
+graph.  It represents a "execution support" relationship between a component -
+the one that is being executed - and the process that is actually executing it
+- the agent.</p>
+
+<p>The composition is therefore the source and its child the target. The agent is
+the target. In Syskit, this is used to represent the link between a component
+and the process that is actually "containing" it, such as Gazebo for our
+<code>ModelTask</code>, or the deployment of an orogen component. The two <code>Deployment::</code>
+tasks below are the agents for the corresponding components:</p>
+
+<p><img src="media/scheduling_4.png" alt="Example of execution agents" class="fullwidth" /></p>
+
+<p>The agent relationship is a lot stronger than the dependency relation. When a
+child in a dependency relation stops, the function can be recovered by e.g.
+simply restarting the child. If a component's agent dies, the component <em>is
+already dead</em>. This is unrecoverable.</p>
+
+<h2 id="usefulness">Jobs, Permanent Tasks and Usefulness</h2>
+
+<p>We've already seen the jobs. Internally, Syskit simply remembers that a certain
+set of components are jobs. The garbage collection algorithm then determines
+what tasks are not useful by following the task structure.</p>
+
+<p>Because it is more optimal sometimes to keep some tasks alive, even though
+these tasks are not useful to the jobs, Syskit also maintains a set of
+<em>permanent tasks</em>.  One can see in the video below that once the cartesian
+control is started, its deployment keeps on running even if the job is stopped.
+Because of the high cost of starting a whole process, and of configuring a
+component, Syskit marks the deployments as permanent. If one of them was to be
+killed, this would not affect the rest of the system, and it would be restarted
+when needed.</p>
+
+<p>Now that we understand how Syskit determines a component's usefulness, we may
+get to <a href="event_loop.html" class="btn btn-primary">the event loop</a> which will detail among other things
+the scheduling and garbage collection mechanisms.</p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

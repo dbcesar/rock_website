@@ -12,44 +12,9 @@
         <link href="../stylesheets/site.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-          /* Remove the navbar's default margin-bottom and rounded borders */
-          .navbar {
-              margin-bottom: 0;
-              border-radius: 0;
-
-          }
-
-          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-          .row.content {height: 450px}
-
-          /* Set gray background color and 100% height */
-          .sidenav {
-              padding-top: 20px;
-              background-color: #f1f1f1;
-              height: 100%;
-          }
-
-          /* Set black background color, white text and some padding */
-          footer {
-              background-color: #000000;
-              color: white;
-              padding: 5px;
-          }
-
-          /* On small screens, set height to 'auto' for sidenav and grid */
-          @media screen and (max-width: 767px) {
-              .sidenav {
-                  height: auto;
-                  padding: 15px;
-              }
-              .row.content {height:auto;}
-          }
-        </style>
     </head>
 
     <body class="syskit_basics syskit_basics_deployment">
-
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -68,12 +33,15 @@
             </div>
         </div>
     </nav>
+
     <div class="container-fluid">
-        <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child'><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                </nav>
             </div>
-            <div class="col-sm-7 text-left">
+            <div class="col-md-9" role="main">
                 <h1 id="deployment">Deployment</h1>
 
 <p>A few things are missing before we can actually run <a href="devices.html">the network we just
@@ -110,7 +78,7 @@ use.</p>
 only have left to give a name to the components Syskit is using. This is done
 in the robot's config file with:</p>
 
-<pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_gazebo_world</span><span class="p">(</span><span class="s1">'empty_world'</span><span class="p">)</span>
 
   <span class="nb">require</span> <span class="s1">'models/profiles/gazebo/arm_control'</span>
@@ -120,7 +88,7 @@ in the robot's config file with:</p>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_ruby_tasks</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantCommandGenerator</span> <span class="o">=&gt;</span> <span class="s1">'arm_constant_setpoint'</span>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_ruby_tasks</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantGenerator</span> <span class="o">=&gt;</span> <span class="s1">'joint_position_setpoint'</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p class="callout callout-info">Now that we've required our toplevel profile in the robot configuration file,
 we can inspect our app using the IDE by simply providing the <code>-rgazebo</code> flag.
 Only new files, not yet required by the config file, must be specified on the
@@ -154,7 +122,7 @@ which is the one that is loaded by default unless specified otherwise.</p>
 <p>Let's generate configuration file templates for the components we are using. The
 files are generated with the default configuration exposed by the components.</p>
 
-<pre class="highlight plaintext"><code>$ syskit gen orogenconf cart_ctrl_wdls::WDLSSolver
+<div class="highlight"><pre class="highlight plaintext"><code>$ syskit gen orogenconf cart_ctrl_wdls::WDLSSolver
       create  config/orogen/
       create  config/orogen/cart_ctrl_wdls::WDLSSolver.yml
 $ syskit gen orogenconf cart_ctrl_wdls::CartCtrl
@@ -163,7 +131,7 @@ $ syskit gen orogenconf cart_ctrl_wdls::CartCtrl
 $ syskit gen orogenconf robot_frames::SingleChainPublisher
       exists  config/orogen/
       create  config/orogen/robot_frames::SingleChainPublisher.yml
-</code></pre>
+</code></pre></div>
 <p>Each properties in the generated files have their corresponding configuration.
 Let's look at them one by one, to see what needs to actually be configured.</p>
 
@@ -236,42 +204,42 @@ themselves.</p>
 
 <p>In <code>models/compositions/arm_cartesian_constant_control_wdls.rb</code></p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianConstantControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianConstantControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
   <span class="c1"># The robot model that is to be used</span>
   <span class="c1">#</span>
   <span class="c1"># This must be the enclosing profile object that has the use_sdf_model call</span>
   <span class="c1">#</span>
   <span class="c1"># @return [Profile]</span>
   <span class="n">argument</span> <span class="ss">:robot</span>
-  <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-  <span class="nf">add</span><span class="p">(</span><span class="no">ArmCartesianControlWdls</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'control'</span><span class="p">).</span>
+  <span class="o">...</span>
+  <span class="n">add</span><span class="p">(</span><span class="no">ArmCartesianControlWdls</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'control'</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">robot</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>and in <code>models/compositions/arm_cartesian_control_wdls.rb</code></p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
   <span class="c1"># The robot model that is to be used</span>
   <span class="c1">#</span>
   <span class="c1"># This must be the enclosing profile object that has the use_sdf_model call</span>
   <span class="c1">#</span>
   <span class="c1"># @return [Profile]</span>
   <span class="n">argument</span> <span class="ss">:robot</span>
-  <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-  <span class="nf">add</span><span class="p">(</span><span class="no">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span><span class="p">).</span>
+  <span class="o">...</span>
+  <span class="n">add</span><span class="p">(</span><span class="no">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">robot</span><span class="p">)</span>
   <span class="n">add</span><span class="p">(</span><span class="no">OroGen</span><span class="o">::</span><span class="no">RobotFrames</span><span class="o">::</span><span class="no">SingleChainPublisher</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'joint2pose'</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">robot</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Since the <code>ArmControl</code> profile is specific to the <code>gazebo</code> robot, we can inject
 the relevant robot in the profile directly:</p>
 
-<pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
   <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
     <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="no">Base</span><span class="p">)</span>
-</code></pre>
+</code></pre></div>
 <p id="orogen_extension_files">We now need to modify the oroGen component models to use the robot argument.
 Since oroGen components are auto-generated by Syskit, there's a special
 mechanism to allow modifying the generated classes after the fact. When Syskit
@@ -282,11 +250,11 @@ load a file named like the project in <code>models/orogen/</code>. In the case o
 <p>In the IDE, when displaying a task model under the <code>OroGen</code> namespace, a project
 that has no associated extension file in <code>models/orogen/</code> has the following message:</p>
 
-<p><img src="media/no_extension_file.png" alt="Message displayed by the IDE if there are no extension files" /></p>
+<p><img src="media/no_extension_file.png" alt="Message displayed by the IDE if there are no extension files" class="fullwidth" /></p>
 
 <p>Let's do exactly that</p>
 
-<pre class="highlight plaintext"><code>$ syskit gen orogen cart_ctrl_wdls
+<div class="highlight"><pre class="highlight plaintext"><code>$ syskit gen orogen cart_ctrl_wdls
       create  models/orogen
       create  test/orogen
       create  models/orogen/cart_ctrl_wdls.rb
@@ -296,10 +264,10 @@ $ syskit gen orogen robot_frames
       exists  test/orogen
       create  models/orogen/robot_frames.rb
       create  test/orogen/test_robot_frames.rb
-</code></pre>
+</code></pre></div>
 <p>After hitting the IDE's reload button, we now get the path to the extension file:</p>
 
-<p><img src="media/orogen_extension_file.png" alt="Message displayed by the IDE if there is an extension files" /></p>
+<p><img src="media/orogen_extension_file.png" alt="Message displayed by the IDE if there is an extension files" class="fullwidth" /></p>
 
 <p>Now, let's edit <code>models/orogen/cart_ctrl_wdls.rb</code>. There is one <code>class</code>
 statement per task model in the project, but we're currently only interested in
@@ -307,7 +275,7 @@ the <code>WDLSSolver</code> task. Let's add the <code>robot</code> argument, and
 <code>configure</code> method that is described in the template to forward the model on to
 the task's properties.</p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span>
   <span class="n">argument</span> <span class="ss">:robot</span>
   <span class="k">def</span> <span class="nf">configure</span>
     <span class="k">super</span> <span class="c1"># call super as described in the template</span>
@@ -316,10 +284,10 @@ the task's properties.</p>
     <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>and in <code>models/orogen/robot_frames.rb</code>:</p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">OroGen</span><span class="o">::</span><span class="no">RobotFrames</span><span class="o">::</span><span class="no">SingleChainPublisher</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">OroGen</span><span class="o">::</span><span class="no">RobotFrames</span><span class="o">::</span><span class="no">SingleChainPublisher</span>
   <span class="n">argument</span> <span class="ss">:robot</span>
   <span class="k">def</span> <span class="nf">configure</span>
     <span class="k">super</span> <span class="c1"># call super as described in the template</span>
@@ -328,12 +296,12 @@ the task's properties.</p>
     <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Now, to ensure consistency, we should verify that the <code>tip</code> and <code>root</code>
 properties are set to actual links in the provided model. Let's do this in
 <code>WDLSSolver</code>:</p>
 
-<pre class="highlight ruby"><code><span class="n">argument</span> <span class="ss">:robot</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">argument</span> <span class="ss">:robot</span>
 
 <span class="c1"># @api private</span>
 <span class="c1">#</span>
@@ -362,7 +330,7 @@ properties are set to actual links in the provided model. Let's do this in
   <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">as_root</span><span class="p">.</span><span class="nf">to_xml_string</span>
   <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <div class="panel panel-warning">
   <div class="panel-heading">
     <p><a class="btn btn-warning" role="button" data-toggle="collapse" href="#lib_helpers" aria-expanded="false" aria-controls="lib_helpers">
@@ -378,7 +346,7 @@ Corresponding tests are stored in <code>test/lib/</code>.</p>
 
     <p>In this case, one would create a <code>lib/syskit_basics/sdf_helpers.rb</code> file with a <code>SyskitBasics::SDFHelpers</code> module that contains</p>
 
-<pre class="highlight ruby"><code><span class="c1"># Validates that a link is part of the provided robot model</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Validates that a link is part of the provided robot model</span>
 <span class="c1">#</span>
 <span class="c1"># @param [SDF::Model] sdf_model the SDF model</span>
 <span class="c1"># @param [String] link_name the name of the link</span>
@@ -388,7 +356,7 @@ Corresponding tests are stored in <code>test/lib/</code>.</p>
     <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">"link name '</span><span class="si">#{</span><span class="n">link_name</span><span class="si">}</span><span class="s2">' is not a link of the robot model. Existing links: </span><span class="si">#{</span><span class="n">sdf_model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">).</span><span class="nf">sort</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
   </div>
 </div>
 
@@ -397,8 +365,8 @@ functionality</a>.  The <code>syskit gen orogen</code> call
 created a test template. Let's modify it to test the setup for <code>WDLSSolver</code>.
 The modifications for <code>SingleChainPublisher</code> will be left to the reader :P</p>
 
-<pre class="highlight ruby"><code><span class="n">describe</span> <span class="no">WDLSSolver</span> <span class="k">do</span>
-  <span class="kp">attr_reader</span> <span class="ss">:profile</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">describe</span> <span class="no">WDLSSolver</span> <span class="k">do</span>
+  <span class="nb">attr_reader</span> <span class="ss">:profile</span>
 
   <span class="n">before</span> <span class="k">do</span>
     <span class="c1"># Create a mock that has a robot model</span>
@@ -450,12 +418,12 @@ The modifications for <code>SingleChainPublisher</code> will be left to the read
       <span class="n">e</span><span class="p">.</span><span class="nf">message</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>And run the tests either <a href="constant_generator.html#run_test_command_line">on the command line</a> or <a href="constant_generator.html#run_test_ide">with the IDE</a>.</p>
 
 <p>The tests for <code>WDLSSolver</code> we just wrote should pass. However, we get an error for <code>AdaptiveWDLSSolver</code>:</p>
 
-<pre class="highlight plaintext"><code>  1) Error:
+<div class="highlight"><pre class="highlight plaintext"><code>  1) Error:
 OroGen::CartCtrlWdls::AdaptiveWDLSSolver#test_0001_anonymous:
 
 
@@ -473,12 +441,12 @@ OroGen::CartCtrlWdls::AdaptiveWDLSSolver:0x5e5bbb8
     /home/doudou/dev/vanilla/rock-website/tools/syskit/lib/syskit/test/task_context_test.rb:63:in `assert_is_configurable'
     /home/doudou/dev/vanilla/rock-website/tools/syskit/lib/syskit/test/task_context_test.rb:75:in `is_configurable'
     /home/doudou/dev/vanilla/rock-website/bundles/syskit_basics/test/orogen/test_cart_ctrl_wdls.rb:55:in `block (2 levels) in &lt;module:CartCtrlWdls&gt;'
-</code></pre>
+</code></pre></div>
 <p>With the <code>missing_arguments:</code> line <a href="constant_generator.html#missing_arguments">we've already seen</a>.</p>
 
 <p>Looking at <code>AdaptiveWDLSSolver</code>, we can see that it is subclassing <code>WDLSSolver</code>:</p>
 
-<p><img src="media/adaptive_wdlssolver_subclassed_from.png" alt="AdaptiveWDLSSolver subclassed from WDLSSolver" /></p>
+<p><img src="media/adaptive_wdlssolver_subclassed_from.png" alt="AdaptiveWDLSSolver subclassed from WDLSSolver" class="fullwidth" /></p>
 
 <p>This is reflected in the class hierarchy on the Syskit side, which means that
 <code>AdaptiveWDLSSolver</code> does inherit the <code>configure</code> method we just wrote. Given
@@ -501,18 +469,18 @@ definitions are exported as an action with a <code>_def</code> suffix.</p>
 
 <p id="main">Let's modify the <code>actions</code> block in <code>config/robots/gazebo.rb</code> to have:</p>
 
-<pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">actions</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">actions</span> <span class="k">do</span>
   <span class="n">use_profile</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Profiles</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">use_profile</span> <span class="no">SyskitBasics</span><span class="o">::</span><span class="no">Profiles</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">ArmControl</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p class="callout callout-info"><strong>Note</strong>: the profile is available in the actions block because <a href="#requires">we've required it in the requires block</a></p>
 
 <p>After modifying the config file, the IDE needs to be quit and started again. We
 can then look at the <code>Main</code> interface and see that it indeed has <code>_dev</code> actions for
 the devices in <code>Base</code>, and <code>_def</code> actions for the definitions in <code>ArmControl</code>.</p>
 
-<p><img src="media/main_action_with_arm_control_def.png" alt="The Main interface with the arm control definition" /></p>
+<p><img src="media/main_action_with_arm_control_def.png" alt="The Main interface with the arm control definition" class="fullwidth" /></p>
 
 <p>Let's now run it</p>
 
@@ -520,14 +488,14 @@ the devices in <code>Base</code>, and <code>_def</code> actions for the definiti
 
 <p>Start the simulation with</p>
 
-<pre class="highlight plaintext"><code>rock-gazebo empty_world
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>rock-gazebo empty_world
+</code></pre></div>
 <p>Once started, the simulation can stay running regardless of whether the Syskit
 app itself gets restarted. You can then start the app using the IDE, and
 send the command through the Syskit shell. The following video show you the process. Its goal
-is to give you a feeling for Syskit's runtime workflow. Detailed explanations will come later <a href="../syskit_runtime/index.html">in the runtime part of this documentation</a></p>
+is to give you a feeling for Syskit's runtime workflow. Detailed explanations will come later <a href="../syskit_runtime/">in the runtime part of this documentation</a></p>
 
-<div class="fluid-video">
+<div class="fluid-video" id="final_video">
 <iframe width="853" height="480" src="https://www.youtube.com/embed/wXYb7f_xNZo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
@@ -537,9 +505,16 @@ is to give you a feeling for Syskit's runtime workflow. Detailed explanations wi
         </div>
     </div>
 
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
 
         <footer class="container-fluid text-center">
-            <p>Rock in your own way!</p>
         </footer>
     </body>
 </html>

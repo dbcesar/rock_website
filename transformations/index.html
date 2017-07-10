@@ -12,44 +12,9 @@
         <link href="../stylesheets/site.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-          /* Remove the navbar's default margin-bottom and rounded borders */
-          .navbar {
-              margin-bottom: 0;
-              border-radius: 0;
-
-          }
-
-          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-          .row.content {height: 450px}
-
-          /* Set gray background color and 100% height */
-          .sidenav {
-              padding-top: 20px;
-              background-color: #f1f1f1;
-              height: 100%;
-          }
-
-          /* Set black background color, white text and some padding */
-          footer {
-              background-color: #000000;
-              color: white;
-              padding: 5px;
-          }
-
-          /* On small screens, set height to 'auto' for sidenav and grid */
-          @media screen and (max-width: 767px) {
-              .sidenav {
-                  height: auto;
-                  padding: 15px;
-              }
-              .row.content {height:auto;}
-          }
-        </style>
     </head>
 
     <body class="transformations transformations_index">
-
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -68,12 +33,15 @@
             </div>
         </div>
     </nav>
+
     <div class="container-fluid">
-        <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child '><a href="../syskit_basics/">Introduction</a></li><li class='child '><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child '><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child '><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child '><a href="../syskit_basics/devices.html">Devices</a></li><li class='child '><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child '><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Transformations</a></span><ul><li class='child active'><a href="./">Geometric Relations</a></li></ul></li></ul>
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Transformations</a></span><ul><li class='child active'><a href="./">Geometric Relations</a></li></ul></li></ul>
+                </nav>
             </div>
-            <div class="col-sm-7 text-left">
+            <div class="col-md-9" role="main">
                 <h1 id="geometric-relations">Geometric Relations</h1>
 
 <p>One of the most common tasks in a robotic systems is to represent the
@@ -152,17 +120,17 @@ therefore allow to set these frames.</p>
 properties <code>framename_frame</code>. For instance, for a GPS's UTM output one could
 pick:</p>
 
-<pre class="highlight ruby"><code><span class="c1"># The frame of the world, e.g. the UTM origin</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># The frame of the world, e.g. the UTM origin</span>
 <span class="n">property</span> <span class="s1">'utm_frame'</span><span class="p">,</span> <span class="s1">'/std/string'</span>
 <span class="c1"># The frame of the gps device</span>
 <span class="n">property</span> <span class="s1">'gps_frame'</span><span class="p">,</span> <span class="s1">'/std/string'</span>
-</code></pre>
+</code></pre></div>
 <p>which would then be written before writing the sample on the output (see <a href="#rbs">the
 note about RigidBodyState</a>)</p>
 
-<pre class="highlight cpp"><code><span class="n">gps_pose</span><span class="p">.</span><span class="n">sourceFrame</span> <span class="o">=</span> <span class="n">_gps_frame</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">gps_pose</span><span class="p">.</span><span class="n">sourceFrame</span> <span class="o">=</span> <span class="n">_gps_frame</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
 <span class="n">gps_pose</span><span class="p">.</span><span class="n">targetFrame</span> <span class="o">=</span> <span class="n">_utm_frame</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
-</code></pre>
+</code></pre></div>
 <h3 id="in-data-processing-components">In data processing components</h3>
 
 <p>A common role of frames and transforms in data processing components is to
@@ -174,22 +142,22 @@ needs to transform them into a common frame.</p>
 needs first to depend on the <code>drivers/orogen/transfomer</code> package by adding the
 following line to the package's <code>manifest.xml</code>.</p>
 
-<pre class="highlight xml"><code><span class="nt">&lt;depend</span> <span class="na">package=</span><span class="s">"drivers/orogen/transformer"</span> <span class="nt">/&gt;</span>
-</code></pre>
+<div class="highlight"><pre class="highlight xml"><code><span class="nt">&lt;depend</span> <span class="na">package=</span><span class="s">"drivers/orogen/transformer"</span> <span class="nt">/&gt;</span>
+</code></pre></div>
 <p>Then, one needs to wonder which transformations are required by the processing.
 Frame names that are appropriate <em>within the component's context</em> must be
 chosen, and declared in the oroGen's transformer block. Since a transformer is
 also a stream aligner, the block must also contain a <code>max_latency</code> declaration.</p>
 
-<pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
     <span class="n">needs_configuration</span>
-    <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-    <span class="nf">transformer</span> <span class="k">do</span>
+    <span class="o">...</span>
+    <span class="n">transformer</span> <span class="k">do</span>
         <span class="n">transform</span> <span class="s1">'from'</span><span class="p">,</span> <span class="s1">'to'</span>
-        <span class="n">max_latency</span> <span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+        <span class="n">max_latency</span> <span class="mf">0.1</span>
     <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>For instance, a visual servoing component that takes visual features as input
 and provides a command within the vehicle's body frame would have the need for
 the <code>features</code> to <code>command</code> transform. A common - but unfortunate - choice
@@ -197,24 +165,24 @@ would be to use <code>command</code> for the command reference frame, which (wro
 that the command reference will always be the body frame. It would be declared
 with</p>
 
-<pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
     <span class="n">needs_configuration</span>
-    <span class="p">.</span><span class="nf">.</span><span class="p">.</span>
-    <span class="nf">transformer</span> <span class="k">do</span>
+    <span class="o">...</span>
+    <span class="n">transformer</span> <span class="k">do</span>
         <span class="n">transform</span> <span class="s1">'features'</span><span class="p">,</span> <span class="s1">'command'</span>
-        <span class="n">max_latency</span> <span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+        <span class="n">max_latency</span> <span class="mf">0.1</span>
     <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Within the C++, the transform object is available through a generated
 <code>_features2command</code> object which can be queried through its <code>.get</code> method.</p>
 
-<pre class="highlight cpp"><code><span class="n">base</span><span class="o">::</span><span class="n">samples</span><span class="o">::</span><span class="n">RigidBodyState</span> <span class="n">rbs</span><span class="p">;</span>
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">base</span><span class="o">::</span><span class="n">samples</span><span class="o">::</span><span class="n">RigidBodyState</span> <span class="n">rbs</span><span class="p">;</span>
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_features2command</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rbs</span><span class="p">,</span> <span class="nb">true</span><span class="p">))</span>
     <span class="c1">// transform not available
 </span><span class="k">else</span>
     <span class="c1">// transform available
-</span></code></pre>
+</span></code></pre></div>
 <p>The first argument to <code>.get</code> controls what is the expected time of the queried
 transform. It is needed only if the transformer is expected to generate an
 <em>interpolated transform</em> by setting the third argument to <code>true</code>.</p>
@@ -235,18 +203,18 @@ called outside the stream alignment callbacks.</p>
 the component's input streams aligned with the transformations, which is done by
 adding the input streams to the transformer:</p>
 
-<pre class="highlight ruby"><code><span class="n">transformer</span> <span class="k">do</span>
-  <span class="n">align_port</span> <span class="s2">"detected_features"</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">transformer</span> <span class="k">do</span>
+  <span class="n">align_port</span> <span class="s2">"detected_features"</span><span class="p">,</span> <span class="mf">0.1</span>
   <span class="n">tranform</span> <span class="s2">"features"</span><span class="p">,</span> <span class="s2">"command"</span>
-  <span class="n">max_latency</span> <span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+  <span class="n">max_latency</span> <span class="mf">0.1</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Just as with the stream aligner, this generates callbacks for the declared input
 streams.  Within these callbacks, the transformation objects can be queried. The
 query time should be the stream aligner time (the first argument to the
 callback).</p>
 
-<pre class="highlight cpp"><code><span class="kt">void</span> <span class="n">Task</span><span class="o">::</span><span class="n">detected_featuresTransformerCallback</span><span class="p">(</span><span class="k">const</span> <span class="n">base</span><span class="o">::</span><span class="n">Time</span> <span class="o">&amp;</span><span class="n">ts</span><span class="p">,</span> <span class="k">const</span> <span class="o">::</span><span class="n">VisualFeatures</span><span class="o">&amp;</span> <span class="n">features</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre class="highlight cpp"><code><span class="kt">void</span> <span class="n">Task</span><span class="o">::</span><span class="n">detected_featuresTransformerCallback</span><span class="p">(</span><span class="k">const</span> <span class="n">base</span><span class="o">::</span><span class="n">Time</span> <span class="o">&amp;</span><span class="n">ts</span><span class="p">,</span> <span class="k">const</span> <span class="o">::</span><span class="n">VisualFeatures</span><span class="o">&amp;</span> <span class="n">features</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">base</span><span class="o">::</span><span class="n">samples</span><span class="o">::</span><span class="n">RigidBodyState</span> <span class="n">features2command</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_features2command</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">features2command</span><span class="p">,</span> <span class="nb">true</span><span class="p">))</span>
   <span class="p">{</span>
@@ -256,7 +224,7 @@ callback).</p>
 
   <span class="c1">// Do the processing
 </span><span class="p">}</span>
-</code></pre>
+</code></pre></div>
 <p class="alert alert-danger">It is somewhat tempting to use the transformer to manage all transformations
 within a system. <strong>Don't</strong>. The transformer is really meant to handle variations
 in the robotic system itself (placement of sensors and actuators). For
@@ -316,11 +284,11 @@ uwv_kalman_filters</code>, and then edit the generated
 <code>models/orogen/uwv_kalman_filters.rb</code>. Let's add a transformer block to this,
 in which we'll add the required information:</p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">OroGen</span><span class="o">::</span><span class="no">UwvKalmanFilters</span><span class="o">::</span><span class="no">VelocityProvider</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">OroGen</span><span class="o">::</span><span class="no">UwvKalmanFilters</span><span class="o">::</span><span class="no">VelocityProvider</span>
     <span class="n">transformer</span> <span class="k">do</span>
     <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Two types of annotations can be given:</p>
 
 <ul>
@@ -337,8 +305,8 @@ with <code>associate_ports_to_transform</code></li>
     <p><code>body_efforts</code> represents the efforts applied on the vehicle in the body
 frame. It is expressed in the body frame itself.</p>
 
-<pre class="highlight ruby"><code><span class="n">associate_ports_to_frame</span> <span class="s2">"body_efforts"</span><span class="p">,</span> <span class="s2">"body"</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">associate_ports_to_frame</span> <span class="s2">"body_efforts"</span><span class="p">,</span> <span class="s2">"body"</span>
+</code></pre></div>
     <p>After reloading, this new relation is represented by an edge between the port
 and the frame:</p>
 
@@ -349,8 +317,8 @@ and the frame:</p>
 the vehicle expressed in the sensor's frame. It is therefore a dvl-to-dvl
 transform:</p>
 
-<pre class="highlight ruby"><code><span class="n">associate_ports_to_transform</span> <span class="s2">"dvl_velocity_samples"</span><span class="p">,</span> <span class="s2">"dvl"</span> <span class="o">=&gt;</span> <span class="s2">"dvl"</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">associate_ports_to_transform</span> <span class="s2">"dvl_velocity_samples"</span><span class="p">,</span> <span class="s2">"dvl"</span> <span class="o">=&gt;</span> <span class="s2">"dvl"</span>
+</code></pre></div>
     <p>The port-to-transform relation is represented by an edge between the port and
 the white dot in the middle of the transform:</p>
 
@@ -359,20 +327,20 @@ the white dot in the middle of the transform:</p>
   <li>
     <p><code>imu_sensor_samples</code> is represented in the sensor's frame</p>
 
-<pre class="highlight ruby"><code><span class="n">associate_ports_to_frame</span> <span class="s2">"imu_sensor_samples"</span><span class="p">,</span> <span class="s2">"imu"</span>
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">associate_ports_to_frame</span> <span class="s2">"imu_sensor_samples"</span><span class="p">,</span> <span class="s2">"imu"</span>
+</code></pre></div>  </li>
   <li>
     <p><code>pressure_sensor_samples</code> represents the Z-only transform between the
 "surface" (an external frame) and the sensor. Since the surface is not part of
 the component's configuration, we can add a new frame to represent it.</p>
 
-<pre class="highlight ruby"><code><span class="n">associate_ports_to_transform</span> <span class="s2">"pressure_samples"</span><span class="p">,</span> <span class="s2">"pressure_sensor"</span> <span class="o">=&gt;</span> <span class="s2">"surface"</span>
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">associate_ports_to_transform</span> <span class="s2">"pressure_samples"</span><span class="p">,</span> <span class="s2">"pressure_sensor"</span> <span class="o">=&gt;</span> <span class="s2">"surface"</span>
+</code></pre></div>  </li>
   <li>
     <p>Finally, the component generates the velocity of the body w.r.t. itself</p>
 
-<pre class="highlight ruby"><code><span class="n">associate_ports_to_transform</span> <span class="s1">'velocity_samples'</span><span class="p">,</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'body'</span>
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">associate_ports_to_transform</span> <span class="s1">'velocity_samples'</span><span class="p">,</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'body'</span>
+</code></pre></div>  </li>
 </ul>
 
 <p>The final model looks like this:</p>
@@ -394,29 +362,29 @@ declared within the Syskit extension file as well.</p>
 
 <p>For instance, a hypothetical image preprocessing component would have</p>
 
-<pre class="highlight ruby"><code><span class="n">transformer</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">transformer</span> <span class="k">do</span>
   <span class="n">associate_ports_to_frame</span> <span class="s1">'image_in'</span><span class="p">,</span> <span class="s1">'image_out'</span><span class="p">,</span>
     <span class="s1">'image'</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>In the special case of the <code>RigidBodyState</code>-generating data sources, one needs
 to declare the frames so that they match the <code>framename_frame</code> properties, thus
 allowing Syskit to properly configure the component once the frames have been
 computed. A GPS component that has</p>
 
-<pre class="highlight ruby"><code><span class="c1"># The frame of the world, e.g. the UTM origin</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># The frame of the world, e.g. the UTM origin</span>
 <span class="n">property</span> <span class="s1">'utm_frame'</span><span class="p">,</span> <span class="s1">'/std/string'</span>
 <span class="c1"># The frame of the gps device</span>
 <span class="n">property</span> <span class="s1">'gps_frame'</span><span class="p">,</span> <span class="s1">'/std/string'</span>
 <span class="c1"># The GPS output position</span>
 <span class="n">output_port</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
-</code></pre>
+</code></pre></div>
 <p>would be annotated with</p>
 
-<pre class="highlight ruby"><code><span class="n">transformer</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">transformer</span> <span class="k">do</span>
   <span class="n">associate_ports_to_transform</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'gps'</span> <span class="o">=&gt;</span> <span class="s1">'utm'</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <h3 id="annotating-devices">Annotating Devices</h3>
 
 <p>Devices are the main "anchor" for frames within a component network. Indeed
@@ -426,15 +394,15 @@ is in practice defined by the placement of the device on the robot.</p>
 <p>Devices that provide a data stream that is not itself a transformation are
 attached to a frame with the <code>.frame</code> declaration</p>
 
-<pre class="highlight ruby"><code><span class="n">device</span><span class="p">(</span><span class="no">Rock</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Camera</span><span class="o">::</span><span class="no">Firewire</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'left_camera'</span><span class="p">).</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">device</span><span class="p">(</span><span class="no">Rock</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Camera</span><span class="o">::</span><span class="no">Firewire</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'left_camera'</span><span class="p">).</span>
   <span class="nf">frame</span><span class="p">(</span><span class="s1">'robot::camera_left'</span><span class="p">)</span>
-</code></pre>
+</code></pre></div>
 <p>Devices that actually provide a transformation get it with the
 <code>.frame_transform</code> declaration.</p>
 
-<pre class="highlight ruby"><code><span class="n">device</span><span class="p">(</span><span class="no">Rock</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">GPS</span><span class="o">::</span><span class="no">Generic</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'gps'</span><span class="p">).</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">device</span><span class="p">(</span><span class="no">Rock</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">GPS</span><span class="o">::</span><span class="no">Generic</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'gps'</span><span class="p">).</span>
   <span class="nf">frame_transform</span><span class="p">(</span><span class="s1">'robot::gps'</span> <span class="o">=&gt;</span> <span class="s1">'nwu'</span><span class="p">)</span>
-</code></pre>
+</code></pre></div>
 <p>Once the device is attached to a driver, the frame assignment is propagated to
 this driver's own frame definitions - assuming that the device driver has the
 right <code>associate_frame_to...</code> annotations. In the case of the GPS, it would end
@@ -464,8 +432,8 @@ overall system configuration. These frames must be set explicitly in the
 profiles. When this happens, one gets the following message while running the
 tests:</p>
 
-<pre class="highlight plaintext"><code>could not find a frame for body in OroGen::UwvKalmanFilters::VelocityProvider
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>could not find a frame for body in OroGen::UwvKalmanFilters::VelocityProvider
+</code></pre></div>
 <p>This can be inspected in e.g. the profile page in the Syskit IDE (see the red
 'body' frame in the VelocityProvider component)</p>
 
@@ -475,9 +443,9 @@ tests:</p>
 <code>.use_frames</code> statement. Frame selection is recursive (a frame selected in a
 composition applies to its children).</p>
 
-<pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'velocity_provider_filter'</span><span class="p">,</span> <span class="no">Compositions</span><span class="o">::</span><span class="no">VelocityEstimation</span><span class="p">.</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'velocity_provider_filter'</span><span class="p">,</span> <span class="no">Compositions</span><span class="o">::</span><span class="no">VelocityEstimation</span><span class="p">.</span>
   <span class="nf">use_frames</span><span class="p">(</span><span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'auv'</span><span class="p">)</span>
-</code></pre>
+</code></pre></div>
 <p>Where 'body' is the component-local name and 'auv' the actual global frame name.</p>
 
 <h3 id="frame-related-errors">Frame-related errors</h3>
@@ -503,11 +471,11 @@ Otherwise, set it explicitly <a href="#use_frames_in_profiles">in the profile</a
 happens during a composition or task context test, one needs to explicitely
 provide dummy frames in the stub calls:</p>
 
-<pre class="highlight ruby"><code><span class="n">model</span> <span class="o">=</span> <span class="no">OrientationEstimator</span><span class="p">.</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">model</span> <span class="o">=</span> <span class="no">OrientationEstimator</span><span class="p">.</span>
     <span class="nf">use_frames</span><span class="p">(</span><span class="s1">'map'</span> <span class="o">=&gt;</span> <span class="s1">'w'</span><span class="p">,</span> <span class="s1">'world'</span> <span class="o">=&gt;</span> <span class="s1">'w'</span><span class="p">,</span> <span class="s1">'imu'</span> <span class="o">=&gt;</span> <span class="s1">'body'</span><span class="p">,</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="s1">'body'</span><span class="p">).</span>
     <span class="nf">transformer</span> <span class="p">{</span> <span class="n">frames</span> <span class="s1">'w'</span><span class="p">,</span> <span class="s1">'body'</span> <span class="p">}</span>
 <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-</code></pre>
+</code></pre></div>
 </div>
 
 <div class="alert alert-info">
@@ -558,10 +526,10 @@ found automatically by Syskit.</p>
 <p>Then, a <code>use_gazebo_model</code> stanza can be added in a profile to import the SDF
 information into the transformer:</p>
 
-<pre class="highlight ruby"><code><span class="n">profile</span> <span class="s2">"Base"</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s2">"Base"</span> <span class="k">do</span>
   <span class="n">use_gazebo_model</span> <span class="s2">"model://shiny"</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>The vehicle's base model frame and all the vehicle's links are represented as
 frames in the transformer. All links that are joined by a static joint (either
 a "static" joint or a dynamic joint with same min/max limits) are related by a
@@ -578,7 +546,7 @@ component and add it to the network.</p>
 <p>These components are declared as dynamic producers in the profile's
 <code>transformer</code> block</p>
 
-<pre class="highlight ruby"><code><span class="n">profile</span> <span class="s2">"Base"</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s2">"Base"</span> <span class="k">do</span>
   <span class="n">use_gazebo_model</span> <span class="s1">'model://shiny'</span>
 
   <span class="n">robot</span> <span class="k">do</span>
@@ -590,24 +558,24 @@ component and add it to the network.</p>
       <span class="s1">'shiny::ptu_base'</span> <span class="o">=&gt;</span> <span class="s1">'shiny::ptu_moving'</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>In addition to loading a vehicle model, it is possible to load a SDF world file
 to describe both apriori knowledge about the world, and "utility" frames within
 the world (such as e.g. a GPS local origin). This is done with the
 <code>use_sdf_world</code> stanza in the profile.</p>
 
-<pre class="highlight ruby"><code><span class="n">profile</span> <span class="s2">"Base"</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s2">"Base"</span> <span class="k">do</span>
   <span class="n">use_gazebo_model</span> <span class="s1">'model://shiny'</span>
   <span class="n">use_sdf_world</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>The corresponding world must be loaded within the <code>requires</code> block of the robot
 configuration file:</p>
 
-<pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_sdf_world</span> <span class="s1">'empty_world'</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>the actual world can be overriden</p>
 
 <h2 id="caveats">Caveats</h2>
@@ -658,9 +626,16 @@ that some propagation annotations are missing</li>
         </div>
     </div>
 
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
 
         <footer class="container-fluid text-center">
-            <p>Rock in your own way!</p>
         </footer>
     </body>
 </html>

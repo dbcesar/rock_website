@@ -12,44 +12,9 @@
         <link href="../stylesheets/site.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-          /* Remove the navbar's default margin-bottom and rounded borders */
-          .navbar {
-              margin-bottom: 0;
-              border-radius: 0;
-
-          }
-
-          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-          .row.content {height: 450px}
-
-          /* Set gray background color and 100% height */
-          .sidenav {
-              padding-top: 20px;
-              background-color: #f1f1f1;
-              height: 100%;
-          }
-
-          /* Set black background color, white text and some padding */
-          footer {
-              background-color: #000000;
-              color: white;
-              padding: 5px;
-          }
-
-          /* On small screens, set height to 'auto' for sidenav and grid */
-          @media screen and (max-width: 767px) {
-              .sidenav {
-                  height: auto;
-                  padding: 15px;
-              }
-              .row.content {height:auto;}
-          }
-        </style>
     </head>
 
     <body class="syskit_basics syskit_basics_recap">
-
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -68,12 +33,15 @@
             </div>
         </div>
     </nav>
+
     <div class="container-fluid">
-        <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child active'><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child active'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child'><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                </nav>
             </div>
-            <div class="col-sm-7 text-left">
+            <div class="col-md-9" role="main">
                 <h1 id="recap">Recap</h1>
 
 <p>Let's recap what we've seen in this Basics section.</p>
@@ -136,31 +104,31 @@ more complex functional units, by binding the components together.</p>
   <li>
     <p>a composition template is created using</p>
 
-<pre class="highlight plaintext"><code>syskit gen NameOfComposition
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen NameOfComposition
+</code></pre></div>  </li>
   <li>
     <p>an element within a composition is declared with <code>add</code>, a component model
 (which can be another composition) and a name:</p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">MyComposition</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">MyComposition</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
   <span class="n">add</span> <span class="no">AnotherComponentModel</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'generator'</span>
 <span class="k">end</span>
-</code></pre>  </li>
+</code></pre></div>  </li>
   <li>
     <p>within the composition model, a composition child is accessed using the
 child's name and the <code>_child</code> suffix. Ports are accessed with the port name and
 the <code>_port</code> suffix. This is how connections are made:</p>
 
-<pre class="highlight ruby"><code><span class="n">source_child</span><span class="p">.</span><span class="nf">out_port</span><span class="p">.</span><span class="nf">connect_to</span> <span class="n">sink_child</span><span class="p">.</span><span class="nf">in_port</span>
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">source_child</span><span class="p">.</span><span class="nf">out_port</span><span class="p">.</span><span class="nf">connect_to</span> <span class="n">sink_child</span><span class="p">.</span><span class="nf">in_port</span>
+</code></pre></div>  </li>
   <li>
     <p>a composition can have ports, which are exports of its children ports. This works
 for both input and output ports. The exported port name is the same as the child's
 port name, but this can be overriden</p>
 
-<pre class="highlight ruby"><code><span class="n">export</span> <span class="n">source_child</span><span class="p">.</span><span class="nf">out_port</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">export</span> <span class="n">source_child</span><span class="p">.</span><span class="nf">out_port</span>
 <span class="n">export</span> <span class="n">another_source_child</span><span class="p">.</span><span class="nf">out_port</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'another'</span>
-</code></pre>  </li>
+</code></pre></div>  </li>
 </ul>
 
 <h3 id="orogen">oroGen components</h3>
@@ -168,18 +136,18 @@ port name, but this can be overriden</p>
 <p>oroGen is Rock's way to package C++ functionality into ready-to-use components with
 a standardized interface. These components are imported in Syskit's with</p>
 
-<pre class="highlight ruby"><code><span class="n">using_task_library</span> <span class="s2">"name_of_orogen_project"</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">using_task_library</span> <span class="s2">"name_of_orogen_project"</span>
+</code></pre></div>
 <p>The other role of oroGen is to define types whose instances can be transferred
 between components. If one only wants to use a type defined by an oroGen
 project, but without using the associated components, one does</p>
 
-<pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s2">"name_of_orogen_project"</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s2">"name_of_orogen_project"</span>
+</code></pre></div>
 <p>The corresponding types are accessible under the <code>Types</code> object, e.g.</p>
 
-<pre class="highlight ruby"><code><span class="no">Types</span><span class="p">.</span><span class="nf">base</span><span class="p">.</span><span class="nf">samples</span><span class="o">.</span><span class="no">RigidBodyState</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Types</span><span class="p">.</span><span class="nf">base</span><span class="p">.</span><span class="nf">samples</span><span class="o">.</span><span class="no">RigidBodyState</span>
+</code></pre></div>
 <p>On import, Syskit builds a component model that represents the oroGen
 component. This model is accessible <a href="composition.html#orogen">within the <code>OroGen</code>
 namespace</a>. It can also be extended to reflect needs
@@ -227,8 +195,8 @@ dots !</p>
   <li>
     <p>arguments are set with <code>with_arguments</code></p>
 
-<pre class="highlight ruby"><code><span class="no">CompositionModel</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">arg_name: </span><span class="n">arg_value</span><span class="p">)</span>
-</code></pre>  </li>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">CompositionModel</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">arg_name: </span><span class="n">arg_value</span><span class="p">)</span>
+</code></pre></div>  </li>
   <li><code>CompositionModel.use('child_name' =&gt; model)</code> replaces <code>CompositionModel</code>'s
 <code>child_name</code> child with the given model. <code>model</code> can itself be refined by <code>use</code>
 and <code>with_arguments</code>.</li>
@@ -238,10 +206,10 @@ child whose model is compatible with <code>model</code> by <code>model</code>.</
     <p>a definition or device can itself be used as <code>model</code> or <code>CompositionModel</code> in
 all these calls, possibly from another profile:</p>
 
-<pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'first'</span><span class="p">,</span> <span class="no">CompositionModel</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="n">first_test_dev</span><span class="p">)</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'first'</span><span class="p">,</span> <span class="no">CompositionModel</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="n">first_test_dev</span><span class="p">)</span>
 <span class="n">define</span> <span class="s1">'second'</span><span class="p">,</span> <span class="n">first_dev</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="no">AnotherProfile</span><span class="p">.</span><span class="nf">second_test_dev</span><span class="p">)</span>
 <span class="n">define</span> <span class="s1">'third'</span><span class="p">,</span> <span class="no">AnotherProfile</span><span class="p">.</span><span class="nf">first_dev</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="n">second_test_dev</span><span class="p">)</span>
-</code></pre>  </li>
+</code></pre></div>  </li>
 </ul>
 
 <h3 id="configuration">Configuration</h3>
@@ -265,20 +233,20 @@ but there are some guidelines.</p>
 
 <p>Arguments can be forwarded from a composition to its children using the following pattern:</p>
 
-<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">C</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">C</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
   <span class="n">argument</span> <span class="ss">:robot</span>
   <span class="n">add</span><span class="p">(</span><span class="no">ChildModel</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'generator'</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">robot</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <h3 id="deployments-actions">Deployments, Actions</h3>
 
 <p>Before they are used, components need to be deployed, that is associated with a
 process and a name. This is done in the <code>requires</code> block of the robot
 configuration file with</p>
 
-<pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="no">ComponentModel</span> <span class="o">=&gt;</span> <span class="s1">'component_name'</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="no">ComponentModel</span> <span class="o">=&gt;</span> <span class="s1">'component_name'</span>
+</code></pre></div>
 <p>Actions are the basic block of interaction between a Syskit app and the outside
 world.  Moreover, the Main action interface, defined by the <code>actions</code> block in
 the robot configuration file is the interface that is being exposed through the
@@ -288,15 +256,22 @@ standard channels (IDE, shell).</p>
 
 <h3 id="runtime">Runtime</h3>
 
-<p>We've only had a glimpse on the Syskit runtime workflow. <a href="../syskit_runtime/index.html" class="btn btn-primary">Let's dig deeper</a></p>
+<p>We've only had a glimpse on the Syskit runtime workflow. <a href="../syskit_runtime/" class="btn btn-primary">Let's dig deeper</a></p>
 
             </div>
         </div>
     </div>
 
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
 
         <footer class="container-fluid text-center">
-            <p>Rock in your own way!</p>
         </footer>
     </body>
 </html>

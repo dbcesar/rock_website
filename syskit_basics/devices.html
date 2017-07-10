@@ -12,44 +12,9 @@
         <link href="../stylesheets/site.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-          /* Remove the navbar's default margin-bottom and rounded borders */
-          .navbar {
-              margin-bottom: 0;
-              border-radius: 0;
-
-          }
-
-          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-          .row.content {height: 450px}
-
-          /* Set gray background color and 100% height */
-          .sidenav {
-              padding-top: 20px;
-              background-color: #f1f1f1;
-              height: 100%;
-          }
-
-          /* Set black background color, white text and some padding */
-          footer {
-              background-color: #000000;
-              color: white;
-              padding: 5px;
-          }
-
-          /* On small screens, set height to 'auto' for sidenav and grid */
-          @media screen and (max-width: 767px) {
-              .sidenav {
-                  height: auto;
-                  padding: 15px;
-              }
-              .row.content {height:auto;}
-          }
-        </style>
     </head>
 
     <body class="syskit_basics syskit_basics_devices">
-
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -68,12 +33,15 @@
             </div>
         </div>
     </nav>
+
     <div class="container-fluid">
-        <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child '><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child active'><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child active'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child'><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                </nav>
             </div>
-            <div class="col-sm-7 text-left">
+            <div class="col-md-9" role="main">
                 <h1 id="devices">Devices</h1>
 
 <p>So far, we have a control composition. But as we noticed when we created <a href="composition.html">the
@@ -112,12 +80,12 @@ compositions. It's also where the robot definition happens.</p>
 <p>As a matter of convention, one usually creates a per-robot <code>Base</code> profile that
 contains the robot definition.  Let's do that now.</p>
 
-<pre class="highlight plaintext"><code>$ syskit gen profile -rgazebo base
+<div class="highlight"><pre class="highlight plaintext"><code>$ syskit gen profile -rgazebo base
       create  models/profiles/gazebo
       create  models/profiles/gazebo/base.rb
       create  test/profiles/gazebo
       create  test/profiles/gazebo/test_base.rb
-</code></pre>
+</code></pre></div>
 <p class="callout callout-warning">Note how the addition of <code>-rgazebo</code> to the command line ensured that the model
 is generated within the <code>gazebo/</code> subdirectory of the <code>profiles/</code> folder and
 within the <code>Gazebo</code> namespace of <code>Profiles</code>. This is a general convention (e.g.
@@ -128,7 +96,7 @@ within the <code>Compositions::Gazebo</code> namespace.</p>
 the mapping from the simulation model to devices is done automatically from the
 robot model. One only has to declare the robot model in the <code>Base</code> profile:</p>
 
-<pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
   <span class="k">module</span> <span class="nn">Profiles</span>
     <span class="k">module</span> <span class="nn">Gazebo</span>
       <span class="n">profile</span> <span class="s1">'Base'</span> <span class="k">do</span>
@@ -138,16 +106,16 @@ robot model. One only has to declare the robot model in the <code>Base</code> pr
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>And have a look at the generated devices with <code>syskit ide -rgazebo models/profiles/gazebo/base.rb</code>:</p>
 
-<p><img src="media/devices.png" alt="Devices from the UR10 model" /></p>
+<p><img src="media/devices.png" alt="Devices from the UR10 model" class="fullwidth" /></p>
 
 <p>One can see that there is one device definition per link in the model, and one
 for the model itself. Let's click on the model and have a look at the dataflow.
 Enable both "Show all ports" and "Show task info" to get port information .</p>
 
-<p><img src="media/device_dataflow.png" alt="ModelTask interface" /></p>
+<p><img src="media/device_dataflow.png" alt="ModelTask interface" class="fullwidth" /></p>
 
 <h2 id="profile_define">Injecting the device into the arm control network</h2>
 
@@ -155,8 +123,8 @@ Enable both "Show all ports" and "Show task info" to get port information .</p>
 for really low-level stuff like devices. Let's create an <code>ArmControl</code> profile to
 integrate the arm control stuff.</p>
 
-<pre class="highlight plaintext"><code>syskit gen profile -rgazebo ArmControl
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen profile -rgazebo ArmControl
+</code></pre></div>
 <p>We need to require the <code>Base</code> profile and <code>ArmCartesianControlWdls</code> composition
 definition.  Then, <code>define</code> the cartesian and joint position controls <em>for our
 UR10 robot in gazebo</em> by injecting the UR10 device as the 'arm' child of the
@@ -167,7 +135,7 @@ chain</a>. In Ruby, one can
 easily break the chain with a newline after each method call. Don't forget the
 dots !</p>
 
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_control_wdls'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/joint_position_constant_control'</span>
 
@@ -188,16 +156,16 @@ dots !</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>As we mentioned <a href="constant_generator.html#joint_position_constant_generator">when we defined it</a>,
 the joint position constant control has been defined with the goal of providing a sane default
 position. Let's make sure this is available easily by creating a definition with a default
 setpoint. This will reuse the <code>arm_joint_position_constant_control</code> definition, which is accessed
 with the <code>_def</code> suffix. Usable joint positions can be found using the <code>rock-transformer</code> tool:</p>
 
-<pre class="highlight plaintext"><code>$ rock-transformer models/sdf/ur10_fixed/model.sdf
-</code></pre>
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
+<div class="highlight"><pre class="highlight plaintext"><code>$ rock-transformer models/sdf/ur10_fixed/model.sdf
+</code></pre></div>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_control_wdls'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/joint_position_constant_control'</span>
 
@@ -226,7 +194,7 @@ with the <code>_def</code> suffix. Usable joint positions can be found using the
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p class="callout callout-info">A device model is accessed using the device's name with a <code>_dev</code> suffix on the
 profile it is defined. Here <code>Base.ur10_fixed_dev</code> is the <code>ur10_fixed</code> device
 defined on the robot definition in <code>Base</code>.</p>
@@ -237,7 +205,7 @@ using the IDE</p>
 
 <p>Let's have a look at the final definition.</p>
 
-<p><img src="media/injected_arm_control_network.png" alt="Final injected arm control network" /></p>
+<p><img src="media/injected_arm_control_network.png" alt="Final injected arm control network" class="fullwidth" /></p>
 
 <p>We're almost there, just need now to map the components to actual processes, <a href="deployment.html" class="btn btn-primary">a.k.a. deploy the network</a></p>
 
@@ -245,9 +213,16 @@ using the IDE</p>
         </div>
     </div>
 
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
 
         <footer class="container-fluid text-center">
-            <p>Rock in your own way!</p>
         </footer>
     </body>
 </html>

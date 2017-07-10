@@ -12,44 +12,9 @@
         <link href="../stylesheets/site.css" rel="stylesheet" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-          /* Remove the navbar's default margin-bottom and rounded borders */
-          .navbar {
-              margin-bottom: 0;
-              border-radius: 0;
-
-          }
-
-          /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-          .row.content {height: 450px}
-
-          /* Set gray background color and 100% height */
-          .sidenav {
-              padding-top: 20px;
-              background-color: #f1f1f1;
-              height: 100%;
-          }
-
-          /* Set black background color, white text and some padding */
-          footer {
-              background-color: #000000;
-              color: white;
-              padding: 5px;
-          }
-
-          /* On small screens, set height to 'auto' for sidenav and grid */
-          @media screen and (max-width: 767px) {
-              .sidenav {
-                  height: auto;
-                  padding: 15px;
-              }
-              .row.content {height:auto;}
-          }
-        </style>
     </head>
 
     <body class="syskit_basics syskit_basics_getting_started">
-
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -68,12 +33,15 @@
             </div>
         </div>
     </nav>
+
     <div class="container-fluid">
-        <div class="row content">
-            <div class="col-sm-3 sidenav">
-                <ul><li class='child '><a href="../">Building robots with Rock and Syskit</a></li><li class='parent '><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child '><a href="../workspace/">Introduction</a></li><li class='child '><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent '><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child '><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child '><a href="composition.html">Compositions</a></li><li class='child '><a href="constant_generator.html">Constant Generator</a></li><li class='child '><a href="devices.html">Devices</a></li><li class='child '><a href="deployment.html">Deployment</a></li><li class='child '><a href="recap.html">Recap</a></li></ul></li><li class='parent '><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child '><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../transformations/">Transformations</a></span><ul><li class='child'><a href="../transformations/">Geometric Relations</a></li></ul></li></ul>
+                </nav>
             </div>
-            <div class="col-sm-7 text-left">
+            <div class="col-md-9" role="main">
                 <h1 id="getting-started">Getting Started</h1>
 
 <p>We'll be getting right into the meat of things by creating a system's
@@ -94,34 +62,34 @@ installation's <code>env.sh</code> file has been sourced.</p>
 
 <p>Let's create a new bundle. In your Rock's workspace do</p>
 
-<pre class="highlight plaintext"><code>acd
+<div class="highlight"><pre class="highlight plaintext"><code>acd
 cd bundles
 roby init syskit_basics
 cd syskit_basics
-</code></pre>
+</code></pre></div>
 <p>This creates a Roby application, Roby being the underlying application framework
 and execution engine that Syskit is based on. To be able to use Syskit in this new
 application, we must explicitly load it in <code>config/init.rb</code> by adding</p>
 
-<pre class="highlight ruby"><code><span class="no">Roby</span><span class="p">.</span><span class="nf">app</span><span class="p">.</span><span class="nf">using</span> <span class="s1">'syskit'</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Roby</span><span class="p">.</span><span class="nf">app</span><span class="p">.</span><span class="nf">using</span> <span class="s1">'syskit'</span>
+</code></pre></div>
 <p>We can now verify that the generated application at loads with</p>
 
-<pre class="highlight plaintext"><code>$ syskit run
+<div class="highlight"><pre class="highlight plaintext"><code>$ syskit run
 Bundles[INFO]: Active bundles: syskit_basics
 default[INFO]: logs are in /home/doudou/dev/logs_area/syskit_basics/20170609-1609
 default[INFO]: loaded Roby on ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-linux]
 default[INFO]: done initialization
 default[INFO]: ready
-</code></pre>
+</code></pre></div>
 <p>Either hit CTRL+C, or run <code>syskit quit</code> in another terminal, to make it exit.</p>
 
-<pre class="highlight plaintext"><code>$ syskit quit
+<div class="highlight"><pre class="highlight plaintext"><code>$ syskit quit
 Bundles[INFO]: Active bundles: syskit_basics
 default[INFO]: connected
 default[INFO]: waiting for remote app to terminate
 default[INFO]: closed communication
-</code></pre>
+</code></pre></div>
 <h2 id="robot-and-scene-description-using-sdf">Robot and Scene description using SDF</h2>
 
 <p>The <a href="http://sdformat.org">Scene Description Format</a> is a XML format defined by the
@@ -147,17 +115,17 @@ its base is fixed (using <a href="http://answers.gazebosim.org/question/5065/how
 method</a>) Models are saved in <code>models/sdf/</code>, let's create
 <code>models/sdf/ur10_fixed</code> and create a Gazebo model description file <code>models/sdf/ur10_fixed/model.config</code> with</p>
 
-<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
 
 <span class="nt">&lt;model&gt;</span>
   <span class="nt">&lt;name&gt;</span>Universal Robotics UR10 robot arm on a fixed base<span class="nt">&lt;/name&gt;</span>
   <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;sdf&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
 <span class="nt">&lt;/model&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>and the corresponding SDF model in <code>models/sdf/ur10_fixed/model.sdf</code></p>
 
-<pre class="highlight xml"><code><span class="cp">&lt;?xml version='1.0'?&gt;</span>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version='1.0'?&gt;</span>
 <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">'1.5'</span><span class="nt">&gt;</span>
     <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">"ur10_fixed"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;include&gt;</span>
@@ -170,7 +138,7 @@ method</a>) Models are saved in <code>models/sdf/</code>, let's create
         <span class="nt">&lt;/joint&gt;</span>
     <span class="nt">&lt;/model&gt;</span>
 <span class="nt">&lt;/sdf&gt;</span>
-</code></pre>
+</code></pre></div>
 <p>Usually, the first scene one creates is an empty one, which later will give us
 an environment in which to test basic functionality, without having to care
 about collisions.</p>
@@ -178,7 +146,7 @@ about collisions.</p>
 <p>In the bundles, scenes are saved in <code>scenes/SCENE_NAME/SCENE_NAME.world</code>, e.g.
 <code>scenes/empty_world/empty_world.world</code>:</p>
 
-<pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
 <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">"1.6"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">"empty_world"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;include&gt;</span>
@@ -189,7 +157,7 @@ about collisions.</p>
     <span class="nt">&lt;/include&gt;</span>
   <span class="nt">&lt;/world&gt;</span>
 <span class="nt">&lt;/sdf&gt;</span>
-</code></pre>
+</code></pre></div>
 <p class="callout callout-warning"><strong>Note</strong> the rock-gazebo integration does not know yet how to download models
 from Gazebo's model repository. Run <code>rock-gazebo --gui=gzclient empty_world</code> once first to
 make sure the models are downloaded. Wait for the scene to show up (Gazebo's
@@ -204,11 +172,11 @@ world as well, instead of using Gazebo's client.</p>
 
 <p>The <code>rock-gazebo</code> tool starts a Vizkit3D visualization for the Gazebo scene.</p>
 
-<pre class="highlight plaintext"><code>rock-gazebo empty_world
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>rock-gazebo empty_world
+</code></pre></div>
 <p>Starts both a Gazebo simulation and displays it:</p>
 
-<p><img src="media/initial_rock_gazebo_viz.jpg" alt="Visualization of the simulation state with rock-gazebo-viz" /></p>
+<p><img src="media/initial_rock_gazebo_viz.jpg" alt="Visualization of the simulation state with rock-gazebo-viz" class="fullwidth" /></p>
 
 <h2 id="syskit_gazebo_configuration">Preparing the <code>gazebo</code> Syskit configuration</h2>
 
@@ -219,16 +187,16 @@ the simulation (<code>gazebo</code>) and one for the live system (<code>live</co
 
 <p>Let's create the <code>gazebo</code> configuration:</p>
 
-<pre class="highlight plaintext"><code>$ syskit gen robot gazebo
+<div class="highlight"><pre class="highlight plaintext"><code>$ syskit gen robot gazebo
 Bundles[INFO]: Active bundles: syskit_basics
       exists  config/robots
       create  config/robots/gazebo.rb
-</code></pre>
-<p>In order to setup Syskit to use the Gazebo instance, we first have to require
+</code></pre></div>
+<p id="initial_setup">In order to setup Syskit to use the Gazebo instance, we first have to require
 integration code and then load the environment. This is done by modifying the
 newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p>
 
-<pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">init</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Robot</span><span class="p">.</span><span class="nf">init</span> <span class="k">do</span>
   <span class="c1">## You can load plugins here</span>
   <span class="c1"># Roby.app.using 'fault_injection'</span>
   <span class="c1"># Roby.app.using 'syskit'</span>
@@ -248,7 +216,7 @@ newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p
 <span class="no">Robot</span><span class="p">.</span><span class="nf">requires</span> <span class="k">do</span>
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_gazebo_world</span><span class="p">(</span><span class="s1">'empty_world'</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Now that we have a minimal scene and a working Gazebo installation, <a href="composition.html" class="btn btn-primary">let's do
 something with it</a></p>
 
@@ -274,7 +242,7 @@ addition of the system plugin.</p>
 
     <p>The task contexts in our scene can be visualized with rock-display:</p>
 
-    <p><img src="media/rock_gazebo_task_contexts.jpg" alt="Components exported by a Gazebo instance under Rock" /></p>
+    <p><img src="media/rock_gazebo_task_contexts.jpg" alt="Components exported by a Gazebo instance under Rock" class="fullwidth" /></p>
 
     <p><code>rock-gazebo-viz</code> sets up the visualization to match the data in the SDF file and
 then listen to pose updates from the <code>rock_gazebo::ModelTask</code> components exposed by the
@@ -288,9 +256,16 @@ Gazebo process. Given that this data is only output if the components are runnin
         </div>
     </div>
 
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
 
         <footer class="container-fluid text-center">
-            <p>Rock in your own way!</p>
         </footer>
     </body>
 </html>
