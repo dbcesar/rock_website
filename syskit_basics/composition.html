@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Overview of Runtime Aspects</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="../syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
@@ -57,16 +57,24 @@ form a function, and then can request the system to actually run that function.<
 page</a> will create the command generator, and we
 will then <a href="deployment.html"><em>deploy</em> the network</a> and run it.</p>
 
-<p>But let's not get too ahead of ourselves, and install the control package that
-will implement the control.</p>
+<p>But let's not get too much ahead of ourselves. We will need to first install
+the control package that will implement the control.</p>
 
 <h2 id="add_package">Installing the necessary packages</h2>
 
-<p>Packages in Rock are defined within <em>package sets</em>. These package sets define
-both how to build the package and where it should be downloaded from. The
-default installation imports at least the <code>rock.core</code> and the
-<code>rock</code> package sets (see the <code>package_sets</code> section in <code>autoproj/manifest</code>). The
-latter is the one where the control packages are defined.</p>
+<p>Packages in Rock as maintained within the overall Rock workspace. Package
+related configuration is contained within the <code>autoproj/</code> folder within the
+workspace's root directory (where you <a href="../workspace/">originally
+bootstrapped</a>). When working in a terminal, you can go
+at any time to the workspace's root directory by running <code>acd</code> without
+arguments (<a href="../workspace/day_to_day.html#acd">more about <code>acd</code></a>).</p>
+
+<p>Within the <code>autoproj/</code> directory, packages are defined within <em>package sets</em>.
+These package sets define both how to build the package and where it should be
+downloaded from. The default installation imports at least the <code>rock.core</code> and
+the <code>rock</code> package sets (see the <code>package_sets</code> section in
+<code>autoproj/manifest</code>). The <code>rock</code> package set is where the control packages we
+will be using are defined.</p>
 
 <div class="panel panel-warning">
   <div class="panel-heading">
@@ -103,7 +111,7 @@ source definition
   </div>
 </div>
 
-<p>To install the package, add it in the <code>layout</code> section of your manifest:</p>
+<p>To install the package, add it in the <code>layout</code> section of <code>autoproj/manifest</code>:</p>
 
 <div class="highlight"><pre class="highlight yaml"><code><span class="na">layout</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">rock.core</span>
@@ -119,6 +127,9 @@ source definition
 <div class="highlight"><pre class="highlight plaintext"><code>amake --all
 </code></pre></div>
 <h2 id="composition">Binding the components together</h2>
+
+<p>Now that everything's installed, go back within the bundle folder. You may for
+instance do <code>acd b/syskit</code> (<a href="../workspace/day_to_day.html#acd">more about <code>acd</code></a>)</p>
 
 <p>Compositions declare groups of components and connects them together. In
 addition, we will see later on that they can be seen by the rest of the system as
@@ -155,7 +166,7 @@ name, e.g. <code>cart_ctrl_wdls</code> becomes <code>CartCtrlWdls</code> and the
 <code>OroGen::CartCtrlWdls::ToPosConverter</code> in Syskit.</p>
 
     <p>In case you're not sure about the naming, just add the <code>using_task_library</code> statement
-in a file and load it with <code>syskit ide</code>. If we do so in our newly created <code>models/compositions/arm_cartesian_control_wdls.rb</code> and run</p>
+at the beginning, toplevel of a file and load it with <code>syskit ide</code>. If we do so in our newly created <code>models/compositions/arm_cartesian_control_wdls.rb</code> and run</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>syskit ide models/compositions/arm_cartesian_control_wdls.rb
 </code></pre></div>
@@ -233,9 +244,9 @@ to something. <code>joint_status</code> is the direct joint feedback from the ar
 model. Fortunately, the <code>control/orogen/robot_frames</code> project provides components
 to do the joint-to-cartesian conversion.</p>
 
-<p>Let's add it to our workspace <a href="#add_package">in the same way we added
+<p>Add it now to the workspace <a href="#add_package">in the same way we added
 <code>control/orogen/cart_ctrl_wdls</code></a>, import it in the composition
-file with <code>using_task_library</code> and reload the models in the IDE.
+file with <code>using_task_library</code> and reload models within the IDE.
 Then, finally add it to the composition.</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="c1"># This is in bundles/common_models</span>

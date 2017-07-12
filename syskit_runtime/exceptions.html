@@ -38,20 +38,202 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child active'><a href="exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Overview of Runtime Aspects</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child active'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <p><strong>Notice that</strong> in Syskit two components that are connected to each other do
-not have a dependency relationship. This is a critical point in component-based
-system design that is often understood wrong. A component does not depend on
-its sources to be functioning or faulty. The network that binds them together
-is. This is a much richer representation of dependency, as it allows to isolate
-the role of each component in an overall function, and to build either degraded
-or orthogonal functions on the same set components. What fails is the function,
-not the component. Obviously, there are cases where the function and the
-component are one and the same, but this is rarely the norm. We wil</p>
+                <h1 id="error-representation">Error Representation</h1>
 
+<p>So far, we've touched execution in Syskit when everything is going fine. This
+is hardly the case, both in development and in production systems. Robots have
+a complex interaction with their (potentially harsh) environments. Hardware fails.
+Software has bugs.</p>
+
+<p>The first question is going to be <em>what is an error</em>. It is hardly a simple
+question when seen in the context of a complex, adaptable system like a robot
+under Rock and Syskit. We will then go into the more practical cases of the
+common errors that you will encounter while working with Syskit. We will not
+breach the subject of error handling on this page. This will be done later
+<a href="../syskit_error_handling">in a separate part</a></p>
+
+<h2 id="what-are-errors-">What are errors ?</h2>
+
+<p>One of the most important concept to understand within Syskit is that errors
+are <em>contextual</em>. What may be an error in a given context might be nominal
+execution in another. There's rarely something like an error in absolute.</p>
+
+<p>Within Syskit, an error is usually <em>an unexpected event</em>. For instance, a
+<a href="#dependency_error">dependency error</a> would be caused by a component's <em>stop</em>
+event, as the component's enclosing composition <em>needs</em> the component (this
+need being represented by a <a href="task_structure.html#dependency">dependency relation</a>.
+However, the same <em>stop</em> event might be expected by other parts of the system.
+In the same way, the <em>failed</em> event <a href="task_structure.html#planning_task">of a planning task</a>
+is the source of a <code>PlanningFailedError</code>. The same planning task could be used
+in a different context for which this event is not an issue.</p>
+
+<p>There are errors whose source is not an event. For instance, the failure to
+establish a connection between two ports will have the composition which needs
+this connection as an error context.</p>
+
+<p>Because errors are contextual, every exception is associated with either a task
+or an event in Syskit's internal structures - the exception source. In addition,
+it may be associated with a particular relation. In the dependency example above,
+the dependency error is associated with the dependency relation(s) for which the
+failure event is a problem.</p>
+
+<h2 id="default_response">Default Response to an Error</h2>
+
+<p>Whenever an error happens, Syskit's default response is to stop all jobs and
+components that were enclosing the faulty relation if specific relation(s) are
+associated with the error, or the faulty task if not. Tasks that were needed
+only by said jobs are stopped by the garbage collection pass.</p>
+
+<h2 id="the-dependency-error">The Dependency Error</h2>
+
+<p>Let's see what happens if we run the arm controller and manually stop the
+<code>CartCtrl</code> component:</p>
+
+<div class="fluid-video">
+<iframe width="853" height="480" src="https://www.youtube.com/embed/CXddqjif5CM?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
+
+<p>The error looks like this (parts that you can't interpret yet removed)</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>OroGen::CartCtrlWdls::CartCtrl:0x1664c10&lt;id:401&gt;(conf: ["default"], orocos_name: arm_pos2twist) failed,
+child position2twist of SyskitBasics::Compositions::ArmCartesianControlWdls:0x220fc68&lt;id:408&gt;(robot: profile:SyskitBasics::Profiles::Gazebo::Base),
+  the following event has been emitted event 'stop' emitted at [17:58:58.634 @1750] from ,
+    OroGen::CartCtrlWdls::CartCtrl:0x1664c10,
+      owners: ,
+      arguments: ,
+        orocos_name: "arm_pos2twist",,
+        conf: ["default"],
+The failed relation is,
+  SyskitBasics::Compositions::ArmCartesianControlWdls:0x220fc68,
+    owners: ,
+    arguments: ,
+      robot: profile:SyskitBasics::Profiles::Gazebo::Base,
+  depends_on OroGen::CartCtrlWdls::CartCtrl:0x1664c10,
+    owners: ,
+    arguments: ,
+      orocos_name: "arm_pos2twist",,
+      conf: ["default"]
+</code></pre></div>
+<p>Just below this one, a <code>MissionFailedError</code> is displayed as well. Missions are
+another name for jobs. Whenever a unhandled error cause a mission to be
+terminated by Syskit (as part of the <a href="#default_response">Syskit's default error
+handling</a> we've just discussed), a corresponding
+MissionFailedError is generated as well to make it easier to track what happens
+to the missions for e.g. UIs or higher-level goal management.</p>
+
+<p class="callout callout-warning"><strong>Notice that</strong> in Syskit two components that are connected to each other do
+not have a dependency relationship. From Syskit's point of view, a component
+does not depend on its sources to be functioning or faulty. The network that
+binds them together is. This allows to isolate the role of each component in an
+overall function, and to build either degraded or orthogonal functions on the
+same set of components. What fails is the function, not the component.
+Obviously, there are cases where the function and the component are one and the
+same, but this is not often the case.</p>
+
+<h2 id="failures-in-component-configuration-and-start">Failures in Component Configuration and Start</h2>
+
+<p>The failure to configure, or failure to start a component is a bit of a strange
+beast. It relies on Syskit's ability to represent the negative of an event
+emission: instead of representing that an event – in this case the <em>start</em>
+event – has been emitted, Syskit represent those by representing that the
+<em>start</em> will never be emitted. This also causes a failure in the dependency
+relation between a composition and its children.</p>
+
+<p>Let's emulate an error by mis-configuring <code>cart_ctrl_wdl::WDLSSolver</code>. With the
+<a href="../syskit_basics/deployment.html#validate_tip_and_root_links">work we've done validating the tip and root
+links</a>, we'll
+just edit the task's configuration file and trigger a reconfiguration:</p>
+
+<div class="fluid-video">
+<iframe width="853" height="480" src="https://www.youtube.com/embed/n5qLjTuVhkA?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
+
+<p>The error looks this time like this. The important part is that the dependency failure
+is caused this time because the <em>start</em> event is unreachable while it was before caused
+because an event had been emitted.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>OroGen::CartCtrlWdls::WDLSSolver:0x7f589155df20&lt;id:889&gt;(conf: ["default"], orocos_name: arm_twist2joint, robot: profile:SyskitBasics::Profiles::Gazebo::Base) failed,
+child twist2joint_velocity of SyskitBasics::Compositions::ArmCartesianControlWdls:0x7f5890ffb280&lt;id:767&gt;(robot: profile:SyskitBasics::Profiles::Gazebo::Base),
+triggered the failure predicate '(never(start?)) || (stop?)': the value of start? will not change anymore,
+  the following event is unreachable start event of OroGen::CartCtrlWdls::WDLSSolver:0x7f589155df20,
+  The unreachability was caused by:
+    failed emission of the start event of OroGen::CartCtrlWdls::WDLSSolver:0x7f589155df20 (Roby::EmissionFailed),
+
+The failed relation is,
+  SyskitBasics::Compositions::ArmCartesianControlWdls:0x7f5890ffb280,
+    owners: ,
+    arguments: ,
+      robot: profile:SyskitBasics::Profiles::Gazebo::Base,
+  depends_on OroGen::CartCtrlWdls::WDLSSolver:0x7f589155df20,
+    owners: ,
+    arguments: ,
+      orocos_name: "arm_twist2joint",,
+      conf: ["default"],,
+      robot: profile:SyskitBasics::Profiles::Gazebo::Base,
+failed emission of the start event of OroGen::CartCtrlWdls::WDLSSolver:0x7f589155df20 (Roby::EmissionFailed),
+link name 'does_not_exist' is not a link of the robot model. Existing links: ur10_…
+</code></pre></div>
+<p class="callout callout-warning"><strong>Do not forget to restore the configuration file to something valid</strong>, and to run
+a <code>syskit.reload_config</code> in the shell to apply the change.</p>
+
+<h2 id="the-planning-failed-error">The Planning Failed Error</h2>
+
+<p>We've already seen a planning failed error when we attempted to start both
+<code>arm_safe_position_def</code> and <code>arm_cartesian_constant_control_def</code> jobs in the
+introduction.  Let's have a look again:</p>
+
+<div class="fluid-video">
+<iframe width="853" height="480" src="https://www.youtube.com/embed/LkmR9AFo5ek?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
+
+<p>In this case, the error displayed would be:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>failed to plan SyskitBasics::Compositions::ArmCartesianConstantControlWdls:0x679e428
+  owners: 
+  arguments: 
+    setpoint: {:position=&gt;Vector3(0.5, 0.0, 0.5),
+     :orientation=&gt;Quaternion(1.0, (0.0, 0.0, 0.0))},
+    robot: profile:SyskitBasics::Profiles::Gazebo::Base
+planned by Syskit::InstanceRequirementsTask:0x6757280
+  owners: 
+  arguments: 
+    action_model: Action arm_cartesian_constant_control_def [snip]
+
+  device ur10_fixed is assigned to two tasks that have mismatching inputs,
+    [snip]
+</code></pre></div>
+<p>In this case, the only thing that can cause a <code>PlanningFailedError</code> is that the planning
+task emitted the <em>failed</em> event. Given that the failure was caused by a Ruby exception thrown
+during the deployment, this exception is displayed as well (the <code>device ur10_fixed …</code> message).</p>
+
+<h2 id="aborted-tasks">Aborted Tasks</h2>
+
+<p>Tasks emit <em>aborted</em> when they were running but their execution agent stops.
+Indeed, as we've mentioned in the
+<a href="task_structure.html#execution_agents">description of the execution agent relation</a>,
+an execution agent that stops really means that the executed tasks <em>are already dead</em>.</p>
+
+<p>Let's see an example. This is what happens when the safe position job is running and I stop
+the Gazebo simulation:</p>
+
+<p><img src="media/execution_agent_failed.svg" alt="Stopped execution agent causes a task abort" class="fullwidth" /></p>
+
+<p class="callout callout-info">Note that as the rest, whether the fact that tasks emit the aborted event would
+be actually considered an error for the system mainly depends on the task
+structure.  Usually, the abort would trigger a dependency relation – this is
+what happens here and the reason why the other tasks are stopped. For a
+counter-example, a common bug in newly developed components is that they crash
+when they are stopped. Given that they are usually stopped when they are not
+needed by the system, this error would not affect the running jobs.</p>
+
+<p>This concludes this overview of the Syskit runtime aspects. We'll make a detour
+through <a href="live_data.html" class="btn btn-primary">live data visualization</a> and then get to the <a href="recap.html" class="btn btn-primary">part
+recap</a> before we move on to more advanced
+topics.</p>
 
             </div>
         </div>

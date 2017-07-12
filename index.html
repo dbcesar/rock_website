@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child'><a href="workspace/">Introduction</a></li><li class='child'><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_basics/">Basics</a></span><ul><li class='child'><a href="syskit_basics/">Introduction</a></li><li class='child'><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="syskit_basics/devices.html">Devices</a></li><li class='child'><a href="syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_runtime/">Runtime</a></span><ul><li class='child'><a href="syskit_runtime/">Introduction</a></li><li class='child'><a href="syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="syskit_runtime/exceptions.html">Exceptions</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="syskit_coordination/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child'><a href="workspace/">Introduction</a></li><li class='child'><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_basics/">Basics</a></span><ul><li class='child'><a href="syskit_basics/">Introduction</a></li><li class='child'><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="syskit_basics/devices.html">Devices</a></li><li class='child'><a href="syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_runtime/">Overview of Runtime Aspects</a></span><ul><li class='child'><a href="syskit_runtime/">Introduction</a></li><li class='child'><a href="syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
@@ -61,7 +61,7 @@ robot system, but also to explain the underlying design principles that allow
 you to build a <em>manageable</em> system. The documentation does not assume any prior
 knowledge about Rock, but does assume that you have more than basic knowledge
 on general software development practices. The tools being implemented in Ruby
-and C++, it's best to know about these languages. However, documentation on
+and C++, it is best to know about these languages. However, documentation on
 the basics and principles of a Rock-Syskit system can be followed with basic
 programming knowledge.</p>
 
@@ -71,26 +71,36 @@ examples are mixed with more detailed descriptions, with an aim at being progres
 <div class="alert alert-warning" role="alert">
   <p>As of today (June 2017), not all the software used in this guide has reached
 Rock mainline repositories. For this reason, one needs to start using the
-buildconf repository on GitHub's
+buildconf repository on GitHub
 <a href="https://github.com/rock-gazebo/buildconf"><code>rock-gazebo/buildconf</code></a> instead of
 the default one at
 <a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. The <a href="workspace/">installation guide</a> already reflects this.</p>
 </div>
+
+<h2 id="how-to-read-this-documentation">How to read this documentation</h2>
+
+<p>The <a href="#basics">Basics</a> section is meant to be read in its entirety. It covers
+presents the fundamentals of how a robotic system is integrated and managed
+at runtime within Rock and Syskit.</p>
+
+<p>After the basics, the rest of the documentation is meant to be read on a
+need-to-know basis. Pick the subjects that are of interest to you, or that you
+need to know at a certain point in time.</p>
 
 <h2 id="basics">Basics</h2>
 
 <ol>
   <li><a href="workspace/">Installing Rock, day-to-day handling of packages</a></li>
   <li><a href="syskit_basics/">Running a simple system using Gazebo and Syskit</a></li>
-  <li>The development and runtime workflows</li>
+  <li><a href="syskit_runtime/">The runtime workflow</a></li>
 </ol>
 
 <h2 id="building-systems">Building systems</h2>
 
 <ol>
-  <li>Writing components for easier system building and management</li>
-  <li>Generalizing and reusing component networks in Syskit</li>
-  <li>Advanced processing concepts: stream aligner and transformer</li>
+  <li>Writing components</li>
+  <li>Reusable Syskit modelling</li>
+  <li>Advanced data processing in a Rock network</li>
   <li>System coordination</li>
 </ol>
 
@@ -98,9 +108,8 @@ the default one at
 
 <ol>
   <li>Tests</li>
-  <li>Live data visualization</li>
+  <li>Logging, Data Visualization and Building GUIs</li>
   <li>Inspecting coordination data</li>
-  <li>Logging</li>
   <li>Debugging components</li>
 </ol>
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="syskit_runtime syskit_runtime_live_data">
+        <h1 id="live-data-visualization">Live Data Visualization</h1>
+
+<p>When debugging a system's behavior, one has the obvious need to look at the
+component's output, possibly through dedicated widgets that allow to understand
+complex representations such as e.g. a quaternion.</p>
+
+<p>We of course have the means to do so within a Syskit system. Generic live data
+visualization is accessed within the Syskit IDE as shown on the video below. Rock
+provides diverse widgets, some generic (e.g. plotting), some specialized for certain
+data types (e.g. the <code>OrientationView</code> dedicated to quaternions).</p>
+
+<div class="fluid-video">
+<iframe width="853" height="480" src="https://www.youtube.com/embed/IBeR6wbvBIg?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+</div>
+
+<p class="callout callout-info"><strong>Tip</strong>: clicking on a job on the leftmost pane of the IDE restricts the list of
+tasks on the right to the tasks that are needed by the job. Click on the top part
+(the one showing a time) to show all components used by the system.</p>
+
+<p class="callout callout-info"><strong>Tip</strong>: An opened visualization widget will rebind to the data stream it visualizes if
+the corresponding component is restarted. Because of this, one usually does not
+need to close and re-open widgets across Syskit restarts or across the start
+and stop of jobs.</p>
+
+<p>Let's finally get <a href="recap.html" class="btn btn-primary">to the part recap</a></p>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>
