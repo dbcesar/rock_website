@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Overview of Runtime Aspects</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Design Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
@@ -136,12 +136,11 @@ what tasks are not useful by following the task structure.</p>
 
 <p>Because it is more optimal sometimes to keep some tasks alive, even though
 these tasks are not useful to the jobs, Syskit also maintains a set of
-<em>permanent tasks</em>.  One can see in the video below that once the cartesian
-control is started, its deployment keeps on running even if the job is stopped.
-Because of the high cost of starting a whole process, and of configuring a
-component, Syskit marks the deployments as permanent. If one of them was to be
-killed, this would not affect the rest of the system, and it would be restarted
-when needed.</p>
+<em>permanent tasks</em>. Once the cartesian control is started, its deployment keeps
+on running even if the job is stopped.  Because of the high cost of starting a
+whole process, and of configuring a component, Syskit marks the deployments as
+permanent. If one of them was to be killed, this would not affect the rest of
+the system, and it would be restarted when needed.</p>
 
 <p>Now that we understand how Syskit determines a component's usefulness, we may
 get to <a href="event_loop.html" class="btn btn-primary">the event loop</a> which will detail among other things

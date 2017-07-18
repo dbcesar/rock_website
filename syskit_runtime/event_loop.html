@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Overview of Runtime Aspects</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child active'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Design Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child active'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
@@ -93,7 +93,7 @@ this scheduler in this section.</p>
     <p>it has all its parameters set. This is a common problem, that some arguments
 are unset and the network does not run. This can be caught <a href="../syskit_basics/constant_generator.html#missing_arguments">in
 tests</a>. At
-runtime, in the IDE, this is leads to the following message:</p>
+runtime, in the IDE, this is leads to the <code>partially instanciated</code> message:</p>
 
     <p><img src="media/missing_arguments.jpg" alt="Partially instantiated network in the IDE" class="fullwidth" /></p>
   </li>
@@ -175,26 +175,26 @@ will be more about this in <a href="../syskit_coordination/">the coordination pa
 <h2 id="component-lifecycle-configuration-startup-and-shutdown">Component Lifecycle, Configuration, Startup and Shutdown</h2>
 
 <p>Rock components have a lifecycle of their own. This lifecyle is what makes a
-generic coordination of them possible: one can expect a standardized behavior.</p>
-
-<p>The lifecycle of a single component is a state machine that looks like this
-(without error states represented):</p>
+generic coordination of them possible: it is possible to expect a standardized
+behavior. The nominal lifecycle - that is, without error states - is the
+following state machine:</p>
 
 <p><img src="media/state_machine.svg" alt="Nominal component state machine" class="fullwidth" /></p>
 
 <p>This is the lifecycle of a single component. Sequencing of the startup and
-shutdown of a network is more complicated, and it relies on assumptions that
-make it possible to determine when to connect, configure or start a component.</p>
+shutdown of a network is more complicated. Syskit relies on some assumptions
+to make it possible:</p>
 
 <ol>
-  <li>Component's <code>configure</code> transition is expected to mostly be standalone -
-i.e. not rely on other components. The exception to this rule are devices
-that rely on data bus components (e.g. a CAN device on a CAN bus).</li>
+  <li>Component's <code>configure</code> transition is expected to be standalone - i.e. not
+rely on other components. The exception to this rule are devices that rely
+on data bus components (e.g. a CAN device on a CAN bus). We will see those
+in the advanced coordination section.</li>
   <li>Components have the ability to create new ports dynamically, which is
 usually controlled by their configuration. Syskit may therefore not expect
-all ports to be available before the component is configured. Syskit
-restricts dynamic port creation to <code>configure</code>, and their destruction to
-<code>cleanup</code>.</li>
+all ports to be available before the component is configured. However,
+Syskit restricts dynamic port creation to <code>configure</code>, and expects them
+to be destroyed during <code>cleanup</code>.</li>
 </ol>
 
 <p>With these assumptions, Syskit can generically sequence the startup and
@@ -205,12 +205,14 @@ shutdown of a component network:</p>
 component that is not configured. Connections are parallelized. <em>Rationale:
 the "components not configured" constraint ensures that we do not disrupt
 existing components before the rest of the network is ready to run</em>.</li>
-  <li>configure components in parallel.</li>
-  <li>apply all connection modifications (addition and removal, in parallel)</li>
+  <li>configure components in parallel. <em>Rationale: the component configurations
+are standalone</em>.</li>
+  <li>apply the remaining connection modifications (addition and removal, in parallel)</li>
   <li>start components (in parallel)</li>
 </ul>
 
-<p>Components are stopped through Syskit's garbage collection mechanism.</p>
+<p>Components are stopped through Syskit's garbage collection mechanism. Connections
+are garbage collected when the corresponding component(s) are.</p>
 
 <p>All actions that involve a direct interaction with the component (sending the
 start command, writing properties, …) are done asynchronously in separate
@@ -221,7 +223,7 @@ executed sequentially within the main thread.</p>
 <h2 id="garbage_collection">Garbage Collection</h2>
 
 <p>The garbage collection recursively stops tasks that are not useful for an
-active job, as in the following video. Note again that compositions's stop
+active job, as in the following video. Note again that the compositions' stop
 events are emitted in the same cycle as they are commanded, while components
 are stopped asynchronously:</p>
 
