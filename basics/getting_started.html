@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_basics syskit_basics_getting_started">
+    <body class="basics basics_getting_started">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,11 +38,18 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Design Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime Basics</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="../syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child active'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="getting-started">Getting Started</h1>
+                <h1 class="no_toc" id="getting-started">Getting Started</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#bundles-and-bundles-file-structure" id="markdown-toc-bundles-and-bundles-file-structure">Bundles and bundles' file structure</a></li>
+  <li><a href="#robot-and-scene-description-using-sdf" id="markdown-toc-robot-and-scene-description-using-sdf">Robot and Scene description using SDF</a></li>
+  <li><a href="#running-and-visualizing-a-gazebo-environment" id="markdown-toc-running-and-visualizing-a-gazebo-environment">Running and visualizing a Gazebo environment</a></li>
+  <li><a href="#syskit_gazebo_configuration" id="markdown-toc-syskit_gazebo_configuration">Preparing the <code>gazebo</code> Syskit configuration</a></li>
+</ul>
 
 <p>We'll be getting right into the meat of things by creating a system's
 integration package (a <code>bundle</code>), and setup a gazebo environment that will
@@ -56,7 +63,7 @@ workspace. For the time being, you can see bundles as a collection of
 Syskit models (in <code>models/</code>), configuration files (in <code>config/</code>), SDF scenes
 (<code>scenes/</code>) and SDF models (<code>models/sdf/</code>).</p>
 
-<p>The following assumes that you have a <a href="../workspace/">bootstrapped Rock
+<p>The following assumes that you have a <a href="installation.html">bootstrapped Rock
 installation</a>, and that you have a terminal in which this
 installation's <code>env.sh</code> file has been sourced.</p>
 
@@ -217,7 +224,7 @@ newly-created <code>config/robots/gazebo.rb</code> configuration file to add:</p
   <span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_gazebo_world</span><span class="p">(</span><span class="s1">'empty_world'</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Now that we have a minimal scene and a working Gazebo installation, <a href="composition.html" class="btn btn-primary">let's do
+<p class="next-page"><strong>Next</strong>: now that we have a minimal scene and a working Gazebo installation, <a href="composition.html">let's do
 something with it</a></p>
 
 <div class="panel panel-warning">

@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_basics syskit_basics_composition">
+    <body class="basics basics_composition">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,11 +38,16 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Design Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime Basics</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="../syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="compositions-designing-the-network-for-the-cartesian-control-of-an-arm">Compositions: designing the network for the cartesian control of an arm</h1>
+                <h1 class="no_toc" id="compositions-designing-the-network-for-the-cartesian-control-of-an-arm">Compositions: designing the network for the cartesian control of an arm</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#add_package" id="markdown-toc-add_package">Installing the necessary packages</a></li>
+  <li><a href="#composition" id="markdown-toc-composition">Binding the components together</a></li>
+</ul>
 
 <p>We are now going to try and do simple control <a href="getting_started.html">of our simulated
 arm</a>. We are going to do the integration of the control
@@ -64,10 +69,10 @@ the control package that will implement the control.</p>
 
 <p>Packages in Rock as maintained within the overall Rock workspace. Package
 related configuration is contained within the <code>autoproj/</code> folder within the
-workspace's root directory (where you <a href="../workspace/">originally
+workspace's root directory (where you <a href="installation.html">originally
 bootstrapped</a>). When working in a terminal, you can go
 at any time to the workspace's root directory by running <code>acd</code> without
-arguments (<a href="../workspace/day_to_day.html#acd">more about <code>acd</code></a>).</p>
+arguments (<a href="day_to_day.html#acd">more about <code>acd</code></a>).</p>
 
 <p>Within the <code>autoproj/</code> directory, packages are defined within <em>package sets</em>.
 These package sets define both how to build the package and where it should be
@@ -129,7 +134,7 @@ source definition
 <h2 id="composition">Binding the components together</h2>
 
 <p>Now that everything's installed, go back within the bundle folder. You may for
-instance do <code>acd b/syskit</code> (<a href="../workspace/day_to_day.html#acd">more about <code>acd</code></a>)</p>
+instance do <code>acd b/syskit</code> (<a href="day_to_day.html#acd">more about <code>acd</code></a>)</p>
 
 <p>Compositions declare groups of components and connects them together. In
 addition, we will see later on that they can be seen by the rest of the system as
@@ -145,8 +150,8 @@ compositions.</p>
       create  test/compositions/test_arm_cartesian_control_wdls.rb
 </code></pre></div>
 <div class="panel panel-info">
-  <div class="panel-heading">
-    <h4 id="orogen">OroGen packages in Syskit</h4>
+  <div class="panel-heading" id="orogen">
+    <p>OroGen packages in Syskit</p>
   </div>
   <div class="panel-body">
     <p>As described in our <a href="./">brief introduction</a>, oroGen packages are
@@ -208,7 +213,7 @@ file as follows (<code>-rgazebo</code> is necessary because we are importing mod
 <code>common_models</code>). <strong>Leave the IDE open after this, we will reuse it</strong></p>
 
 <div class="fluid-video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/hTBYnlc0J3Q?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/hTBYnlc0J3Q?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p>We may now start adding connections in the composition definition. The <code>as</code>
@@ -295,7 +300,7 @@ bind two input ports or two input ports together.</p>
 
 <p><img src="media/arm_cartesian_control_export.png" alt="Example or a port export" class="fullwidth" /></p>
 
-<p>Before we can actually run the whole thing, <a href="constant_generator.html" class="btn btn-primary">we must create a command generator for it</a></p>
+<p class="next-page"><strong>Next</strong>: before we can actually run the whole thing, <a href="constant_generator.html">we must create a command generator for it</a></p>
 
             </div>
         </div>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="workspace workspace_managing">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Workspace and Packages</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="conventions.html">Conventions</a></li><li class='child'><a href="setup.html">Starting a New Project</a></li><li class='child'><a href="add_packages.html">Adding new packages</a></li><li class='child'><a href="os_dependencies.html">OS Dependencies</a></li><li class='child active'><a href="managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="designing-and-managing-a-build-configuration">Designing and managing a build configuration</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#on-gui-code-in-embedded-systems" id="markdown-toc-on-gui-code-in-embedded-systems">On GUI code in embedded systems</a></li>
+  <li><a href="#package-set-structure" id="markdown-toc-package-set-structure">Package set structure</a></li>
+  <li><a href="#metapackages" id="markdown-toc-metapackages">Metapackages</a></li>
+  <li><a href="#choosing-what-to-build-where" id="markdown-toc-choosing-what-to-build-where">Choosing what to build where</a></li>
+  <li><a href="#optional-dependencies" id="markdown-toc-optional-dependencies">Optional Dependencies</a></li>
+  <li><a href="#configuration_options" id="markdown-toc-configuration_options">Configuration Options</a></li>
+</ul>
+
+<p>This page will deal with the overall design patterns that involve a build
+configuration, and will answer some common "How do I ?" questions.</p>
+
+<p>Even though it would be ideal, it is rare that all systems can share <strong>exactly</strong>
+the same build configuration. The prime example of this is embedded/developer's
+systems (the former does requires neither the simulation environment nor the
+GUIs). Moreover, one also sometimes needs to setup configuration in shared
+package sets to account for variations in projects that share said package set.</p>
+
+<p class="important">There is a fine line to thread when it comes to making things optional. Build
+configurations with too many options are really hard to maintain, and in my
+experience do not actually provide major benefits (apart from the NMH-like
+feeling that you can "tune your install exactly to your needs"). Be careful to
+not over-design your build configurations, and try to stick to the few cases
+where it really makes sense.</p>
+
+<h2 id="on-gui-code-in-embedded-systems">On GUI code in embedded systems</h2>
+
+<p>Do not build GUI and simulation elements <strong>in</strong> the normal codeflow "just for
+debugging purposes". This is a Really Bad Idea (tm) when it comes to autonomous
+robots. Autonomous robots, by definition, will run headless, and these pieces
+of code are basically time-bombs. Moreover, if anything wrong happens during a
+mission, you will by definition not have access to this data.</p>
+
+<p>Instead, build diagnostic and debugging data structures, and make sure they can
+be exported out of your API. From there, one can put in on component ports and
+log it when necessary.</p>
+
+<h2 id="package-set-structure">Package set structure</h2>
+
+<p>There is a cost in having too many package sets. Usually one should strive in
+not separating too much, because their interactions can become hard to
+understand (especially when it comes to <a href="os_dependencies.html">osdeps</a> or
+<a href="add_packages.html#version_control_resolution">version control overrides</a>).</p>
+
+<p>Splitting package sets is most often not needed. Package sets only define
+packages and shouldn't do anything else, and as such one does not need to build
+<strong>everything</strong> that is declared in the package set. If it becomes practical to
+define some subsets of the packages, one can easily group them using
+metapackages (<a href="#metapackages">see below</a>)</p>
+
+<p>Generally speaking, start with one package set for your organization, and start
+creating package sets for projects only when it starts to make sense.</p>
+
+<h2 id="metapackages">Metapackages</h2>
+
+<p>Autoproj allows you to group packages into subsets called <em>metapackages</em>.
+Metapackages, when used, resolve to their list of packages. The main use-case
+for this is to create sets of packages for different machine roles - such as
+a developer's machine or the embedded systems.</p>
+
+<p>They are declared in the <code>autobuild</code> files with:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>metapackage 'name_of_metapackage',
+  'pkg1', 'pkg2', 'pkg3', …
+</code></pre></div>
+<p>All packages defined in a package set are automatically added into two
+metapackages: the <code>package_set_name</code> metapackage and the <code>package_set_name.all</code>
+metapackage. We are using this when we recommend to <a href="setup.html#add_package_set_in_layout">add the package set to the
+manifest's <code>layout</code></a>. The <code>.all</code>
+metapackage is meant to <em>always</em> include all packages from the package set.
+However, the other default metapackage is meant to be tuned to list the
+"sensible default" list of packages. If a package should not end up in it, it
+can removed after it has been defined with:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>remove_from_default 'pkg1', 'pkg2'
+</code></pre></div>
+<p class="tip"><strong>Tip</strong>: packages from other package sets can also be added to the default package
+set with <code>add_to_default 'pkg1', 'pkg2', …</code>.</p>
+
+<h2 id="choosing-what-to-build-where">Choosing what to build where</h2>
+
+<p>Now that we've built sets of packages from our roles, there is still the issue
+of <em>avoiding</em> building some packages in some roles, regardless of package
+dependencies. One can force autoproj to <em>not</em> build a package by listing its
+name in the <code>exclude_packages</code> section of the manifest. So, you can usually
+avoid building any GUI and simulation stuff by adding:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">exclude_packages</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">simulation/.*</span>
+<span class="pi">-</span> <span class="s">gui/.*</span>
+</code></pre></div>
+<p>Exclusions are recursive, that is a package that would depend on a simulation
+or GUI package will also be excluded. Also, the system is a
+"exclude-then-include", so if you want to exclude all simulation packages <em>but</em>
+e.g. <code>simulation/rock_gazebo</code>, you would do:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">layout</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">…</span>
+<span class="pi">-</span> <span class="s">simulation/rock_gazebo</span>
+
+<span class="na">exclude_packages</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">simulation/.*</span>
+</code></pre></div>
+<p>By default, autoproj will fail to build if a package set depends on an excluded
+package. This is the recommended default for the "terminal" package sets –
+such as the metapackages you will have defined for your roles. However,
+shared package sets sometime require to be more lax. The default can be changed
+after the metapackage is defined with:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>metapackage('company.project').weak_dependencies = true
+</code></pre></div>
+<p>Because exclusions are done within the build configuration manifest, it
+requires having one manifest per system role. The best way to handle this is to
+actually have multiple manifest files with a <code>.role</code> suffix (e.g.
+<code>autoproj/manifest.dev</code>). The "local" manifest file can then be selected with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>autoproj manifest autoproj/manifest.dev`
+</code></pre></div>
+<p class="tip"><strong>Tip</strong>: make the default manifest the 'developer' manifest and use this
+mechanism for development roles.</p>
+
+<h2 id="optional-dependencies">Optional Dependencies</h2>
+
+<p>As we just saw, excluding a package auto-excludes packages that depends on it.
+In the common exclusion cases (simulation and GUI), this is not a desired
+outcome. One would like to put visualization and actual code in the same
+packages, but avoid building GUI/simulation elements on systems that don't
+need it.</p>
+
+<p>Inside packages, this has to be done the "traditional" way, that is by checking
+whether dependencies are present and avoiding building parts of the package if
+they are not.</p>
+
+<p>At the Autoproj level, it requires listing dependencies as "optional" by using
+the <code>&lt;depend_optional …&gt;</code> tag instead of <code>&lt;depend …&gt;</code>. Optional dependencies
+act as "normal" dependencies by default. Only when the depended-upon package is
+excluded do they differ in behavior.</p>
+
+<h2 id="configuration_options">Configuration Options</h2>
+
+<p>Autoproj also has an interface to ask the developer configuration questions,
+that can then be used either in the version control information, or within the
+autobuild files to build optional behavior. You've already seen those when
+bootstrapping Rock.</p>
+
+<p>Configuration options can be declared in an <code>.autobuild</code> file, within the
+<code>init.rb</code> file of the package set or in <code>autoproj/init.rb</code> with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Autoproj</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">define</span> <span class="s1">'CONFIGURATION_OPTION_NAME'</span><span class="p">,</span>
+  <span class="ss">type: </span><span class="s1">'boolean'</span><span class="p">,</span> <span class="c1"># 'boolean' or 'string'</span>
+  <span class="ss">doc: </span><span class="p">[</span><span class="s1">'first line'</span><span class="p">,</span>
+        <span class="s1">'second line'</span><span class="p">,</span>
+        <span class="s1">'third line'</span><span class="p">],</span>
+  <span class="ss">default: </span><span class="kp">true</span><span class="p">,</span> <span class="c1"># true or false for boolean, an arbitrary string otherwise</span>
+  <span class="ss">possible_values: </span><span class="p">[</span><span class="s1">'list'</span><span class="p">,</span> <span class="s1">'of'</span><span class="p">,</span> <span class="s1">'acceptable'</span><span class="p">,</span> <span class="s1">'values'</span><span class="p">],</span>
+  <span class="ss">lowercase: </span><span class="kp">false</span><span class="p">,</span> <span class="c1"># convert the user input to lowercase</span>
+  <span class="ss">uppercase: </span><span class="kp">false</span><span class="p">,</span> <span class="c1"># convert the user input to uppercase</span>
+</code></pre></div>
+<p>Autoproj will ask the user for the option's value the first time the option is
+used. Once the user answered a valid answer, Autoproj saves the value and will not
+ask again until the user runs <code>autoproj reconfigure</code>.</p>
+
+<p>Within <code>.autobuild</code> files, the configuration options are accessed with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Autoproj</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">get</span> <span class="s1">'CONFIGURATION_OPTION_NAME'</span>
+</code></pre></div>
+<p>Within the version control information, it is expanded using the
+<code>$CONFIGURATION_OPTION_NAME</code> syntax.</p>
+
+<p class="next-page">That's all for the Workspace documentation. Go back to the <a href="../#how_to_read">documentation main
+index</a> for more topics.</p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

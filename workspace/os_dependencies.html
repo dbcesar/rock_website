@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="workspace workspace_os_dependencies">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Workspace and Packages</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="conventions.html">Conventions</a></li><li class='child'><a href="setup.html">Starting a New Project</a></li><li class='child'><a href="add_packages.html">Adding new packages</a></li><li class='child active'><a href="os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="using-os-package-managers">Using OS Package Managers</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#osdeps-files" id="markdown-toc-osdeps-files">osdeps files</a></li>
+  <li><a href="#the-platforms-package-manager" id="markdown-toc-the-platforms-package-manager">The Platform's Package Manager</a></li>
+  <li><a href="#os-independent-package-managers" id="markdown-toc-os-independent-package-managers">OS Independent Package Managers</a></li>
+  <li><a href="#the-rubygem-package-manager" id="markdown-toc-the-rubygem-package-manager">The RubyGem Package Manager</a></li>
+  <li><a href="#the-pip-package-manager" id="markdown-toc-the-pip-package-manager">The PIP Package Manager</a></li>
+  <li><a href="#source_osdep_interactions" id="markdown-toc-source_osdep_interactions">Interactions Between Source and OSDep Packages</a></li>
+  <li><a href="#reusing_entries" id="markdown-toc-reusing_entries">Reusing other osdeps entries</a></li>
+  <li><a href="#the-osdeps-system-cookbook" id="markdown-toc-the-osdeps-system-cookbook">The <code>osdeps</code> system cookbook</a>    <ul>
+      <li><a href="#alias" id="markdown-toc-alias">Aliases</a></li>
+      <li><a href="#installing-platform-packages-to-support-an-os-independent-package" id="markdown-toc-installing-platform-packages-to-support-an-os-independent-package">Installing platform packages to support an OS-independent package</a></li>
+      <li><a href="#force_source_package" id="markdown-toc-force_source_package">Forcing usage of a source package even if a corresponding osdep package exists</a></li>
+      <li><a href="#future-proof-os-version-entries" id="markdown-toc-future-proof-os-version-entries">Future-proof OS version entries</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>While the main purpose of Autoproj is to build packages from source, it would
+be silly to not rely on prebuilt packages offered by the underlying operating
+system. Autoproj does it by integrating with other package managers. One may
+also automatically fall back to source-based packages on platforms where the
+prebuilt package is either not suitable (e.g. too old or too new), or not
+available.</p>
+
+<p>The main purpose of the osdeps system is to provide a mapping from a package
+name (which is arbitrary) to a set of packages that should be installed by
+external means. We will see examples of this in follow-up sections.</p>
+
+<p>There are mainly two types of "os dependencies" (a.k.a. osdeps) in autoproj.
+First is the package system offered by the platform itself (e.g. APT on Ubuntu).
+Second is external package managers that can be installed on top of a platform,
+such as RubyGems for Ruby.</p>
+
+<h2 id="osdeps-files">osdeps files</h2>
+
+<p>OS dependencies ("osdeps") are listed in a YAML file with the <code>.osdeps</code>
+extension. One usually creates a single <code>packages.osdeps</code> file in new package
+sets for this purpose. <code>.osdeps</code> files can also be added in the main build
+configuration.</p>
+
+<p>The general format of the YAML file is that of:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">package_name</span><span class="pi">:</span>
+  <span class="s">… osdep definition …</span>
+</code></pre></div>
+<p>Unlike with <a href="add_packages.html#version_control_resolution">the version control
+entries</a>, osdep files both define
+which packages are available and what is the definition of these packages.
+<strong>Like</strong> the version control entries, Autoproj resolves the package in all
+osdep files it can find (first in package sets as ordered by the <code>package_set</code>
+entry in <code>autoproj/manifest</code> and then in the build configuration). Entries
+override each other, and the last entry wins.</p>
+
+<p>One can always inspect the state of an osdep package with <code>autoproj show</code>:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ autoproj show thor
+the osdep 'thor'
+  apt-dpkg: ruby-thor
+  1 matching entries:
+    in /home/doudou/dev/vanilla/rock-website/autoproj/remotes/rock.core/rock.osdeps:
+        debian: ruby-thor
+      ubuntu:
+        precise: gem
+        default: ruby-thor
+      default: gem
+</code></pre></div>
+<p>This section will be all about the OS dependencies: first how to declare them
+and then general "cookbook-style" patterns that offer fine-grained setup of the
+osdeps usage.</p>
+
+<h2 id="the-platforms-package-manager">The Platform's Package Manager</h2>
+
+<p>When using the platform package manager, one does not list the package
+manager's name, but resolves packages by the platform name and (optionally)
+version. Autoproj auto-detects the platform, and knows which package manager
+should be used. For instance, Ubuntu 16.04 would be listed as:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>package_name:
+  ubuntu:
+    '16.04': # The quotes are needed, or YAML interprets 16.04 as a number.
+    - name_of_apt_package
+    - name_of_another_apt_package
+</code></pre></div>
+<p>Autoproj supports the following platforms. The first word is the codename for
+the platform, that should be used in the osdeps files. The rest gives details
+about which package manager is being used.</p>
+
+<dl>
+  <dt><code>ubuntu</code> and <code>debian</code>
+</dt>
+  <dd>
+    <p>Respectively Ubuntu and Debian, using APT. In addition to the package
+name, a package version constraint can appended to a package name, e.g.
+<code>package_name=1:2.0.3</code>.</p>
+  </dd>
+  <dt><code>gentoo</code>
+</dt>
+  <dd>
+    <p>Gentoo using emerge</p>
+  </dd>
+  <dt><code>macos-brew</code>
+</dt>
+  <dd>
+    <p>MacOSX HomeBrew, used by default when running on MacOSX.</p>
+  </dd>
+  <dt><code>macos-port</code>
+</dt>
+  <dd>
+    <p>MacPorts can be used instead of HomeBrew on MacOSX by setting
+<code>AUTOPROJ_MACOSX_PACKAGE_MANAGER</code> to <code>macos-port</code>.</p>
+  </dd>
+  <dt><code>arch</code>
+</dt>
+  <dd>
+    <p>Arch, using pacman</p>
+  </dd>
+  <dt><code>rhel</code> and <code>fedora</code>
+</dt>
+  <dd>
+    <p>RedHat Entreprise Linux and Fedora, using <code>yum</code></p>
+  </dd>
+  <dt><code>opensuse</code>
+</dt>
+  <dd>
+    <p>OpenSUSE using zipper</p>
+  </dd>
+  <dt><code>freebsd</code>
+</dt>
+  <dd>
+    <p>FreeBSD using pkg</p>
+  </dd>
+</dl>
+
+<p>How Autoproj detects your system, and which package manager it will attempt to
+use can be found with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>$ autoproj osdeps --system-info
+OS Names:    ubuntu, debian
+OS Versions: 16.04, 16.04.2, lts, xenial, xerus
+OS Package Manager: apt-dpkg
+Available Package Managers: gem, pip
+</code></pre></div>
+<p>Because some platforms share an underlying system (and a lot of packages) with
+others, there are also some fallbacks. In the example above, the Ubuntu system
+will use the <code>debian</code> entries if there are no <code>ubuntu</code> entries. Additionally,
+most Debian derivatives will attempt to install the <code>debian</code> packages even if
+they have no specific detection logic for them. A RHEL system will use a
+<code>fedora</code> entry if no <code>rhel</code> entry is present</p>
+
+<p>Finally, the <code>default</code> entry allows to match "any version not explicitely
+listed". For instance, the following <code>default</code> entry would match any Ubuntu
+version that is not 15.10:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>package_name:
+  ubuntu:
+    '15.10':
+    - name_of_apt_package
+    - name_of_another_apt_package
+    default:
+    - name_of_apt_package
+</code></pre></div>
+<p>Multiple platform names and versions can be listed in the keys, separated by
+commas. The following will in effect provide both a "neither 15.04 nor 15.10"
+entry for Ubuntu and share that entry with all Debian-based, non-Ubuntu,
+systems.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>package_name:
+  ubuntu,debian:
+    '15.04,15.10':
+    - name_of_apt_package
+    - name_of_another_apt_package
+    default:
+    - name_of_apt_package
+</code></pre></div>
+<h2 id="os-independent-package-managers">OS Independent Package Managers</h2>
+
+<p>Autoproj supports a few package managers that are not tied to a specific
+platform. These package managers have codenames that are used within the osdep
+files to refer to them:</p>
+
+<ul>
+  <li><code>gem</code>: RubyGems (Ruby packages)</li>
+  <li><code>pip</code>: PIP (Python packages)</li>
+</ul>
+
+<p>The most common usage for them is to simply install a package:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>package_name:
+  manager_name:
+  - manager_package_name
+  - another_manager_package_name
+</code></pre></div>
+<p>However, one sometimes wants to also scope the os-independent packages by the
+platform or platform+version on which autoproj runs. This is supported simply
+by putting the os-independent package definition in the relevant part of the
+tree:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>package_name:
+  ubuntu:
+    '16.04:
+    - gem: a_gem_package # Installed only on Ubuntu 16.04
+    gem: another_gem_package # Installed on all Ubuntus
+  gem: yagp # Installed on all operating systems
+</code></pre></div>
+<h2 id="the-rubygem-package-manager">The RubyGem Package Manager</h2>
+
+<p>This package manager allows to install RubyGems, the Ruby programming
+language's mainstream package manager. Autoproj delegates the management
+of these packages to <a href="http://bundler.io">Bundler</a>.</p>
+
+<p>The installed gems are shared across all your workspaces, in the
+<code>$HOME/.autoproj/gems</code> folder. Bundler ensures that the right versions are
+enabled for a given workspace, regardless of gems that might have been
+installed by other workspaces. This speeds up bootstrapping quite a bit, as the
+common gem install location ensures that they have to be installed only once.</p>
+
+<p>The Gemfile and the bundler binstubs are installed in <a href="../basics/day_to_day.html#layout">the workspace's
+prefix</a> under <code>gems/</code>. <code>gems/bin/</code> is
+automatically added to the PATH.</p>
+
+<p>It supports explicit version constraints, that is:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>package_name:
+  gem: package_name~&gt;2.0
+</code></pre></div>
+<p>Because Bundler sets up the environment so that it is completely isolated from
+the other workspace's, gems that are not part of the osdeps system - installed
+for instance for debugging purposes – need to be added in a separate
+<a href="http://bundler.io/v1.15/man/gemfile.5.html">Gemfile</a>, in <code>autoproj/Gemfile</code>.
+You <strong>must</strong> run <code>autoproj osdeps</code> after changing this file.</p>
+
+<p class="callout callout-warning"><code>autoproj/Gemfile</code> is usually not checked in the version control system - if
+you need a permanent dependency installed, define an osdep for it and depend on
+the osdep.</p>
+
+<h2 id="the-pip-package-manager">The PIP Package Manager</h2>
+
+<p>This package manager allows to install Python packages using pip. The packages
+are installed in the workspace's prefix under <code>pip/</code>. <code>pip/bin/</code> is
+automatically added to the PATH.</p>
+
+<h2 id="source_osdep_interactions">Interactions Between Source and OSDep Packages</h2>
+
+<p>The most common source/osdep package interaction is that any source package can
+depend on an osdep package, listed in a <code>&lt;depend …&gt;</code> tag in <a href="add_packages.html#manifest_xml">the package
+<code>manifest.xml</code></a>.</p>
+
+<p>Autoproj also allows you to define an osdep package with the
+<em>same name</em> as a source package. When this happens autoproj will:</p>
+
+<ul>
+  <li>install the osdep package on platforms where it is available</li>
+  <li>use the source package otherwise.</li>
+</ul>
+
+<p>If the osdep and source packages are already defined and don't have the same
+name (for any reason), one can <a href="#alias">alias the osdep package</a> to match the source
+package name. If the behavior is undesired (i.e. if one wants to force the installation
+of the source package), it <a href="#force_source_package">can also be done</a> (but with
+caveats ! Read that part well !)</p>
+
+<h2 id="reusing_entries">Reusing other osdeps entries</h2>
+
+<p>The <code>osdep</code> keyword can be used at any place an os-independent package managers
+can be used. The package named under this keyword are other osdep entries, that
+are recursively resolved by autoproj.</p>
+
+<p>See the cookbook below for examples</p>
+
+<h2 id="the-osdeps-system-cookbook">The <code>osdeps</code> system cookbook</h2>
+
+<h3 id="alias">Aliases</h3>
+
+<p>Using <a href="#reusing_entries">the <code>osdep</code> special keyword</a>, one can alias a name to another:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">old_name</span><span class="pi">:</span>
+  <span class="na">ubuntu</span><span class="pi">:</span>
+  <span class="s">...</span>
+<span class="na">new_name</span><span class="pi">:</span>
+  <span class="na">osdep</span><span class="pi">:</span> <span class="s">old_name</span>
+</code></pre></div>
+<p>This is commonly used to ensure that an osdep entry matches a source package's
+name to use <a href="#source_osdep_interactions">the source/osdep fallback mechanism</a>.</p>
+
+<h3 id="installing-platform-packages-to-support-an-os-independent-package">Installing platform packages to support an OS-independent package</h3>
+
+<p>Some OS-independent package sometime depend on other platform-dependent
+software to be installed. The <a href="https://rubygems.org/gems/nokogiri"><code>nokogiri</code> gem</a>
+for instance requires the ruby-dev packages to be installed as well as <code>libxml</code>.</p>
+
+<p>This should be done using <a href="#reusing_entries">the <code>osdep</code> special keyword</a> as
+well:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">libxml</span><span class="pi">:</span>
+  <span class="na">ubuntu</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">libxml2-dev</span>
+<span class="na">libxslt</span><span class="pi">:</span>
+  <span class="na">ubuntu</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">libxslt1-dev</span>
+<span class="na">nokogiri</span><span class="pi">:</span>
+  <span class="na">gem</span><span class="pi">:</span> <span class="s">nokogiri</span>
+  <span class="na">osdep</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">libxml</span>
+  <span class="pi">-</span> <span class="s">libxslt</span>
+</code></pre></div>
+<h3 id="force_source_package">Forcing usage of a source package even if a corresponding osdep package exists</h3>
+
+<p>One can use 'nonexistent' instead of a list of packages to force the osdep system
+to assume that the package is not available. This can be used to force using a
+source package instead of an osdep package. The best place to do so is by
+adding an <code>overrides.osdeps</code> file in your main build configuration and add an
+entry for the package:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="s">simulation/gazebo</span><span class="pi">:</span> <span class="s">nonexistent</span>
+</code></pre></div>
+<p class="important">It is important to note at this point that all the package installation is
+delegated to the underlying package system. When forcing usage of a source
+package instead of an osdep, Autoproj will not require the installation
+of said package. However, if other OS packages depend on it, it will still
+get installed.</p>
+
+<h3 id="future-proof-os-version-entries">Future-proof OS version entries</h3>
+
+<p>The best way to format OS version entries in order to have them as future-proof
+as possible is to explicitly list old versions and then use the current version
+as <code>default</code>. This works best because the package names rarely change.</p>
+
+<p>For instance, the gdal package was, starting on Ubuntu 14.04, named
+<code>libgdal1-dev</code>. Assuming it was added at the time, its osdep entry would be:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">gdal</span><span class="pi">:</span>
+  <span class="na">ubuntu</span><span class="pi">:</span>
+    <span class="na">default</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">libgdal1-dev</span>
+</code></pre></div>
+<p>However, from 16.04 onwards, the package got renamed into <code>libgdal-dev</code>. One
+should update the osdep entry to match:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">gdal</span><span class="pi">:</span>
+  <span class="na">ubuntu</span><span class="pi">:</span>
+    <span class="s1">'</span><span class="s">14.04,14.10,15.04,15.10'</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">libgdal1-dev</span>
+    <span class="na">default</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">libgdal-dev</span>
+</code></pre></div>
+<p>This way, from 14.04 up to 15.10, one did not have to change the entry. When
+16.04 got out, we needed to update the entry, but won't have to do it until the
+package name changes again.</p>
+
+<p class="next-page"><strong>Next</strong>: now that you have a deeper understanding of what are packages and how they
+are integrated in an autoproj build <a href="managing.html">let's discuss how to organize the overall build
+configuration itself</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

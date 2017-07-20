@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="workspace/">The Workspace</a></span><ul><li class='child'><a href="workspace/">Introduction</a></li><li class='child'><a href="workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_basics/">Design Basics</a></span><ul><li class='child'><a href="syskit_basics/">Introduction</a></li><li class='child'><a href="syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="syskit_basics/devices.html">Devices</a></li><li class='child'><a href="syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_runtime/">Runtime Basics</a></span><ul><li class='child'><a href="syskit_runtime/">Introduction</a></li><li class='child'><a href="syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child active'><a href="./">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="basics/">Basics</a></span><ul><li class='child'><a href="basics/">Introduction</a></li><li class='child'><a href="basics/installation.html">Installation</a></li><li class='child'><a href="basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="basics/getting_started.html">Getting Started</a></li><li class='child'><a href="basics/composition.html">Compositions</a></li><li class='child'><a href="basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="basics/devices.html">Devices</a></li><li class='child'><a href="basics/deployment.html">Deployment</a></li><li class='child'><a href="basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="runtime_overview/">Introduction</a></li><li class='child'><a href="runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="workspace/">Introduction</a></li><li class='child'><a href="workspace/conventions.html">Conventions</a></li><li class='child'><a href="workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
@@ -74,7 +74,7 @@ Rock mainline repositories. For this reason, one needs to start using the
 buildconf repository on GitHub
 <a href="https://github.com/rock-gazebo/buildconf"><code>rock-gazebo/buildconf</code></a> instead of
 the default one at
-<a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. The <a href="workspace/">installation guide</a> already reflects this.</p>
+<a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. The <a href="basics/installation.html">installation guide</a> already reflects this.</p>
 </div>
 
 <h2 id="how_to_read">How to read this documentation</h2>
@@ -90,15 +90,15 @@ need to know at a certain point in time.</p>
 <h2 id="basics">Basics</h2>
 
 <ol>
-  <li><a href="workspace/">Installing Rock, day-to-day handling of packages</a></li>
-  <li><a href="syskit_basics/">Design Basics: Building a simple system using Gazebo and Syskit</a></li>
-  <li><a href="syskit_runtime/">Runtime Basics: Running the basic system</a></li>
+  <li><a href="basics/">Basics: Installing Rock and Building a simple system using Gazebo and Syskit</a></li>
+  <li><a href="runtime_overview/">Runtime Basics: Running the basic system</a></li>
 </ol>
 
 <h2 id="building-systems">Building Systems</h2>
 
 <ol>
-  <li>Writing components</li>
+  <li><a href="workspace/">Workspace and Packages</a></li>
+  <li><a href="writing_components/index.html">Writing components</a></li>
   <li>Reusable Syskit modelling</li>
   <li>Advanced data processing in Components</li>
   <li>System coordination</li>

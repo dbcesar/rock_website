@@ -590,20 +590,6 @@ textarea {
 .highlight .w {
   color: #bbb; }
 
-img {
-  padding: 20px; }
-
-.advanced_description {
-  margin-left: 1em; }
-
-.advanced {
-  margin: 20px;
-  padding: 20px;
-  background-color: #EFD7FF;
-  margin-top: 40px; }
-  .advanced h1, .advanced h2 {
-    margin-top: 0px; }
-
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
  * Copyright 2011-2016 Twitter, Inc.
@@ -1929,11 +1915,12 @@ a.bg-success:hover,
 a.bg-success:focus {
   background-color: #c1e2b3; }
 
-.bg-info {
+.bg-info, .next-page {
   background-color: #d9edf7; }
 
-a.bg-info:hover,
-a.bg-info:focus {
+a.bg-info:hover, a.next-page:hover,
+a.bg-info:focus,
+a.next-page:focus {
   background-color: #afd9ee; }
 
 .bg-warning {
@@ -3908,10 +3895,10 @@ tbody.collapse.in {
   margin-bottom: 2px; }
 
 @media (min-width: 768px) {
-  .navbar-right .dropdown-menu {
+  .navbar-right .dropdown-menu, #markdown-toc .dropdown-menu {
     right: 0;
     left: auto; }
-  .navbar-right .dropdown-menu-left {
+  .navbar-right .dropdown-menu-left, #markdown-toc .dropdown-menu-left {
     left: 0;
     right: auto; } }
 .btn-group,
@@ -4204,41 +4191,41 @@ tbody.collapse.in {
     z-index: 2;
     margin-left: -1px; }
 
-.nav, ul.nav li ul {
+.nav, ul.nav li ul, #markdown-toc, #markdown-toc > li > ul {
   margin-bottom: 0;
   padding-left: 0;
   list-style: none; }
-  .nav:before, ul.nav li ul:before, .nav:after, ul.nav li ul:after {
+  .nav:before, ul.nav li ul:before, #markdown-toc:before, #markdown-toc > li > ul:before, .nav:after, ul.nav li ul:after, #markdown-toc:after, #markdown-toc > li > ul:after {
     content: " ";
     display: table; }
-  .nav:after, ul.nav li ul:after {
+  .nav:after, ul.nav li ul:after, #markdown-toc:after, #markdown-toc > li > ul:after {
     clear: both; }
-  .nav > li, ul.nav li ul > li {
+  .nav > li, ul.nav li ul > li, #markdown-toc > li, #markdown-toc > li > ul > li {
     position: relative;
     display: block; }
-    .nav > li > a, ul.nav li ul > li > a {
+    .nav > li > a, ul.nav li ul > li > a, #markdown-toc > li > a, #markdown-toc > li > ul > li > a {
       position: relative;
       display: block;
       padding: 10px 15px; }
-      .nav > li > a:hover, ul.nav li ul > li > a:hover, .nav > li > a:focus, ul.nav li ul > li > a:focus {
+      .nav > li > a:hover, ul.nav li ul > li > a:hover, #markdown-toc > li > a:hover, #markdown-toc > li > ul > li > a:hover, .nav > li > a:focus, ul.nav li ul > li > a:focus, #markdown-toc > li > a:focus, #markdown-toc > li > ul > li > a:focus {
         text-decoration: none;
         background-color: #eeeeee; }
-    .nav > li.disabled > a, ul.nav li ul > li.disabled > a {
+    .nav > li.disabled > a, ul.nav li ul > li.disabled > a, #markdown-toc > li.disabled > a, #markdown-toc > li > ul > li.disabled > a {
       color: #777777; }
-      .nav > li.disabled > a:hover, ul.nav li ul > li.disabled > a:hover, .nav > li.disabled > a:focus, ul.nav li ul > li.disabled > a:focus {
+      .nav > li.disabled > a:hover, ul.nav li ul > li.disabled > a:hover, #markdown-toc > li.disabled > a:hover, #markdown-toc > li > ul > li.disabled > a:hover, .nav > li.disabled > a:focus, ul.nav li ul > li.disabled > a:focus, #markdown-toc > li.disabled > a:focus, #markdown-toc > li > ul > li.disabled > a:focus {
         color: #777777;
         text-decoration: none;
         background-color: transparent;
         cursor: not-allowed; }
-  .nav .open > a, ul.nav li ul .open > a, .nav .open > a:hover, ul.nav li ul .open > a:hover, .nav .open > a:focus, ul.nav li ul .open > a:focus {
+  .nav .open > a, ul.nav li ul .open > a, #markdown-toc .open > a, #markdown-toc > li > ul .open > a, .nav .open > a:hover, ul.nav li ul .open > a:hover, #markdown-toc .open > a:hover, #markdown-toc > li > ul .open > a:hover, .nav .open > a:focus, ul.nav li ul .open > a:focus, #markdown-toc .open > a:focus, #markdown-toc > li > ul .open > a:focus {
     background-color: #eeeeee;
     border-color: #337ab7; }
-  .nav .nav-divider {
+  .nav .nav-divider, #markdown-toc .nav-divider {
     height: 1px;
     margin: 9px 0;
     overflow: hidden;
     background-color: #e5e5e5; }
-  .nav > li > a > img, ul.nav li ul > li > a > img {
+  .nav > li > a > img, ul.nav li ul > li > a > img, #markdown-toc > li > a > img, #markdown-toc > li > ul > li > a > img {
     max-width: none; }
 
 .nav-tabs {
@@ -4596,10 +4583,10 @@ tbody.collapse.in {
   .navbar-left {
     float: left !important; }
 
-  .navbar-right {
+  .navbar-right, #markdown-toc {
     float: right !important;
     margin-right: -15px; }
-    .navbar-right ~ .navbar-right {
+    .navbar-right ~ .navbar-right, #markdown-toc ~ .navbar-right, .navbar-right ~ #markdown-toc, #markdown-toc ~ #markdown-toc {
       margin-right: 0; } }
 .navbar-default {
   background-color: #f8f8f8;
@@ -6455,6 +6442,35 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+.carousel {
+  margin-top: 2em;
+  margin-bottom: 2em; }
+
+.carousel-control.left,
+.carousel-control.right {
+  background-image: none; }
+
+.carousel-indicators li {
+  background-color: #999;
+  background-color: rgba(70, 70, 70, 0.25); }
+
+.carousel-indicators .active {
+  background-color: #444; }
+
+img {
+  padding: 20px; }
+
+h2, h3 {
+  margin-top: 30px; }
+
+div.highlight > pre.highlight {
+  padding: .5em;
+  margin-bottom: 0;
+  border: none; }
+
+div.highlight {
+  margin-bottom: 10px; }
+
 .fluid-video {
   position: relative;
   margin: 25px;
@@ -6469,24 +6485,24 @@ button.close {
     width: 100%;
     height: 100%; }
 
-.callout {
+.callout, .tip, .important {
   padding: 20px;
   margin: 20px 0;
   border: 1px solid #eee;
   border-left-width: 5px;
   border-radius: 3px; }
 
-.callout h4 {
+.callout h4, .tip h4, .important h4 {
   margin-top: 0;
   margin-bottom: 5px; }
 
-.callout p:last-child {
+.callout p:last-child, .tip p:last-child, .important p:last-child {
   margin-bottom: 0; }
 
-.callout code {
+.callout code, .tip code, .important code {
   border-radius: 3px; }
 
-.callout + .callout {
+.callout + .callout, .tip + .callout, .important + .callout, .callout + .tip, .tip + .tip, .important + .tip, .callout + .important, .tip + .important, .important + .important {
   margin-top: -5px; }
 
 .callout-default {
@@ -6513,51 +6529,76 @@ button.close {
 .callout-danger h4 {
   color: #d9534f; }
 
-.callout-warning {
+.callout-warning, .important {
   border-left-color: #f0ad4e; }
 
-.callout-warning h4 {
+.callout-warning h4, .important h4 {
   color: #f0ad4e; }
 
-.callout-info {
+.callout-info, .tip {
   border-left-color: #5bc0de; }
 
-.callout-info h4 {
+.callout-info h4, .tip h4 {
   color: #5bc0de; }
 
-/* First level of nav */
-.docs-sidenav {
-  margin-top: 20px;
-  margin-bottom: 20px; }
-
-/* All levels of nav */
-.docs-sidebar .nav > li > a, .docs-sidebar ul.nav li ul > li > a, ul.nav li .docs-sidebar ul > li > a,
-.docs-sidebar .nav > li > span > a,
+/*
+ * Fine-tune navigation elements.
+ *
+ * There are mainly two navigation elements: the left sidebar and the page TOC.
+ *
+ * They are both based on Bootstrap's own documentation style. The style is
+ * defined in the .toc classes, and then extends the panel nav styles
+ * (.docs-sidenav and children) and the page TOC (#markdown-toc and children)
+ */
+/**
+ * Shared classes
+ */
+.toc-link, .toc-level2-link, .docs-sidebar .nav .nav > li > a, ul.nav li .docs-sidebar ul .nav > li > a, .docs-sidebar #markdown-toc .nav > li > a, .docs-sidebar ul.nav li ul > li > a, .docs-sidebar ul.nav li ul ul > li > a, ul.nav li .docs-sidebar ul ul > li > a, .docs-sidebar #markdown-toc ul.nav li ul > li > a, ul.nav li .docs-sidebar #markdown-toc ul > li > a, .docs-sidebar ul.nav #markdown-toc > li > ul ul > li > a, ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > a, .docs-sidebar #markdown-toc #markdown-toc > li > a, .docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > a,
+.docs-sidebar .nav .nav > li > span > a,
+ul.nav li .docs-sidebar ul .nav > li > span > a,
+.docs-sidebar #markdown-toc .nav > li > span > a,
 .docs-sidebar ul.nav li ul > li > span > a,
-ul.nav li .docs-sidebar ul > li > span > a {
+.docs-sidebar ul.nav li ul ul > li > span > a,
+ul.nav li .docs-sidebar ul ul > li > span > a,
+.docs-sidebar #markdown-toc ul.nav li ul > li > span > a,
+ul.nav li .docs-sidebar #markdown-toc ul > li > span > a,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > li > span > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > span > a,
+.docs-sidebar #markdown-toc #markdown-toc > li > span > a,
+.docs-sidebar #markdown-toc > li > ul > li > span > a,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > span > a, #markdown-toc > li > ul > li > a, .docs-sidebar .nav > li > a, ul.nav li .docs-sidebar ul > li > a,
+.docs-sidebar .nav > li > span > a,
+ul.nav li .docs-sidebar ul > li > span > a,
+.docs-sidebar #markdown-toc > li > span > a, #markdown-toc > li > a {
   display: block;
   padding: 4px 20px;
   font-size: 13px;
   font-weight: 500;
   color: #767676; }
 
-.docs-sidebar .nav > li > a:hover, .docs-sidebar ul.nav li ul > li > a:hover, ul.nav li .docs-sidebar ul > li > a:hover,
+.toc-link-hover, .docs-sidebar .nav > li > a:hover, .docs-sidebar ul.nav li ul > li > a:hover, ul.nav li .docs-sidebar ul > li > a:hover, .docs-sidebar #markdown-toc > li > ul > li > a:hover,
 .docs-sidebar .nav > li > a:focus,
 .docs-sidebar ul.nav li ul > li > a:focus,
 ul.nav li .docs-sidebar ul > li > a:focus,
+.docs-sidebar #markdown-toc > li > ul > li > a:focus,
 .docs-sidebar .nav > li > span > a:hover,
 .docs-sidebar ul.nav li ul > li > span > a:hover,
 ul.nav li .docs-sidebar ul > li > span > a:hover,
+.docs-sidebar #markdown-toc > li > span > a:hover,
+.docs-sidebar #markdown-toc > li > ul > li > span > a:hover,
 .docs-sidebar .nav > li > span > a:focus,
 .docs-sidebar ul.nav li ul > li > span > a:focus,
-ul.nav li .docs-sidebar ul > li > span > a:focus {
+ul.nav li .docs-sidebar ul > li > span > a:focus,
+.docs-sidebar #markdown-toc > li > span > a:focus,
+.docs-sidebar #markdown-toc > li > ul > li > span > a:focus, #markdown-toc > li > a:hover,
+#markdown-toc > li > a:focus {
   padding-left: 19px;
   color: #563d7c;
   text-decoration: none;
   background-color: transparent;
   border-left: 1px solid #563d7c; }
 
-.docs-sidebar .nav > .active > a, .docs-sidebar ul.nav li ul > .active > a, ul.nav li .docs-sidebar ul > .active > a,
+.toc-link-active, .docs-sidebar .nav > .active > a, .docs-sidebar ul.nav li ul > .active > a, ul.nav li .docs-sidebar ul > .active > a, .docs-sidebar #markdown-toc > .active > a, .docs-sidebar #markdown-toc > li > ul > .active > a,
 .docs-sidebar .nav > .active:hover > a,
 .docs-sidebar ul.nav li ul > .active:hover > a,
 ul.nav li .docs-sidebar ul > .active:hover > a,
@@ -6567,6 +6608,7 @@ ul.nav li .docs-sidebar ul > .active:focus > a,
 .docs-sidebar .nav > .active > span > a,
 .docs-sidebar ul.nav li ul > .active > span > a,
 ul.nav li .docs-sidebar ul > .active > span > a,
+.docs-sidebar #markdown-toc > .active > span > a,
 .docs-sidebar .nav > .active:hover > span > a,
 .docs-sidebar ul.nav li ul > .active:hover > span > a,
 ul.nav li .docs-sidebar ul > .active:hover > span > a,
@@ -6579,91 +6621,199 @@ ul.nav li .docs-sidebar ul > .active:focus > span > a {
   background-color: transparent;
   border-left: 2px solid #563d7c; }
 
-/* Nav: second level (shown on .active) */
-.docs-sidebar .nav .nav, ul.nav li .docs-sidebar ul .nav, .docs-sidebar ul.nav li ul, .docs-sidebar ul.nav li ul ul, ul.nav li .docs-sidebar ul ul {
-  display: none;
-  /* Hide by default, but at >768px, show it */
-  padding-bottom: 10px; }
-
-.docs-sidebar .nav .nav > li > a, ul.nav li .docs-sidebar ul .nav > li > a, .docs-sidebar ul.nav li ul > li > a, .docs-sidebar ul.nav li ul ul > li > a, ul.nav li .docs-sidebar ul ul > li > a,
+.toc-level2-link, .docs-sidebar .nav .nav > li > a, ul.nav li .docs-sidebar ul .nav > li > a, .docs-sidebar #markdown-toc .nav > li > a, .docs-sidebar ul.nav li ul > li > a, .docs-sidebar ul.nav li ul ul > li > a, ul.nav li .docs-sidebar ul ul > li > a, .docs-sidebar #markdown-toc ul.nav li ul > li > a, ul.nav li .docs-sidebar #markdown-toc ul > li > a, .docs-sidebar ul.nav #markdown-toc > li > ul ul > li > a, ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > a, .docs-sidebar .nav #markdown-toc > li > a, ul.nav li .docs-sidebar ul #markdown-toc > li > a, .docs-sidebar #markdown-toc #markdown-toc > li > a, .docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > a,
 .docs-sidebar .nav .nav > li > span > a,
 ul.nav li .docs-sidebar ul .nav > li > span > a,
+.docs-sidebar #markdown-toc .nav > li > span > a,
 .docs-sidebar ul.nav li ul > li > span > a,
 .docs-sidebar ul.nav li ul ul > li > span > a,
-ul.nav li .docs-sidebar ul ul > li > span > a {
+ul.nav li .docs-sidebar ul ul > li > span > a,
+.docs-sidebar #markdown-toc ul.nav li ul > li > span > a,
+ul.nav li .docs-sidebar #markdown-toc ul > li > span > a,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > li > span > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > span > a,
+.docs-sidebar .nav #markdown-toc > li > span > a,
+ul.nav li .docs-sidebar ul #markdown-toc > li > span > a,
+.docs-sidebar #markdown-toc #markdown-toc > li > span > a,
+.docs-sidebar #markdown-toc > li > ul > li > span > a,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > span > a, #markdown-toc > li > ul > li > a {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 30px;
   font-size: 12px;
   font-weight: normal; }
 
-.docs-sidebar .nav .nav > li > a:hover, ul.nav li .docs-sidebar ul .nav > li > a:hover, .docs-sidebar ul.nav li ul > li > a:hover, .docs-sidebar ul.nav li ul ul > li > a:hover, ul.nav li .docs-sidebar ul ul > li > a:hover,
+.toc-level2-link-hover, .docs-sidebar .nav .nav > li > a:hover, ul.nav li .docs-sidebar ul .nav > li > a:hover, .docs-sidebar #markdown-toc .nav > li > a:hover, .docs-sidebar ul.nav li ul > li > a:hover, .docs-sidebar ul.nav li ul ul > li > a:hover, ul.nav li .docs-sidebar ul ul > li > a:hover, .docs-sidebar #markdown-toc ul.nav li ul > li > a:hover, ul.nav li .docs-sidebar #markdown-toc ul > li > a:hover, .docs-sidebar ul.nav #markdown-toc > li > ul ul > li > a:hover, ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > a:hover, .docs-sidebar .nav #markdown-toc > li > a:hover, ul.nav li .docs-sidebar ul #markdown-toc > li > a:hover, .docs-sidebar #markdown-toc #markdown-toc > li > a:hover, .docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > a:hover,
 .docs-sidebar .nav .nav > li > a:focus,
 ul.nav li .docs-sidebar ul .nav > li > a:focus,
+.docs-sidebar #markdown-toc .nav > li > a:focus,
 .docs-sidebar ul.nav li ul > li > a:focus,
 .docs-sidebar ul.nav li ul ul > li > a:focus,
 ul.nav li .docs-sidebar ul ul > li > a:focus,
+.docs-sidebar #markdown-toc ul.nav li ul > li > a:focus,
+ul.nav li .docs-sidebar #markdown-toc ul > li > a:focus,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > li > a:focus,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > a:focus,
+.docs-sidebar .nav #markdown-toc > li > a:focus,
+ul.nav li .docs-sidebar ul #markdown-toc > li > a:focus,
+.docs-sidebar #markdown-toc #markdown-toc > li > a:focus,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > a:focus,
 .docs-sidebar .nav .nav > li > span > a:hover,
 ul.nav li .docs-sidebar ul .nav > li > span > a:hover,
+.docs-sidebar #markdown-toc .nav > li > span > a:hover,
 .docs-sidebar ul.nav li ul > li > span > a:hover,
 .docs-sidebar ul.nav li ul ul > li > span > a:hover,
 ul.nav li .docs-sidebar ul ul > li > span > a:hover,
+.docs-sidebar #markdown-toc ul.nav li ul > li > span > a:hover,
+ul.nav li .docs-sidebar #markdown-toc ul > li > span > a:hover,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > li > span > a:hover,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > span > a:hover,
+.docs-sidebar .nav #markdown-toc > li > span > a:hover,
+ul.nav li .docs-sidebar ul #markdown-toc > li > span > a:hover,
+.docs-sidebar #markdown-toc #markdown-toc > li > span > a:hover,
+.docs-sidebar #markdown-toc > li > ul > li > span > a:hover,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > span > a:hover,
 .docs-sidebar .nav .nav > li > span > a:focus,
 ul.nav li .docs-sidebar ul .nav > li > span > a:focus,
+.docs-sidebar #markdown-toc .nav > li > span > a:focus,
 .docs-sidebar ul.nav li ul > li > span > a:focus,
 .docs-sidebar ul.nav li ul ul > li > span > a:focus,
-ul.nav li .docs-sidebar ul ul > li > span > a:focus {
+ul.nav li .docs-sidebar ul ul > li > span > a:focus,
+.docs-sidebar #markdown-toc ul.nav li ul > li > span > a:focus,
+ul.nav li .docs-sidebar #markdown-toc ul > li > span > a:focus,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > li > span > a:focus,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > li > span > a:focus,
+.docs-sidebar .nav #markdown-toc > li > span > a:focus,
+ul.nav li .docs-sidebar ul #markdown-toc > li > span > a:focus,
+.docs-sidebar #markdown-toc #markdown-toc > li > span > a:focus,
+.docs-sidebar #markdown-toc > li > ul > li > span > a:focus,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > li > span > a:focus, #markdown-toc > li > ul > li > a:hover,
+#markdown-toc > li > ul > li > a:focus {
   padding-left: 29px; }
 
-.docs-sidebar .nav .nav > .active > a, ul.nav li .docs-sidebar ul .nav > .active > a, .docs-sidebar ul.nav li ul > .active > a, .docs-sidebar ul.nav li ul ul > .active > a, ul.nav li .docs-sidebar ul ul > .active > a,
+/**
+ * Sidebar navigation
+ */
+/* First level of nav */
+.docs-sidenav {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
+/* All levels of nav */
+/* Nav: second level (shown on .active) */
+.docs-sidebar .nav .nav, ul.nav li .docs-sidebar ul .nav, .docs-sidebar #markdown-toc .nav, .docs-sidebar ul.nav li ul, .docs-sidebar ul.nav li ul ul, ul.nav li .docs-sidebar ul ul, .docs-sidebar #markdown-toc ul.nav li ul, ul.nav li .docs-sidebar #markdown-toc ul, .docs-sidebar ul.nav #markdown-toc > li > ul ul, ul.nav .docs-sidebar #markdown-toc > li > ul ul, .docs-sidebar .nav #markdown-toc, ul.nav li .docs-sidebar ul #markdown-toc, .docs-sidebar #markdown-toc #markdown-toc, .docs-sidebar #markdown-toc > li > ul, .docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul {
+  display: none;
+  /* Hide by default, but at >768px, show it */
+  padding-bottom: 10px; }
+
+.docs-sidebar .nav .nav > .active > a, ul.nav li .docs-sidebar ul .nav > .active > a, .docs-sidebar #markdown-toc .nav > .active > a, .docs-sidebar ul.nav li ul > .active > a, .docs-sidebar ul.nav li ul ul > .active > a, ul.nav li .docs-sidebar ul ul > .active > a, .docs-sidebar #markdown-toc ul.nav li ul > .active > a, ul.nav li .docs-sidebar #markdown-toc ul > .active > a, .docs-sidebar ul.nav #markdown-toc > li > ul ul > .active > a, ul.nav .docs-sidebar #markdown-toc > li > ul ul > .active > a, .docs-sidebar .nav #markdown-toc > .active > a, ul.nav li .docs-sidebar ul #markdown-toc > .active > a, .docs-sidebar #markdown-toc #markdown-toc > .active > a, .docs-sidebar #markdown-toc > li > ul > .active > a, .docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > .active > a,
 .docs-sidebar .nav .nav > .active:hover > a,
 ul.nav li .docs-sidebar ul .nav > .active:hover > a,
+.docs-sidebar #markdown-toc .nav > .active:hover > a,
 .docs-sidebar ul.nav li ul > .active:hover > a,
 .docs-sidebar ul.nav li ul ul > .active:hover > a,
 ul.nav li .docs-sidebar ul ul > .active:hover > a,
+.docs-sidebar #markdown-toc ul.nav li ul > .active:hover > a,
+ul.nav li .docs-sidebar #markdown-toc ul > .active:hover > a,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > .active:hover > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > .active:hover > a,
+.docs-sidebar .nav #markdown-toc > .active:hover > a,
+ul.nav li .docs-sidebar ul #markdown-toc > .active:hover > a,
+.docs-sidebar #markdown-toc #markdown-toc > .active:hover > a,
+.docs-sidebar #markdown-toc > li > ul > .active:hover > a,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > .active:hover > a,
 .docs-sidebar .nav .nav > .active:focus > a,
 ul.nav li .docs-sidebar ul .nav > .active:focus > a,
+.docs-sidebar #markdown-toc .nav > .active:focus > a,
 .docs-sidebar ul.nav li ul > .active:focus > a,
 .docs-sidebar ul.nav li ul ul > .active:focus > a,
 ul.nav li .docs-sidebar ul ul > .active:focus > a,
+.docs-sidebar #markdown-toc ul.nav li ul > .active:focus > a,
+ul.nav li .docs-sidebar #markdown-toc ul > .active:focus > a,
+.docs-sidebar ul.nav #markdown-toc > li > ul ul > .active:focus > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > .active:focus > a,
+.docs-sidebar .nav #markdown-toc > .active:focus > a,
+ul.nav li .docs-sidebar ul #markdown-toc > .active:focus > a,
+.docs-sidebar #markdown-toc #markdown-toc > .active:focus > a,
+.docs-sidebar #markdown-toc > li > ul > .active:focus > a,
+.docs-sidebar #markdown-toc > li > ul #markdown-toc > li > ul > .active:focus > a,
 .docs-sidebar .nav .nav > .active > span > a,
 ul.nav li .docs-sidebar ul .nav > .active > span > a,
+.docs-sidebar #markdown-toc .nav > .active > span > a,
 .docs-sidebar ul.nav li ul > .active > span > a,
 .docs-sidebar ul.nav li ul ul > .active > span > a,
 ul.nav li .docs-sidebar ul ul > .active > span > a,
+.docs-sidebar #markdown-toc ul.nav li ul > .active > span > a,
+ul.nav li .docs-sidebar #markdown-toc ul > .active > span > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > .active > span > a,
+.docs-sidebar .nav #markdown-toc > .active > span > a,
+ul.nav li .docs-sidebar ul #markdown-toc > .active > span > a,
+.docs-sidebar #markdown-toc #markdown-toc > .active > span > a,
+.docs-sidebar #markdown-toc > li > ul > .active > span > a,
 .docs-sidebar .nav .nav > .active:hover > span > a,
 ul.nav li .docs-sidebar ul .nav > .active:hover > span > a,
+.docs-sidebar #markdown-toc .nav > .active:hover > span > a,
 .docs-sidebar ul.nav li ul > .active:hover > span > a,
 .docs-sidebar ul.nav li ul ul > .active:hover > span > a,
 ul.nav li .docs-sidebar ul ul > .active:hover > span > a,
+.docs-sidebar #markdown-toc ul.nav li ul > .active:hover > span > a,
+ul.nav li .docs-sidebar #markdown-toc ul > .active:hover > span > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > .active:hover > span > a,
+.docs-sidebar .nav #markdown-toc > .active:hover > span > a,
+ul.nav li .docs-sidebar ul #markdown-toc > .active:hover > span > a,
+.docs-sidebar #markdown-toc #markdown-toc > .active:hover > span > a,
+.docs-sidebar #markdown-toc > li > ul > .active:hover > span > a,
 .docs-sidebar .nav .nav > .active:focus > span > a,
 ul.nav li .docs-sidebar ul .nav > .active:focus > span > a,
+.docs-sidebar #markdown-toc .nav > .active:focus > span > a,
 .docs-sidebar ul.nav li ul > .active:focus > span > a,
 .docs-sidebar ul.nav li ul ul > .active:focus > span > a,
-ul.nav li .docs-sidebar ul ul > .active:focus > span > a {
+ul.nav li .docs-sidebar ul ul > .active:focus > span > a,
+.docs-sidebar #markdown-toc ul.nav li ul > .active:focus > span > a,
+ul.nav li .docs-sidebar #markdown-toc ul > .active:focus > span > a,
+ul.nav .docs-sidebar #markdown-toc > li > ul ul > .active:focus > span > a,
+.docs-sidebar .nav #markdown-toc > .active:focus > span > a,
+ul.nav li .docs-sidebar ul #markdown-toc > .active:focus > span > a,
+.docs-sidebar #markdown-toc #markdown-toc > .active:focus > span > a,
+.docs-sidebar #markdown-toc > li > ul > .active:focus > span > a {
   padding-left: 28px;
   font-weight: 500; }
 
-.docs-sidebar .nav li.active ul, ul.nav li .docs-sidebar ul li.active ul {
+.docs-sidebar .nav li.active ul, ul.nav li .docs-sidebar ul li.active ul, .docs-sidebar #markdown-toc li.active ul {
   display: block; }
-
-h2, h3 {
-  margin-top: 30px; }
 
 nav.docs-sidebar.affix {
   top: 20px; }
 
-.carousel {
-  margin-top: 2em;
-  margin-bottom: 2em; }
+/**
+ * Page TOC
+ */
+#markdown-toc > li > a {
+  margin-left: 19px; }
 
-.carousel-control.left,
-.carousel-control.right {
-  background-image: none; }
+#markdown-toc {
+  margin-left: 19px;
+  margin-right: 5px;
+  margin-bottom: 1em;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  width: 40%;
+  background: #f5f5f5; }
 
-.carousel-indicators li {
-  background-color: #999;
-  background-color: rgba(70, 70, 70, 0.25); }
+#markdown-toc > li > ul {
+  padding-left: 19px; }
 
-.carousel-indicators .active {
-  background-color: #444; }
+.advanced_description {
+  margin-left: 1em; }
+
+.advanced {
+  margin: 20px;
+  padding: 20px;
+  background-color: #EFD7FF;
+  margin-top: 40px; }
+  .advanced h1, .advanced h2 {
+    margin-top: 0px; }
+
+.next-page {
+  margin: 35px;
+  padding: 25px; }

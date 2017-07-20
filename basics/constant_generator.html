@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_basics syskit_basics_constant_generator">
+    <body class="basics basics_constant_generator">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,11 +38,19 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Design Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime Basics</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="../syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child active'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="creating-our-command-generator">Creating our Command Generator</h1>
+                <h1 class="no_toc" id="creating-our-command-generator">Creating our Command Generator</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#the-cartesian-constant-generator" id="markdown-toc-the-cartesian-constant-generator">The Cartesian Constant Generator</a></li>
+  <li><a href="#improving-the-arguments" id="markdown-toc-improving-the-arguments">Improving the arguments</a></li>
+  <li><a href="#testing" id="markdown-toc-testing">Testing</a></li>
+  <li><a href="#creating-the-armcartesianconstantcontrolwdls-composition" id="markdown-toc-creating-the-armcartesianconstantcontrolwdls-composition">Creating the ArmCartesianConstantControlWdls Composition</a></li>
+  <li><a href="#joint_position_constant_generator" id="markdown-toc-joint_position_constant_generator">The Joint Position Constant Generator</a></li>
+</ul>
 
 <p><a href="composition.html">The control network we just created</a> does not have a command
 generator. The first generator one usually creates is a constant one, creating an
@@ -57,6 +65,17 @@ and finally <a href="deployment.html">deploy and run it</a>.</p>
 
 <p>For the command, let's generate a single constant command. It will allow us to
 move the arm tip from one point to another, expressed in the cartesian frame.</p>
+
+<p>The first thing is to find out what's the data type of the port. If we look at
+the dataflow in the <code>ArmCartesianControlWdls</code> composition, we find:</p>
+
+<p><img src="media/arm_cartesian_control_wdls_dataflow.svg" alt="Datatype of the cartesian command" class="fullwidth" /></p>
+
+<p>The type name is <code>/base/samples/RigidBodyState</code>. This type has been defined
+when components have been created, which is something we will see <a href="../writing_components/types.html">when we
+learn about creating components</a>. You can
+have an overview of the types available in a Rock system by starting the
+<code>rock-browse</code> tool.</p>
 
 <p><code>bundles/common_models</code> provides <code>Compositions::ConstantGenerator</code>, a generic
 implementation of a component that periodically emits a value of a certain type. This generator is
@@ -122,6 +141,11 @@ provide a better <code>setpoint</code> argument that is transformed to set <code
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
+<p class="callout callout-info"><strong>Note</strong>: the position and orientation here are assumed to be respectively a
+vector (of type Eigen::Vector3) and a quaternion (of type Eigen::Quaternion).
+The underlying type system <a href="../writing_components/types.html">is a subject for another
+part</a>. For now, just accept it.</p>
+
 <p class="callout callout-warning">This kind of "high-level argument shadowing low-level
 arguments must have a one-to-N relationship (usually one-to-one). It is
 possible but not trivial, under the Syskit argument handling, to "aggregate"
@@ -197,7 +221,7 @@ allows to auto-run all the discovered tests, and re-run tests when the files
 change, like so:</p>
 
 <div class="fluid-video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/Z-asD-4yM8w?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/Z-asD-4yM8w?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p>Now, let's test if the timestamp is properly set. Given that time is a very common
@@ -365,7 +389,30 @@ the corresponding composition.</p>
 
 <p>The creation of this generator is left to the reader.</p>
 
-<p class="callout callout-info"><strong>Tip</strong>: a good representation for the setpoint would be a <code>joint_name=&gt;joint_position</code> hash.</p>
+<div class="callout callout-info">
+  <p><strong>Tip</strong>: a good representation for the setpoint would be a
+<code>joint_name=&gt;joint_position</code> hash, where <code>joint_name</code> is a string and
+<code>joint_position</code> a floating-point value (always in radians !). Given that we've
+not yet dealt with the type system, you will also need to know that to create
+a <code>/base/commands/Joints</code> from within Ruby, you do:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>Types.base.commands.Joints.new(
+  time: Time.at(0),
+  names: joint_names,
+  elements: joint_commands)
+</code></pre></div>
+  <p>where <code>joint_names</code> is an array of strings and <code>joint_commands</code> an array of</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>Types.base.JointState.new(
+  position: position,
+  speed: Float::NAN
+  effort: Float::NAN
+  raw: Float::NAN
+  acceleration: Float::NAN)
+</code></pre></div>
+  <p><code>NaN</code> is used within Rock to indicate either 'unset' (for commands) or
+'unknown' (for sensor readings)</p>
+</div>
 
 <div class="panel panel-info">
   <div class="panel-heading">
@@ -496,12 +543,9 @@ the corresponding composition.</p>
   </div>
 </div>
 
-<h2 id="finally">Finally</h2>
-
-<p>We can now map the composition's <code>arm</code> child to the arm within the simulation.
-Let's do <a href="devices.html" class="btn btn-primary">a detour to device models</a> to then
-finally <a href="deployment.html" class="btn btn-primary">run our network</a></p>
-
+<p class="next-page"><strong>Next</strong>: We can now map the composition's <code>arm</code> child to the arm within the
+simulation.  Let's do <a href="devices.html">a detour to device models</a> to then finally
+<a href="deployment.html">run our network</a></p>
 
             </div>
         </div>

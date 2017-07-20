@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_runtime syskit_runtime_recap">
+    <body class="runtime_overview runtime_overview_recap">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,11 +38,11 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Design Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child active'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Overview</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child active'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="runtime-overview-recap">Runtime Overview: Recap</h1>
+                <h1 id="recap">Recap</h1>
 
 <ul>
   <li>Syskit maintains the set of <em>jobs</em> or <em>missions</em>, that is the set of goals
@@ -51,7 +51,7 @@ should run, or – as we will see later – a goal to achieve.</li>
   <li>Components are related to each other by <a href="task_structure.html">the task
 structure</a>.</li>
   <li>Syskit has assumptions about how components should be implemented. We'll
-recollect those when we get to <a href="component_implementation.html">how to implement
+recollect those when we get to <a href="../writing_components/index.html">how to implement
 components</a></li>
   <li>Components are configured and started "when possible" by <a href="event_loop.html#scheduling">the
 scheduler</a></li>
@@ -63,7 +63,7 @@ when needed.</li>
 meet these constraints is what Syskit interprets as <a href="exceptions.html">errors</a></li>
 </ul>
 
-<p>Between this part and the <a href="../syskit_basics">Basics</a>, we've covered most of the basics
+<p class="next-page">Between this part and the <a href="../basics">Basics</a>, we've covered most of the basics
 aspects of running a Syskit system. The rest of the subjects covered in this documentation
 can be seen more as a need-to-know basis. See <a href="../#how_to_read">how to read this documentation</a>.</p>
 

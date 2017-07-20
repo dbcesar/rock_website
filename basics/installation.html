@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="basics basics_installation">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="installation.html">Installation</a></li><li class='child'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="rock-installation">Rock Installation</h1>
+
+<div class="alert alert-warning" role="alert" id="not_mainline">
+  <p>As of today (June 2017), not all the software used in this guide has reached
+Rock mainline repositories. For this reason, one needs to start using the
+buildconf repository on GitHub's
+<a href="https://github.com/rock-gazebo/buildconf"><code>rock-gazebo/buildconf</code></a> instead of
+the default one at
+<a href="https://github.com/rock-core/buildconf"><code>rock-core/buildconf</code></a>. This
+installation guide already reflects this. This configuration automatically
+selects the 'master' flavor as described in this section</p>
+</div>
+
+<ul id="markdown-toc">
+  <li><a href="#rock-versions-and-flavors" id="markdown-toc-rock-versions-and-flavors">Rock Versions and Flavors</a></li>
+  <li><a href="#install" id="markdown-toc-install">Installation</a></li>
+</ul>
+
+<h2 id="rock-versions-and-flavors">Rock Versions and Flavors</h2>
+
+<p>A system can base itself on different "flavors" of Rock. One can basically
+choose one out of three:</p>
+
+<ul>
+  <li><strong>the latest release</strong> version of the Rock Core software. Once released, it
+will not change, but may see subsequent point releases that would only differ
+by (important) bugfixes. The only way a release-based install will get modifications
+is if the developer changes the base release.</li>
+  <li><strong>the stable flavor</strong> is the last release plus bugfixes. Unlike the releases,
+updating a 'stable' system will always land you on the latest release, and
+in-between releases will get patched with bugfixes. This <strong>does</strong> include being
+updated automatically to new major releases.</li>
+  <li><strong>the master flavor</strong> is the development branch, and may break.</li>
+</ul>
+
+<p>Rock's primary platform is Ubuntu. The only guarantee made by the Rock team is
+that Rock's current release and master branches work on the current Ubuntu LTS
+version and often works on the latest Ubuntu version.</p>
+
+<p>Rock has no option to install from binary, the only currently supported method
+of install is from source.</p>
+
+<p>Other linux-based platforms (Debian, Arch, …) are known to work, but since they
+don't see regular use, installation may not be as streamlined as on Ubuntu.
+MacOS X also has seen some Rock usage, but is seldom used and therefore can
+cause problems. Windows has seen some preliminary usage.</p>
+
+<h2 id="install">Installation</h2>
+
+<p>Rock's current release is 2017.6, and requires <strong>Ruby 2.1 or later</strong></p>
+
+<ol>
+  <li>
+    <p><a href="http://gazebosim.org">Install Gazebo 8</a>.</p>
+  </li>
+  <li>
+    <p>Install Ruby and verify that the version matches</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>sudo apt-get install ruby
+ruby --version
+</code></pre></div>  </li>
+  <li>
+    <p>Create and "cd" into the directory in which you want to install the toolchain.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>mkdir dev
+cd dev
+</code></pre></div>  </li>
+  <li>
+    <p>Download autoproj's bootstrap script</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>wget http://rock-robotics.org/autoproj_bootstrap
+</code></pre></div>  </li>
+  <li>
+    <p>Bootstrap your installation. This installs autoproj and checks out
+the main build configuration, but does not check out packages. As
+<a href="#not_mainline">previously mentioned</a>, one must use the master flavor
+of Rock to go through this documentation. Select the defaults for all
+the proposed configuration options.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>ruby autoproj_bootstrap \
+    git https://github.com/rock-gazebo/buildconf
+</code></pre></div>  </li>
+  <li>
+    <p>Update and build the installation's default packages.Select the defaults for all
+the proposed configuration options.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>source env.sh
+aup --all -k
+amake --all -k
+</code></pre></div>  </li>
+</ol>
+
+<p class="callout callout-warning">You <strong>must</strong> remember to source the generated env.sh script at the end of the
+update !!! You must also do in new terminals before you can interact with the
+Rock installation</p>
+
+<p class="next-page"><strong>Next</strong>: an overview of <a href="day_to_day.html">how to interact day-to-day with the Rock
+workspace</a>. Alternatively, if you already know about it, you
+can go straight to <a href="getting_started.html">setting up Syskit and Gazebo</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

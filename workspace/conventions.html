@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="workspace workspace_conventions">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Workspace and Packages</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="conventions.html">Conventions</a></li><li class='child'><a href="setup.html">Starting a New Project</a></li><li class='child'><a href="add_packages.html">Adding new packages</a></li><li class='child'><a href="os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="conventions">Conventions</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#categories" id="markdown-toc-categories">Package Categories</a></li>
+  <li><a href="#naming" id="markdown-toc-naming">Naming Schemes</a></li>
+</ul>
+
+<p>In order to keep a workspace set of packages "understandable", Rock has a few
+conventions that govern how packages should be named. The first one is that
+packages are sorted into broad categories. Moreover, there is a general naming
+scheme, as well as a naming scheme specific to drivers.</p>
+
+<h2 id="categories">Package Categories</h2>
+
+<p>You probably already noticed <a href="../basics/installation.html">when you've done your first Rock
+install</a> that the Rock packages are sorted into
+sub-directories. This list of directories is more-or-less standardized, to
+allow for a broad understanding of each package's role.</p>
+
+<p>So far, the following categories are in use:</p>
+
+<ul>
+  <li><strong>base</strong> base types, CMake script repositories, …</li>
+  <li><strong>bundles</strong> bundles - integration packages</li>
+  <li><strong>control</strong> packages that are related to motion control</li>
+  <li><strong>data_processing</strong> packages that are related to general data processing (e.g.
+neural network, filtering, …)</li>
+  <li><strong>drivers</strong> packages that are related to device drivers: drivers themselves,
+and common libraries that ease their development</li>
+  <li><strong>gui</strong> GUI and visualization packages</li>
+  <li><strong>image_processing</strong> packages that are related to image processing</li>
+  <li><strong>multiagent</strong> packages that are related to multiagent / multirobot
+coordination</li>
+  <li><strong>perception</strong> packages that are related to perception (image and data processing)</li>
+  <li><strong>planning</strong> packages that are related to path and task planning</li>
+  <li><strong>simulation</strong> packages that are related to simulation</li>
+  <li><strong>slam</strong> packages that are related to localization and mapping both separately
+and as SLAM</li>
+  <li><strong>test</strong> packages that are needed for other unit tests</li>
+  <li><strong>tools</strong> packages that are related to the toolchain and/or are general
+utility packages</li>
+</ul>
+
+<p>Moreover, each category may have an <code>orogen</code> subfolder for oroGen (component)
+packages.</p>
+
+<p class="callout callout-info">For the packages coming from the Rock project itself, each category has its own
+organization within GitHub (e.g. rock-planning for <code>planning/</code>). The exception
+are the Rock Core packages that are all in the <code>rock-core</code> organization</p>
+
+<h2 id="naming">Naming Schemes</h2>
+
+<p class="tip"><strong>How to pick a name</strong>. As the joke goes, there are only two difficult things
+in software engineering: naming things and cache invalidation. Picking a good
+package name is <em>hard</em>. Beyond the few conventions listed below, the most
+important is to avoid picking a too generic name. <code>planning</code> or
+<code>trajectory_generation</code> or <code>vehicle_control</code> are all waaaaay to generic. One
+cannot assume that there would ever be a single trajectory generation, planning
+or vehicle control package out there, <em>ever</em>. Instead, try to identify what
+makes <em>your</em> planning, <em>your</em> trajectory generation or <em>your</em> vehicle control
+different from others: what type of vehicle ? Which method(s) do you plan to
+use ? If you do intend to develop a "completely generic" package that solves
+The Underlying Problem(tm), then find a catchy name or acronym - OMPL, MoveIt!,
+PCL are for instance all generic packages that are not polluting the package
+namespace.</p>
+
+<p>Package names are all <code>snake_case</code></p>
+
+<p>On platforms like gitlab or github, the repositories are named the way packages
+are named, including categories. The separator is <code>-</code>  instead of folder.</p>
+
+<p>For instance, <code>simulation/orogen/rock_gazebo</code> becomes
+<code>simulation-orogen-rock_gazebo</code>. When the orogen component is mainly tied to
+one single library package, it is expected to have the same name than said
+package (e.g. <code>simulation/rock_gazebo</code> and <code>simulation/orogen/rock_gazebo</code>)</p>
+
+<p>The <strong>drivers</strong> category naming scheme is to explicitely list the device,
+manufacturer and device type if the driver is valid only for one device,
+following the scheme: <code>devicetype_manufacturer</code> or
+<code>devicetype_manufacturerModel</code>. The <code>devicetype</code> is not standardized,
+developers are expected to use their best judgment - and check what already
+exists !</p>
+
+<p class="next-page"><strong>Next</strong>: now that you have a broad overview of a workspace structure and rules, <a href="setup.html">let's
+create a new workspace for our project</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

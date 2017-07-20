@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="workspace workspace_setup">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Workspace and Packages</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="conventions.html">Conventions</a></li><li class='child active'><a href="setup.html">Starting a New Project</a></li><li class='child'><a href="add_packages.html">Adding new packages</a></li><li class='child'><a href="os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="starting-a-new-project">Starting a new project</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#main-build-configuration" id="markdown-toc-main-build-configuration">Main build configuration</a></li>
+  <li><a href="#package-sets" id="markdown-toc-package-sets">Package sets</a></li>
+</ul>
+
+<h2 id="main-build-configuration">Main build configuration</h2>
+
+<p>One never starts a project from scratch. One usually instead starts off using
+either <a href="../basics/installation.html">the Rock bootstrap</a> or a project's main
+build configuration.</p>
+
+<p>After having bootstrapped, the "source" build configuration is checked out in
+the <code>autoproj/</code> folder at the root of the workspace. Push it to a repository
+you would have created to hold your own project's build configuration. You can
+then change Autoproj's configuration to track it instead of the Rock build with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>autoproj switch-config git URL
+</code></pre></div>
+<p class="tip"><strong>Tip</strong> if you're using Git and GitHub under Linux or MacOSX, using SSH keys
+for authentication still proves to be the most practical option. Use the
+<code>git@github.com...</code> URL instead of the <code>https://</code> one.</p>
+
+<p class="tip"><strong>Tip</strong> when working in a company organization on github, a good naming scheme
+for build configurations is <code>company.project-buildconf</code> where <code>company</code> is your
+organization's name and <code>project</code> the name of the project you're setting up.</p>
+
+<h2 id="package-sets">Package sets</h2>
+
+<p>Package sets are a way in Rock's build system to share build information. It is
+customary start with an organization-wide (i.e.  company-wide) package set.
+One often also ends up with one package set per project.</p>
+
+<p>The only thing that autoproj requires to successfully import a package set is
+to have a <code>source.yml</code> YAML file in it with a <code>name:</code> field. A common
+convention is to use <code>company.project</code> for a project-specific package set or
+just <code>company</code> for the organization one. For example purposes, the rest of this
+page will use <code>company.project</code> as the package set name.</p>
+
+<p>Assuming you're using git and github, create a new repository on github,
+following the <code>company.project-package_set</code> pattern. Create an empty directory
+and do (replacing URL by your repository's URL):</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>git init
+echo "name: company.project" &gt; source.yml
+git add source.yml
+git commit -m "Initial commit"
+git push URL master
+</code></pre></div>
+<p>At this point, the package set can be added to the buildconf's manifest. Add it
+at the end of the <code>package_sets</code> section. For a github package this would be:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">package_sets</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">...</span>
+<span class="pi">-</span> <span class="na">github</span><span class="pi">:</span> <span class="s">organization/company.project-package_set</span>
+</code></pre></div>
+<p>For a general git URL:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">package_sets</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">...</span>
+<span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">git</span>
+  <span class="na">url</span><span class="pi">:</span> <span class="s">URL</span>
+</code></pre></div>
+<p id="add_package_set_in_layout">In addition, one usually would want to build all packages defined in the package
+set (i.e. all packages from the project). This is done by adding the package set
+name in the <code>layout</code> section:</p>
+
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">layout</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">company.project</span>
+</code></pre></div>
+<p>There are other import possibilities, listed in the <a href="add_packages.html#version_control">adding new
+packages</a> section.</p>
+
+<p>After having added the package, check it out with:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>aup --config
+</code></pre></div>
+<p>The package set is now in <code>autoproj/remotes/company.project</code>.  You can go
+straight to it with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>acd company.project
+</code></pre></div>
+<p class="next-page"><strong>Next</strong>: let's learn how to <a href="add_packages.html">add new packages</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

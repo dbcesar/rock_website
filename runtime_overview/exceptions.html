@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_runtime syskit_runtime_exceptions">
+    <body class="runtime_overview runtime_overview_exceptions">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,11 +38,20 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Design Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child active'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Overview</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child active'><a href="exceptions.html">Errors</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="error-representation">Error Representation</h1>
+                <h1 class="no_toc" id="error-representation">Error Representation</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#what-are-errors-" id="markdown-toc-what-are-errors-">What are errors ?</a></li>
+  <li><a href="#default_response" id="markdown-toc-default_response">Default Response to an Error</a></li>
+  <li><a href="#dependency_error" id="markdown-toc-dependency_error">The Dependency Error</a></li>
+  <li><a href="#failures-in-component-configuration-and-start" id="markdown-toc-failures-in-component-configuration-and-start">Failures in Component Configuration and Start</a></li>
+  <li><a href="#the-planning-failed-error" id="markdown-toc-the-planning-failed-error">The Planning Failed Error</a></li>
+  <li><a href="#aborted-tasks" id="markdown-toc-aborted-tasks">Aborted Tasks</a></li>
+</ul>
 
 <p>So far, we've touched execution in Syskit when everything is going fine. This
 is hardly the case, both in development and in production systems. Robots have
@@ -94,7 +103,7 @@ only by said jobs are stopped by the garbage collection pass.</p>
 <code>CartCtrl</code> component:</p>
 
 <div class="fluid-video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/CXddqjif5CM?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/CXddqjif5CM?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p>The error looks like this (parts that you can't interpret yet removed)</p>
@@ -144,12 +153,12 @@ event – has been emitted, Syskit represent those by representing that the
 relation between a composition and its children.</p>
 
 <p>Let's emulate an error by mis-configuring <code>cart_ctrl_wdl::WDLSSolver</code>. With the
-<a href="../syskit_basics/deployment.html#validate_tip_and_root_links">work we've done validating the tip and root
+<a href="../basics/deployment.html#validate_tip_and_root_links">work we've done validating the tip and root
 links</a>, we'll
 just edit the task's configuration file and trigger a reconfiguration:</p>
 
 <div class="fluid-video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/n5qLjTuVhkA?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/n5qLjTuVhkA?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p>The error looks this time like this. The important part is that the dependency failure
@@ -187,7 +196,7 @@ a <code>syskit.reload_config</code> in the shell to apply the change.</p>
 introduction.  Let's have a look again:</p>
 
 <div class="fluid-video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/LkmR9AFo5ek?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/LkmR9AFo5ek?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p>In this case, the error displayed would be:</p>
@@ -230,8 +239,8 @@ counter-example, a common bug in newly developed components is that they crash
 when they are stopped. Given that they are usually stopped when they are not
 needed by the system, this error would not affect the running jobs.</p>
 
-<p>This concludes this overview of the Syskit runtime aspects. We'll make a detour
-through <a href="live_data.html" class="btn btn-primary">live data visualization</a> and then get to the <a href="recap.html" class="btn btn-primary">part
+<p class="next-page"><strong>Next</strong>. This concludes this overview of the Syskit runtime aspects. We will make a detour
+through <a href="live_data.html">live data visualization</a> and then get to the <a href="recap.html">part
 recap</a> before we move on to more advanced
 topics.</p>
 

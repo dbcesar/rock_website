@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_basics syskit_basics_deployment">
+    <body class="basics basics_deployment">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,20 +38,23 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Design Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_runtime/">Runtime Basics</a></span><ul><li class='child'><a href="../syskit_runtime/">Introduction</a></li><li class='child'><a href="../syskit_runtime/task_structure.html">Task Structures</a></li><li class='child'><a href="../syskit_runtime/event_loop.html">Event Loop</a></li><li class='child'><a href="../syskit_runtime/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../syskit_runtime/exceptions.html">Errors</a></li><li class='child'><a href="../syskit_runtime/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child active'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="deployment">Deployment</h1>
+                <h1 class="no_toc" id="deployment">Deployment</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#use_deployment" id="markdown-toc-use_deployment">Component deployment</a></li>
+  <li><a href="#configuration" id="markdown-toc-configuration">Component configuration</a></li>
+  <li><a href="#actions" id="markdown-toc-actions">Building the system's action interface</a></li>
+  <li><a href="#running-the-simulation-and-app" id="markdown-toc-running-the-simulation-and-app">Running the simulation and app</a></li>
+</ul>
 
 <p>A few things are missing before we can actually run <a href="devices.html">the network we just
-created</a>:</p>
-
-<ol>
-  <li><a href="#use_deployment">Deploy the components</a></li>
-  <li><a href="#configuration">Configure the components</a></li>
-  <li><a href="#actions">Export the network as a Syskit Action so that we can instruct Syskit to start it</a></li>
-</ol>
+created</a>. Mainly related to giving names to actual components,
+providing proper configurations and registering an action so that we can tell
+Syskit to start our network.</p>
 
 <h2 id="use_deployment">Component deployment</h2>
 
@@ -110,7 +113,7 @@ of the algorithm parameters fit into this category. These are the subject
 of this section.</li>
 </ul>
 
-<h3 id="static-configuration-of-orogen-components">Static configuration of oroGen components</h3>
+<h3 class="no_toc" id="static-configuration-of-orogen-components">Static configuration of oroGen components</h3>
 
 <p>The static configuration is stored within YAML files in <code>config/orogen/</code>. Each
 file is named after the component model that is configured, so for instance
@@ -162,10 +165,10 @@ the SDF file.  Alternatively, the chain can be
 inspected using the <code>rock-transformer</code> tool:</p>
 
 <div class="fluid-video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/ShYmPgIZ1Oc?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/ShYmPgIZ1Oc?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
-<h3 id="dynamic-and-system-wide-configuration">Dynamic and system-wide configuration</h3>
+<h3 class="no_toc" id="dynamic-and-system-wide-configuration">Dynamic and system-wide configuration</h3>
 
 <p>The robot model need to be extracted from the SDF and passed to the components
 that require it. The convention when integrating SDF models in Syskit is to
@@ -540,13 +543,13 @@ the devices in <code>Base</code>, and <code>_def</code> actions for the definiti
 <p>Once started, the simulation can stay running regardless of whether the Syskit
 app itself gets restarted. You can then start the app using the IDE, and
 send the command through the Syskit shell. The following video show you the process. Its goal
-is to give you a feeling for Syskit's runtime workflow. Detailed explanations will come later <a href="../syskit_runtime/">in the runtime part of this documentation</a></p>
+is to give you a feeling for Syskit's runtime workflow. Detailed explanations will come later <a href="../runtime_overview/">in the runtime overview</a></p>
 
 <div class="fluid-video" id="final_video">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/wXYb7f_xNZo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/wXYb7f_xNZo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
-<p>Before we move on to the Syskit runtime aspects, <a href="recap.html" class="btn btn-primary">let's recap what we've just seen</a></p>
+<p class="next-page"><strong>Next</strong>: Before we move on to the Syskit runtime aspects, <a href="recap.html">let's recap what we've just seen</a></p>
 
             </div>
         </div>

@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="syskit_runtime syskit_runtime_task_structure">
+    <body class="runtime_overview runtime_overview_task_structure">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,11 +38,18 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../workspace/">The Workspace</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/day_to_day.html">Day-to-day</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_basics/">Design Basics</a></span><ul><li class='child'><a href="../syskit_basics/">Introduction</a></li><li class='child'><a href="../syskit_basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../syskit_basics/composition.html">Compositions</a></li><li class='child'><a href="../syskit_basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../syskit_basics/devices.html">Devices</a></li><li class='child'><a href="../syskit_basics/deployment.html">Deployment</a></li><li class='child'><a href="../syskit_basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Runtime Overview</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="task_structure.html">Task Structures</a></li><li class='child'><a href="event_loop.html">Event Loop</a></li><li class='child'><a href="exceptions.html">Errors</a></li><li class='child'><a href="live_data.html">Live Data Visualization</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 id="task-structures">Task Structures</h1>
+                <h1 class="no_toc" id="task-structures">Task Structures</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#dependency" id="markdown-toc-dependency">Dependency Graph</a></li>
+  <li><a href="#execution_agents" id="markdown-toc-execution_agents">Execution Agents</a></li>
+  <li><a href="#planning_task" id="markdown-toc-planning_task">Planning Tasks</a></li>
+  <li><a href="#usefulness" id="markdown-toc-usefulness">Jobs, Permanent Tasks and Usefulness</a></li>
+</ul>
 
 <p>Key to the scheduler and garbage collection mechanisms is Syskit's ability to
 maintain the set of components that are useful for the currently active jobs.</p>
@@ -105,19 +112,20 @@ case we saw <a href="./#deployment_failure">at the end of the introduction</a>.<
 <p>Syskit-related planning is handled by <code>InstanceRequirementTask</code>:</p>
 
 <div id="planned_by" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
+  <p><!-- Indicators --></p>
   <ol class="carousel-indicators">
     <li data-target="#planned_by" data-slide-to="0" class="active"></li>
     <li data-target="#planned_by" data-slide-to="1"></li>
   </ol>
 
-  <!-- Wrapper for slides -->
+  <p><!-- Wrapper for slides --></p>
   <div class="carousel-inner" role="listbox">
-    <div class="item active"><img src="media/planned_by_1.png" alt="start of the execution agents" /></div>
-    <div class="item"><img src="media/planned_by_2.png" alt="start of the execution agents" /></div>
+<div class="highlight"><pre class="highlight plaintext"><code>&lt;div class="item active"&gt;&lt;img src="media/planned_by_1.png" alt="start of the execution agents"&gt;&lt;/div&gt;
+&lt;div class="item"&gt;&lt;img src="media/planned_by_2.png" alt="start of the execution agents"&gt;&lt;/div&gt;
+</code></pre></div>
   </div>
 
-  <!-- Controls -->
+  <p><!-- Controls -->
   <a class="left carousel-control" href="#planned_by" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
@@ -125,7 +133,7 @@ case we saw <a href="./#deployment_failure">at the end of the introduction</a>.<
   <a class="right carousel-control" href="#planned_by" role="button" data-slide="next">
     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
-  </a>
+  </a></p>
 </div>
 
 <h2 id="usefulness">Jobs, Permanent Tasks and Usefulness</h2>
@@ -142,9 +150,10 @@ whole process, and of configuring a component, Syskit marks the deployments as
 permanent. If one of them was to be killed, this would not affect the rest of
 the system, and it would be restarted when needed.</p>
 
-<p>Now that we understand how Syskit determines a component's usefulness, we may
-get to <a href="event_loop.html" class="btn btn-primary">the event loop</a> which will detail among other things
-the scheduling and garbage collection mechanisms.</p>
+<p class="next-page"><strong>Next</strong>: now that we understand how Syskit determines a component's
+usefulness, we may get to <a href="event_loop.html">the event loop</a>
+which will detail among other things the scheduling and garbage collection
+mechanisms.</p>
 
 
             </div>
