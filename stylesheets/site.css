@@ -6485,24 +6485,24 @@ div.highlight {
     width: 100%;
     height: 100%; }
 
-.callout, .tip, .important {
+.callout, .tip, .note, .important {
   padding: 20px;
   margin: 20px 0;
   border: 1px solid #eee;
   border-left-width: 5px;
   border-radius: 3px; }
 
-.callout h4, .tip h4, .important h4 {
+.callout h4, .tip h4, .note h4, .important h4 {
   margin-top: 0;
   margin-bottom: 5px; }
 
-.callout p:last-child, .tip p:last-child, .important p:last-child {
+.callout p:last-child, .tip p:last-child, .note p:last-child, .important p:last-child {
   margin-bottom: 0; }
 
-.callout code, .tip code, .important code {
+.callout code, .tip code, .note code, .important code {
   border-radius: 3px; }
 
-.callout + .callout, .tip + .callout, .important + .callout, .callout + .tip, .tip + .tip, .important + .tip, .callout + .important, .tip + .important, .important + .important {
+.callout + .callout, .tip + .callout, .note + .callout, .important + .callout, .callout + .tip, .tip + .tip, .note + .tip, .important + .tip, .callout + .note, .tip + .note, .note + .note, .important + .note, .callout + .important, .tip + .important, .note + .important, .important + .important {
   margin-top: -5px; }
 
 .callout-default {
@@ -6535,10 +6535,10 @@ div.highlight {
 .callout-warning h4, .important h4 {
   color: #f0ad4e; }
 
-.callout-info, .tip {
+.callout-info, .tip, .note {
   border-left-color: #5bc0de; }
 
-.callout-info h4, .tip h4 {
+.callout-info h4, .tip h4, .note h4 {
   color: #5bc0de; }
 
 /*
@@ -6783,7 +6783,8 @@ ul.nav li .docs-sidebar ul #markdown-toc > .active:focus > span > a,
   display: block; }
 
 nav.docs-sidebar.affix {
-  top: 20px; }
+  top: 20px;
+  width: 23%; }
 
 /**
  * Page TOC
@@ -6817,3 +6818,7 @@ nav.docs-sidebar.affix {
 .next-page {
   margin: 35px;
   padding: 25px; }
+
+@media screen and (max-width: 992px) {
+  nav.docs-sidebar.affix {
+    position: relative; } }
