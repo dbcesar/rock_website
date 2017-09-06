@@ -245,7 +245,7 @@ quantity in Syskit tests, the Syskit test harness integrates with the
 asynchronous in tests. Sending and receiving samples requires the constant
 generator to be executed, and therefore Syskit's own execution loop.</p>
 
-<p class="callout callout-warning">Rock's time representation has a precision of one microseconds, while Linux
+<p class="callout callout-warning">Rock's time representation has a precision of one microsecond, while Linux
 (and therefore Ruby's Time class) go to the nanoseconds. This is why the
 time comparison is not done using <code>assert_equal</code>, but <code>assert_in_delta</code>.</p>
 

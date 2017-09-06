@@ -291,7 +291,9 @@ the <code>version_control</code> section of its <code>source.yml</code> file.</p
 </code></pre></div>
 <p>Follow-up package sets (following the order of the build configuration's
 manifest) might also have matching entries in their <code>source.yml</code> files, in the
-<code>overrides:</code> section:</p>
+<code>overrides:</code> section. These <code>overrides</code> apply only to packages from other
+package sets. Only entries in <code>version_control</code> apply to the packages from the
+same package set.</p>
 
 <div class="highlight"><pre class="highlight yaml"><code><span class="na">overrides</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">package_name</span><span class="pi">:</span>

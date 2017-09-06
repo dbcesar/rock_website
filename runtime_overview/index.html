@@ -67,11 +67,9 @@ action interface, which allowed us <a href="../basics/deployment.html">in the la
 part</a> to control the system.</p>
 
 <p>An <em>action</em> is an abstract concept that represents one thing the system can do.
-In order to actually have it executed, one starts a <em>job</em>. In the shell we've
-seen in the video, this is done with the <code>action_name!(arguments)</code> syntax.
-Once a job has been started it has a job ID that is displayed both by the IDE
-and by the shell. This job ID can then be used to kill the job with <code>kill_job
-JOB_ID</code>.</p>
+In order to actually have it executed, one starts a <em>job</em>.
+Once a job has been started it can be dropped, that is tell Syskit that this
+particular job is not part of current system's goal.</p>
 
 <p>All job-related commands are processed in batches: they are queued and only
 sent to the Syskit app when the <code>process</code> command is entered. We will see the
@@ -98,7 +96,7 @@ setup</a>). Startup of
 the <code>arm_safe_position_def</code> job looks like this:</p>
 
 <div id="job_start_step_by_step" class="carousel slide" data-ride="carousel">
-  <p><!-- Indicators --></p>
+  <!-- Indicators -->
   <ol class="carousel-indicators">
     <li data-target="#job_start_step_by_step" data-slide-to="0" class="active"></li>
     <li data-target="#job_start_step_by_step" data-slide-to="1"></li>
@@ -112,21 +110,20 @@ the <code>arm_safe_position_def</code> job looks like this:</p>
     <li data-target="#job_start_step_by_step" data-slide-to="9"></li>
   </ol>
 
-  <p><!-- Wrapper for slides --></p>
+  <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
-<div class="highlight"><pre class="highlight plaintext"><code>&lt;div class="item active"&gt;&lt;img src="media/scheduling_1.png" alt="start of the execution agents"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_2.png" alt="RubyTask ready"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_3.png" alt="Gazebo ready"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_4.png" alt="start JointPositionGenerator"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_5.png" alt="Wait"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_6.png" alt="JointPositionGenerator started"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_7.png" alt="Wait"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_8.png" alt="start ModelTask"&gt;&lt;/div&gt;
-&lt;div class="item"&gt;&lt;img src="media/scheduling_9.png" alt="ModelTask running"&gt;&lt;/div&gt;
-</code></pre></div>
+    <div class="item active"><img src="media/scheduling_1.png" alt="start of the execution agents" /></div>
+    <div class="item"><img src="media/scheduling_2.png" alt="RubyTask ready" /></div>
+    <div class="item"><img src="media/scheduling_3.png" alt="Gazebo ready" /></div>
+    <div class="item"><img src="media/scheduling_4.png" alt="start JointPositionGenerator" /></div>
+    <div class="item"><img src="media/scheduling_5.png" alt="Wait" /></div>
+    <div class="item"><img src="media/scheduling_6.png" alt="JointPositionGenerator started" /></div>
+    <div class="item"><img src="media/scheduling_7.png" alt="Wait" /></div>
+    <div class="item"><img src="media/scheduling_8.png" alt="start ModelTask" /></div>
+    <div class="item"><img src="media/scheduling_9.png" alt="ModelTask running" /></div>
   </div>
 
-  <p><!-- Controls -->
+  <!-- Controls -->
   <a class="left carousel-control" href="#job_start_step_by_step" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
@@ -134,7 +131,7 @@ the <code>arm_safe_position_def</code> job looks like this:</p>
   <a class="right carousel-control" href="#job_start_step_by_step" role="button" data-slide="next">
     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
-  </a></p>
+  </a>
 </div>
 
 <p>Now, let's look at stopping things.</p>
@@ -145,7 +142,7 @@ on the right panel, that shows the state of the "real" components (i.e. not the
 compositions).</p>
 
 <div class="fluid-video" id="start_stop_video">
-  <iframe width="853" height="480" src="https://www.youtube.com/embed/DBsJxvX1rVs?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/OHFCvVYZSO8?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p>When <code>arm_safe_position_def</code> was stopped, only the setpoint generator
@@ -184,42 +181,36 @@ network that can do cartesian arm control. What we saw was that the transition
 happened smoothly: the arm was controlled during the change of system
 configuration.</p>
 
-<p>The same mechanisms are key to autonomously transitioning between behaviours,
-which we will see in the <a href="../syskit_coordination/">coordination</a> part
-of this documentation.</p>
+<p>The same mechanisms are key to autonomously transitioning between behaviours.
+This is how one can build <a href="../syskit_coordination/">coordination</a> models.</p>
 
-<p>When we transitioned from the joint control to the cartesian control, I've sent
-first a <code>action_name!</code> command to start an action, and a <code>kill_job</code> command to
-stop the running joint control action. These two commands were displayed by the
-shell as follows:</p>
-
-<p><img src="media/shell_pending_start_and_kill.png" alt="Pending start and kill commands in the shell" class="fullwidth" /></p>
-
-<p>The header says <code>2 actions queued in the current batch, use #process to send,
-#cancel to delete</code>. <code>#process</code>. When I sent <code>process</code>, the two were processed
-<em>together</em>. That is, Syskit could understand that the intent was to stop an
-action and start a new one <em>at the same time</em>, which it handled as a transition.</p>
+<p>When we transitioned from the joint control to the cartesian control, we first
+<strong>queued</strong> the action start and the action drop and then processed them at
+once.  When we clicked <code>Process</code>, the two changes were processed <em>together</em>.
+That is, Syskit could understand that the intent was to stop an action and
+start a new one <em>at the same time</em>, which it handled as a transition.</p>
 
 <p>Syskit's execution engine acts as an <strong>event loop</strong>, in which all events that
 are received at the same time are processed <em>as if</em> they happened at the exact
 same time.</p>
 
-<p>So, what would have happened if I sent the <code>kill_job</code> first and then the
-<code>arm_cartesian_constant_control_def!</code> ? Syskit would have applied the kill
-<em>first</em> and then the start. We would have basically had the same effect than in
-<a href="#start_stop_video">the video we just saw</a>, with the arm falling uncontrolled.</p>
+<p>So, what would have happened if we dropped the action first, and only then
+started <code>arm_cartesian_constant_control_def</code> ? Syskit would have applied the
+kill <em>first</em> and then the start. We would have basically had the same effect
+than in <a href="#start_stop_video">the video we just saw</a>, with the arm falling
+uncontrolled.</p>
 
-<p>Now, what would have happened if I instead I sent the
-<code>arm_cartesian_constant_control_def!</code> and only then the <code>kill_job</code> ?</p>
+<p>Now, what would have happened if instead we started
+<code>arm_cartesian_constant_control_def</code> and only then dropped the existing job ?</p>
 
 <div class="fluid-video">
-  <iframe width="853" height="480" src="https://www.youtube.com/embed/LkmR9AFo5ek?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/0N3ux-1pj4s?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p id="deployment_failure">Ouch … The start command failed. This is because we've tried to run two
 different control chains that controlled the same device. This is an
-impossibility, and the request is therefore rejected by Syskit's <strong>network
-generation</strong>.</p>
+impossibility, and the request is therefore rejected by Syskit's network
+generation.</p>
 
 <p class="next-page"><strong>Next</strong>: We'll now get to understand all of this step-by-step, starting with <a href="task_structure.html">Syskit's
 task structure</a>, how Syskit maintains
