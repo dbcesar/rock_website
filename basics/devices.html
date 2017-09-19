@@ -105,22 +105,27 @@ robot model. One only has to declare the robot model in the <code>Base</code> pr
   <span class="k">module</span> <span class="nn">Profiles</span>
     <span class="k">module</span> <span class="nn">Gazebo</span>
       <span class="n">profile</span> <span class="s1">'Base'</span> <span class="k">do</span>
-        <span class="n">use_gazebo_model</span> <span class="s1">'model://ur10_fixed/model.sdf'</span>
+        <span class="n">use_gazebo_model</span> <span class="s1">'model://ur10'</span><span class="p">,</span>
+          <span class="ss">prefix_device_with_name: </span><span class="kp">true</span>
         <span class="n">use_sdf_world</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
+<p class="note"><strong>Note</strong> the <code>prefix_device_with_name</code> argument is here for backward
+compatibility reasons. Syskit will issue a deprecation warning if you forget
+it.</p>
+
 <p>And have a look at the generated devices with <code>syskit ide -rgazebo models/profiles/gazebo/base.rb</code>:</p>
 
 <p><img src="media/devices.png" alt="Devices from the UR10 model" class="fullwidth" /></p>
 
 <p>One can see that there is one device definition per link in the model, and one
-for the model itself. Let's click on the model and have a look at the dataflow.
+for the model itself. Let's click on the model and have a look at the <strong>Dataflow</strong> section.
 Enable both "Show all ports" and "Show task info" to get port information .</p>
 
-<p><img src="media/device_dataflow.png" alt="ModelTask interface" class="fullwidth" /></p>
+<p><img src="media/ur10_dev.svg" alt="ModelTask interface" class="fullwidth" /></p>
 
 <h2 id="profile_define">Injecting the device into the arm control network</h2>
 
@@ -136,9 +141,9 @@ UR10 robot in gazebo</em> by injecting the UR10 device as the 'arm' child of the
 composition.</p>
 
 <p class="callout callout-warning">The model name given to <code>define</code> in a profile is made out of a <a href="https://martinfowler.com/bliki/FluentInterface.html">demeter
-chain</a>. In Ruby, one can
-easily break the chain with a newline after each method call. Don't forget the
-dots !</p>
+chain</a>. In Ruby, this is usually
+done by breaking each method call with a newline, leaving a trailing dot on the
+previous line. Don't forget these dots !</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_control_wdls'</span>
@@ -150,13 +155,10 @@ dots !</p>
       <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
         <span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
           <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
-            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">)</span>
+            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
         <span class="n">define</span> <span class="s1">'arm_joint_position_constant_control'</span><span class="p">,</span>
           <span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantControl</span><span class="p">.</span>
-            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">)</span>
-        <span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span>
-          <span class="n">arm_joint_position_constant_control_def</span><span class="p">.</span>
-            <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">UR10_SAFE_POSITION</span><span class="p">)</span>
+            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -166,9 +168,9 @@ dots !</p>
 the joint position constant control has been defined with the goal of providing a sane default
 position. Let's make sure this is available easily by creating a definition with a default
 setpoint. This will reuse the <code>arm_joint_position_constant_control</code> definition, which is accessed
-with the <code>_def</code> suffix. Usable joint positions can be found using the <code>rock-transformer</code> tool:</p>
+with the <code>_def</code> suffix. Usable joint positions can be found using the <code>rock-roboviz</code> tool:</p>
 
-<div class="highlight"><pre class="highlight plaintext"><code>$ rock-transformer models/sdf/ur10_fixed/model.sdf
+<div class="highlight"><pre class="highlight plaintext"><code>$ rock-roboviz model://ur10
 </code></pre></div>
 <div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'models/profiles/gazebo/base'</span>
 <span class="nb">require</span> <span class="s1">'models/compositions/arm_cartesian_constant_control_wdls'</span>
@@ -178,20 +180,20 @@ with the <code>_def</code> suffix. Usable joint positions can be found using the
   <span class="k">module</span> <span class="nn">Profiles</span>
     <span class="k">module</span> <span class="nn">Gazebo</span>
       <span class="no">UR10_SAFE_POSITION</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">[</span>
-        <span class="s1">'ur10_fixed::ur10::shoulder_pan'</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">'ur10_fixed::ur10::shoulder_lift'</span> <span class="o">=&gt;</span> <span class="o">-</span><span class="no">Math</span><span class="o">::</span><span class="no">PI</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
-        <span class="s1">'ur10_fixed::ur10::elbow'</span>         <span class="o">=&gt;</span> <span class="no">Math</span><span class="o">::</span><span class="no">PI</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
-        <span class="s1">'ur10_fixed::ur10::wrist_1'</span>       <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">'ur10_fixed::ur10::wrist_2'</span>       <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">'ur10_fixed::ur10::wrist_3'</span>       <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="s1">'shoulder_pan'</span>  <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">'shoulder_lift'</span> <span class="o">=&gt;</span> <span class="o">-</span><span class="no">Math</span><span class="o">::</span><span class="no">PI</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s1">'elbow'</span>         <span class="o">=&gt;</span> <span class="no">Math</span><span class="o">::</span><span class="no">PI</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s1">'wrist_1'</span>       <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">'wrist_2'</span>       <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">'wrist_3'</span>       <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">]</span>
 
       <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
         <span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
           <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
-            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">)</span>
+            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
         <span class="n">define</span> <span class="s1">'arm_joint_position_constant_control'</span><span class="p">,</span>
           <span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantControl</span><span class="p">.</span>
-            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">)</span>
+            <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
         <span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span>
           <span class="n">arm_joint_position_constant_control_def</span><span class="p">.</span>
             <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">UR10_SAFE_POSITION</span><span class="p">)</span>
@@ -201,16 +203,16 @@ with the <code>_def</code> suffix. Usable joint positions can be found using the
 <span class="k">end</span>
 </code></pre></div>
 <p class="callout callout-info">A device model is accessed using the device's name with a <code>_dev</code> suffix on the
-profile it is defined. Here <code>Base.ur10_fixed_dev</code> is the <code>ur10_fixed</code> device
+profile it is defined. Here <code>Base.ur10_dev</code> is the <code>ur10</code> device
 defined on the robot definition in <code>Base</code>.</p>
 
 <p class="callout callout-info"><strong>Note</strong> when building profiles, the require lines as well as the names of
 models and roles that can be used in the <code>use</code> statement can easily be browsed
 using the IDE</p>
 
-<p>Let's have a look at the final definition.</p>
+<p>Let's have a look at the final <code>arm_cartesian_control</code> definition.</p>
 
-<p><img src="media/injected_arm_control_network.png" alt="Final injected arm control network" class="fullwidth" /></p>
+<p><img src="media/injected_arm_control_network.svg" alt="Final injected arm control network" class="fullwidth" /></p>
 
 <p class="next-page"><strong>Next</strong>: we're almost there, just need now to map the components to actual processes,
 <a href="deployment.html">a.k.a. deploy the network</a></p>

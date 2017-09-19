@@ -158,9 +158,8 @@ extract from the SDF model, and the tip/root parameters that have to be set</li>
 <code>SingleChainPublisher</code> and <code>WDLSSolver</code>, another way to handle this is to make
 them parameters of the compositions.</p>
 
-<p>The root and tip in our case are the base and hand of the robot. The link names are prefixed
-with the model name (here, <code>ur10_fixed</code>) so <code>root</code> should
-be <code>ur10_fixed::ur10::base</code> and <code>tip</code> should be <code>ur10_fixed::ur10::wrist_3</code>. One can find this out by looking at
+<p>The root and tip in our case are the base and hand of the robot. So <code>root</code> should
+be <code>ur10::base</code> and <code>tip</code> should be <code>ur10::wrist_3</code>. One can find this out by looking at
 the SDF file.  Alternatively, the chain can be
 inspected using the <code>rock-transformer</code> tool:</p>
 
@@ -240,7 +239,7 @@ the relevant robot in the profile directly:</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
   <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
-    <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_fixed_dev</span><span class="p">).</span>
+    <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">).</span>
     <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="no">Base</span><span class="p">)</span>
 </code></pre></div>
 <p id="orogen_extension_files">We now need to modify the oroGen component models to use the robot argument.
@@ -546,7 +545,7 @@ send the command through the Syskit shell. The following video show you the proc
 is to give you a feeling for Syskit's runtime workflow. Detailed explanations will come later <a href="../runtime_overview/">in the runtime overview</a></p>
 
 <div class="fluid-video" id="final_video">
-  <iframe width="853" height="480" src="https://www.youtube.com/embed/969tvEwx_NE?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/JrgS23xEK9g?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen=""></iframe>
 </div>
 
 <p class="next-page"><strong>Next</strong>: Before we move on to the Syskit runtime aspects, <a href="recap.html">let's recap what we've just seen</a></p>

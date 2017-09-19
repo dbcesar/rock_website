@@ -72,7 +72,7 @@ related configuration is contained within the <code>autoproj/</code> folder with
 workspace's root directory (where you <a href="installation.html">originally
 bootstrapped</a>). When working in a terminal, you can go
 at any time to the workspace's root directory by running <code>acd</code> without
-arguments (<a href="day_to_day.html#acd">more about <code>acd</code></a>).</p>
+arguments (there's more about <code>acd</code> in this section's <a href="day_to_day.html#acd">Day to Day Commands</a>).</p>
 
 <p>Within the <code>autoproj/</code> directory, packages are defined within <em>package sets</em>.
 These package sets define both how to build the package and where it should be
@@ -156,9 +156,7 @@ compositions.</p>
   <div class="panel-body">
     <p>As described in our <a href="./">brief introduction</a>, oroGen packages are
 where the functionality implemented in the library packages are "packaged" into things
-that can be used at runtime.</p>
-
-    <p>To be used in Syskit, these oroGen components must be first imported using the
+that can be used at runtime. To be used in Syskit, these oroGen components must be first imported using the
 <code>using_task_library</code> statement. In our case, <code>cart_ctrl_wdls</code>, this is done with</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="n">using_task_library</span> <span class="s2">"cart_ctrl_wdls"</span>
@@ -171,7 +169,7 @@ name, e.g. <code>cart_ctrl_wdls</code> becomes <code>CartCtrlWdls</code> and the
 <code>OroGen::CartCtrlWdls::ToPosConverter</code> in Syskit.</p>
 
     <p>In case you're not sure about the naming, just add the <code>using_task_library</code> statement
-at the beginning, toplevel of a file and load it with <code>syskit ide</code>. If we do so in our newly created <code>models/compositions/arm_cartesian_control_wdls.rb</code> and run</p>
+at the toplevel of a file and load it with <code>syskit ide</code>. If we do so in our newly created <code>models/compositions/arm_cartesian_control_wdls.rb</code> and run</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>syskit ide models/compositions/arm_cartesian_control_wdls.rb
 </code></pre></div>
@@ -208,7 +206,7 @@ later point). So edit the newly-created
 </code></pre></div>
 <p>At this stage, we will have to connect the ports together. To see what inputs
 and outputs are available, one can have a look at the component's <code>.orogen</code>
-files. The alternative is to open the <code>syskit ide</code> and inspect the composition
+files. The alternative is to open the <code>syskit ide -rgazebo</code> and inspect the composition
 file as follows (<code>-rgazebo</code> is necessary because we are importing models from
 <code>common_models</code>). <strong>Leave the IDE open after this, we will reuse it</strong></p>
 

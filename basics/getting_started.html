@@ -119,33 +119,8 @@ reuse it in different simulation scenes.</p>
 <p>For the purpose of this part of the documentation, we'll use Gazebo's UR10 arm
 model as our robot. We however need to integrate it in another model so that
 its base is fixed (using <a href="http://answers.gazebosim.org/question/5065/how-to-attach-arm-to-a-static-base-using-sdf/">this
-method</a>) Models are saved in <code>models/sdf/</code>, let's create
-<code>models/sdf/ur10_fixed</code> and create a Gazebo model description file <code>models/sdf/ur10_fixed/model.config</code> with</p>
+method</a>).</p>
 
-<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
-
-<span class="nt">&lt;model&gt;</span>
-  <span class="nt">&lt;name&gt;</span>Universal Robotics UR10 robot arm on a fixed base<span class="nt">&lt;/name&gt;</span>
-  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-  <span class="nt">&lt;sdf&gt;</span>model.sdf<span class="nt">&lt;/sdf&gt;</span>
-<span class="nt">&lt;/model&gt;</span>
-</code></pre></div>
-<p>and the corresponding SDF model in <code>models/sdf/ur10_fixed/model.sdf</code></p>
-
-<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version='1.0'?&gt;</span>
-<span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">'1.5'</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">"ur10_fixed"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;include&gt;</span>
-          <span class="nt">&lt;name&gt;</span>ur10<span class="nt">&lt;/name&gt;</span>
-          <span class="nt">&lt;uri&gt;</span>model://ur10<span class="nt">&lt;/uri&gt;</span>
-        <span class="nt">&lt;/include&gt;</span>
-        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">"attached_to_ground"</span> <span class="na">type=</span><span class="s">"fixed"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;parent&gt;</span>world<span class="nt">&lt;/parent&gt;</span>
-            <span class="nt">&lt;child&gt;</span>ur10::base<span class="nt">&lt;/child&gt;</span>
-        <span class="nt">&lt;/joint&gt;</span>
-    <span class="nt">&lt;/model&gt;</span>
-<span class="nt">&lt;/sdf&gt;</span>
-</code></pre></div>
 <p>Usually, the first scene one creates is an empty one, which later will give us
 an environment in which to test basic functionality, without having to care
 about collisions.</p>
@@ -156,9 +131,16 @@ about collisions.</p>
 <div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
 <span class="nt">&lt;sdf</span> <span class="na">version=</span><span class="s">"1.6"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;world</span> <span class="na">name=</span><span class="s">"empty_world"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;include&gt;</span>
-      <span class="nt">&lt;uri&gt;</span>model://ur10_fixed<span class="nt">&lt;/uri&gt;</span>
-    <span class="nt">&lt;/include&gt;</span>
+    <span class="nt">&lt;model</span> <span class="na">name=</span><span class="s">"ur10_fixed"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;include&gt;</span>
+          <span class="nt">&lt;name&gt;</span>ur10<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;uri&gt;</span>model://ur10<span class="nt">&lt;/uri&gt;</span>
+        <span class="nt">&lt;/include&gt;</span>
+        <span class="nt">&lt;joint</span> <span class="na">name=</span><span class="s">"attached_to_ground"</span> <span class="na">type=</span><span class="s">"fixed"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;parent&gt;</span>world<span class="nt">&lt;/parent&gt;</span>
+          <span class="nt">&lt;child&gt;</span>ur10::base<span class="nt">&lt;/child&gt;</span>
+        <span class="nt">&lt;/joint&gt;</span>
+    <span class="nt">&lt;/model&gt;</span>
     <span class="nt">&lt;include&gt;</span>
       <span class="nt">&lt;uri&gt;</span>model://ground_plane<span class="nt">&lt;/uri&gt;</span>
     <span class="nt">&lt;/include&gt;</span>
