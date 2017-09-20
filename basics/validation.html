@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="basics basics_validation">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child active'><a href="validation.html">Configuration Consistency</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="validating-configuration-consistency">Validating Configuration Consistency</h1>
+
+
+<p><strong>This is a more advanced topic</strong>. As it touches system-wide consistency, and
+configuration validation concerns, it is important. However, you may also want
+to skip it and come back here later.</p>
+
+<p>In <a href="deployment.html">the Deployment page</a>, we have passed the control chain's
+tip and root parameters through the <code>config/orogen/</code> files, and the SDF model
+through Syskit. In a complex system, there is a lot of such "spread out"
+configurations. Ensuring that everything is centralized is not always possible
+- or even desirable. One goal of a system like Syskit is to provide the
+environment to ensure that all these parameters are consistent with each other
+regardless.</p>
+
+<p>We will have a glimpse at this now by verifying that the links that are in the
+tip and root parameters are actual links from the SDF model. This is done by
+checking the parameters in the task's <code>#configure</code> method. None of the
+implementation is Syskit-specific. Only the testing environment is.</p>
+
+<p id="validate_tip_and_root_links">Now, to ensure consistency, we should verify that the <code>tip</code> and <code>root</code>
+properties are set to actual links in the provided model. Let's do this in
+<code>WDLSSolver</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">argument</span> <span class="ss">:robot</span>
+
+<span class="c1"># @api private</span>
+<span class="c1">#</span>
+<span class="c1"># Validates that a link is part of the provided robot model</span>
+<span class="c1">#</span>
+<span class="c1"># @param [String] link_name the name of the link</span>
+<span class="c1"># @param [String] property_name the name of the property being</span>
+<span class="c1">#   verified</span>
+<span class="c1"># @raise [ArgumentError] if the link is not in the model</span>
+<span class="k">def</span> <span class="nf">verify_link_in_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">link_name</span><span class="p">)</span>
+  <span class="k">if</span> <span class="o">!</span><span class="n">model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">any?</span> <span class="p">{</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span> <span class="n">link</span><span class="p">.</span><span class="nf">full_name</span> <span class="o">==</span> <span class="n">link_name</span> <span class="p">}</span>
+    <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">"link name '</span><span class="si">#{</span><span class="n">link_name</span><span class="si">}</span><span class="s2">' is not a link of the robot model. Existing links: </span><span class="si">#{</span><span class="n">model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:full_name</span><span class="p">).</span><span class="nf">sort</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">configure</span>
+  <span class="k">super</span>
+
+  <span class="c1"># Extract the model into its own SDF document</span>
+  <span class="n">as_root</span> <span class="o">=</span> <span class="n">robot</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">make_root</span>
+  <span class="c1"># And get the new model</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="n">as_root</span><span class="p">.</span><span class="nf">each_model</span><span class="p">.</span><span class="nf">first</span>
+  <span class="n">verify_link_in_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">properties</span><span class="p">.</span><span class="nf">root</span><span class="p">)</span>
+  <span class="n">verify_link_in_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">properties</span><span class="p">.</span><span class="nf">tip</span><span class="p">)</span>
+
+  <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model</span> <span class="o">=</span> <span class="n">as_root</span><span class="p">.</span><span class="nf">to_xml_string</span>
+  <span class="n">properties</span><span class="p">.</span><span class="nf">robot_model_format</span> <span class="o">=</span> <span class="ss">:ROBOT_MODEL_SDF</span>
+<span class="k">end</span>
+</code></pre></div>
+<div class="panel panel-warning">
+  <div class="panel-heading">
+    <p><a class="btn btn-warning" role="button" data-toggle="collapse" href="#lib_helpers" aria-expanded="false" aria-controls="lib_helpers">
+  Advanced
+</a><span class="advanced_description">Writing helpers in Syskit apps</span></p>
+  </div>
+
+  <div class="collapse panel-body" id="lib_helpers">
+    <p>The <code>verify_link_in_model</code> functionality is obviously a good target for
+being factored out as a standalone helper. In Syskit apps, these helpers
+are stored within the <code>lib/&lt;app_name&gt;/</code> folder (e.g. <code>lib/syskit_basics/</code>).
+Corresponding tests are stored in <code>test/lib/</code>.</p>
+
+    <p>In this case, one would create a <code>lib/syskit_basics/sdf_helpers.rb</code> file with a <code>SyskitBasics::SDFHelpers</code> module that contains</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Validates that a link is part of the provided robot model</span>
+<span class="c1">#</span>
+<span class="c1"># @param [SDF::Model] sdf_model the SDF model</span>
+<span class="c1"># @param [String] link_name the name of the link</span>
+<span class="c1"># @raise [ArgumentError] if the link is not in the model</span>
+<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">verify_link_in_model</span><span class="p">(</span><span class="n">sdf_model</span><span class="p">,</span> <span class="n">link_name</span><span class="p">)</span>
+  <span class="k">if</span> <span class="o">!</span><span class="n">sdf_model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">any?</span> <span class="p">{</span> <span class="o">|</span><span class="n">link</span><span class="o">|</span> <span class="n">link</span><span class="p">.</span><span class="nf">name</span> <span class="o">==</span> <span class="n">link_name</span> <span class="p">}</span>
+    <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">"link name '</span><span class="si">#{</span><span class="n">link_name</span><span class="si">}</span><span class="s2">' is not a link of the robot model. Existing links: </span><span class="si">#{</span><span class="n">sdf_model</span><span class="p">.</span><span class="nf">each_link</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">).</span><span class="nf">sort</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+  </div>
+</div>
+
+<p>As for the constant generator, we should <a href="constant_generator.html#testing">test the
+functionality</a>.  The <code>syskit gen orogen</code> call
+created a test template. Let's modify it to test the setup for <code>WDLSSolver</code>.
+The modifications for <code>SingleChainPublisher</code> will be left to the reader :P</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">describe</span> <span class="no">WDLSSolver</span> <span class="k">do</span>
+  <span class="nb">attr_reader</span> <span class="ss">:profile</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="c1"># Create a mock that has a robot model</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="no">EOSDF</span><span class="sh">
+      &lt;model name='test'&gt;
+        &lt;link name="root_test" /&gt;
+        &lt;link name="tip_test" /&gt;
+      &lt;/model&gt;
+</span><span class="no">      EOSDF</span>
+    <span class="c1"># We don't really need a full profile object, only an object</span>
+    <span class="c1"># that provides a Model object from a '#sdf_model' attribute</span>
+    <span class="c1">#</span>
+    <span class="c1"># Let's fake one using flexmock. Flexmock is loaded as part</span>
+    <span class="c1"># Of Syskit's test harness</span>
+    <span class="c1">#</span>
+    <span class="c1"># https://github.com/doudou/flexmock</span>
+    <span class="vi">@profile</span> <span class="o">=</span> <span class="n">flexmock</span><span class="p">(</span><span class="ss">sdf_model: </span><span class="no">SDF</span><span class="o">::</span><span class="no">Model</span><span class="p">.</span><span class="nf">from_xml_string</span><span class="p">(</span><span class="n">xml</span><span class="p">))</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"sets the robot model from its 'robot' argument"</span> <span class="k">do</span>
+    <span class="c1"># Create a fake test configuration with valid root and tip</span>
+    <span class="n">syskit_stub_conf</span> <span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
+      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'test::root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'test::tip_test'</span> <span class="p">}</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span>
+      <span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">profile</span><span class="p">))</span>
+    <span class="n">assert_equal</span> <span class="s2">"&lt;sdf&gt;</span><span class="si">#{</span><span class="n">profile</span><span class="p">.</span><span class="nf">sdf_model</span><span class="p">.</span><span class="nf">to_xml_string</span><span class="si">}</span><span class="s2">&lt;/sdf&gt;"</span><span class="p">,</span>
+      <span class="n">task</span><span class="p">.</span><span class="nf">properties</span><span class="p">.</span><span class="nf">robot_model</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"raises if the root link does not exist"</span> <span class="k">do</span>
+    <span class="n">syskit_stub_conf</span> <span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
+      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'invalid'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'test::tip_test'</span> <span class="p">}</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">assert_raises</span><span class="p">(</span><span class="no">ArgumentError</span><span class="p">)</span> <span class="k">do</span>
+      <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span>
+        <span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">profile</span><span class="p">))</span>
+    <span class="k">end</span>
+    <span class="n">assert_equal</span> <span class="s2">"link name 'invalid' is not a link of the robot model. Existing links: test::root_test, test::tip_test"</span><span class="p">,</span>
+      <span class="n">e</span><span class="p">.</span><span class="nf">message</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"raises if the tip link does not exist"</span> <span class="k">do</span>
+    <span class="n">syskit_stub_conf</span> <span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
+      <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'test::root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'invalid'</span> <span class="p">}</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">assert_raises</span><span class="p">(</span><span class="no">ArgumentError</span><span class="p">)</span> <span class="k">do</span>
+      <span class="n">syskit_stub_deploy_and_configure</span><span class="p">(</span>
+        <span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="n">profile</span><span class="p">))</span>
+    <span class="k">end</span>
+    <span class="n">assert_equal</span> <span class="s2">"link name 'invalid' is not a link of the robot model. Existing links: test::root_test, test::tip_test"</span><span class="p">,</span>
+      <span class="n">e</span><span class="p">.</span><span class="nf">message</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>And run the tests either <a href="constant_generator.html#run_test_command_line">on the command line</a> or <a href="constant_generator.html#run_test_ide">with the IDE</a>.</p>
+
+<p>The tests for <code>WDLSSolver</code> we just wrote should pass. However, we get an error for <code>AdaptiveWDLSSolver</code>:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>  1) Error:
+OroGen::CartCtrlWdls::AdaptiveWDLSSolver#test_0001_anonymous:
+
+
+cannot find an ordering to configure 1 tasks
+OroGen::CartCtrlWdls::AdaptiveWDLSSolver:0x5e5bbb8
+  owners: 
+  arguments: 
+    orocos_name: "task_under_test",
+    conf: ["default"]
+  ready_for_setup? false
+  missing_arguments: robot
+  has no should_configure_after constraint
+    /home/doudou/dev/vanilla/rock-website/tools/syskit/lib/syskit/test/network_manipulation.rb:788:in `syskit_configure'
+    /home/doudou/dev/vanilla/rock-website/tools/syskit/lib/syskit/test/network_manipulation.rb:1023:in `syskit_deploy_and_configure'
+    /home/doudou/dev/vanilla/rock-website/tools/syskit/lib/syskit/test/task_context_test.rb:63:in `assert_is_configurable'
+    /home/doudou/dev/vanilla/rock-website/tools/syskit/lib/syskit/test/task_context_test.rb:75:in `is_configurable'
+    /home/doudou/dev/vanilla/rock-website/bundles/syskit_basics/test/orogen/test_cart_ctrl_wdls.rb:55:in `block (2 levels) in &lt;module:CartCtrlWdls&gt;'
+</code></pre></div>
+<p>With the <code>missing_arguments:</code> line <a href="constant_generator.html#missing_arguments">we've already seen</a>.</p>
+
+<p>Looking at <code>AdaptiveWDLSSolver</code>, we can see that it is subclassing <code>WDLSSolver</code>:</p>
+
+<p><img src="media/adaptive_wdlssolver_subclassed_from.png" alt="AdaptiveWDLSSolver subclassed from WDLSSolver" class="fullwidth" /></p>
+
+<p>This is reflected in the class hierarchy on the Syskit side, which means that
+<code>AdaptiveWDLSSolver</code> does inherit the <code>configure</code> method we just wrote. Given
+that it does not overload this method itself, we can just delete the test.</p>
+
+<p>Finally, we should run the whole test suite to verify we haven't broken anything:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit test -rgazebo
+</code></pre></div>
+<p>Which does generate errors in the compositions. The generated composition files
+test for configuration (which is usually where there is code). Let's adapt those
+to make sure they run. We basically need to provide a proper robot model and
+configurations for the <code>SingleChainPublisher</code> and <code>WDLSSolver</code> components, based
+on what we've already done for these two components.</p>
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+
+    <p><a class="btn btn-info" role="button" data-toggle="collapse" href="#fix_composition_tests" aria-expanded="false" aria-controls="fix_composition_tests">
+  Solution
+</a><span class="advanced_description">Fix the composition tests</span></p>
+  </div>
+  <div class="collapse panel-body" id="fix_composition_tests">
+    <p>Let's fix the test for ArmCartesianControlWdls first. We basically need to
+setup the 'default' configuration for the two components, and a proper robot
+model. Let's do it in the test's <code>before</code> block:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">before</span> <span class="k">do</span>
+  <span class="c1"># Create a mock that has a robot model</span>
+  <span class="n">xml</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="no">EOSDF</span><span class="sh">
+    &lt;model name='test'&gt;
+      &lt;link name="root_test" /&gt;
+      &lt;link name="tip_test" /&gt;
+    &lt;/model&gt;
+</span><span class="no">  EOSDF</span>
+  <span class="vi">@profile</span> <span class="o">=</span> <span class="n">flexmock</span><span class="p">(</span><span class="ss">sdf_model: </span><span class="no">SDF</span><span class="o">::</span><span class="no">Model</span><span class="p">.</span><span class="nf">from_xml_string</span><span class="p">(</span><span class="n">xml</span><span class="p">))</span>
+  <span class="n">syskit_stub_conf</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">CartCtrlWdls</span><span class="o">::</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
+    <span class="ss">data: </span><span class="p">{</span> <span class="s1">'root'</span> <span class="o">=&gt;</span> <span class="s1">'test::root_test'</span><span class="p">,</span> <span class="s1">'tip'</span> <span class="o">=&gt;</span> <span class="s1">'test::tip_test'</span> <span class="p">}</span>
+  <span class="n">syskit_stub_conf</span> <span class="no">OroGen</span><span class="o">::</span><span class="no">RobotFrames</span><span class="o">::</span><span class="no">SingleChainPublisher</span><span class="p">,</span> <span class="s1">'default'</span><span class="p">,</span>
+    <span class="ss">data: </span><span class="p">{</span> <span class="s1">'chain'</span> <span class="o">=&gt;</span> <span class="no">Hash</span><span class="p">[</span><span class="s1">'root_link'</span> <span class="o">=&gt;</span> <span class="s1">'test::root_test'</span><span class="p">,</span> <span class="s1">'tip_link'</span> <span class="o">=&gt;</span> <span class="s1">'test::tip_test'</span><span class="p">]</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+    <p>and modify the test to pass the robot model</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">cmp_task</span> <span class="o">=</span> <span class="n">syskit_stub_deploy_configure_and_start</span><span class="p">(</span>
+  <span class="no">ArmCartesianControlWdls</span><span class="p">.</span><span class="nf">with_arguments</span><span class="p">(</span><span class="ss">robot: </span><span class="vi">@profile</span><span class="p">))</span>
+</code></pre></div>
+    <p>Do the same modification for the <code>ArmCartesianConstantControlWdls</code> composition and now
+verify that the tests pass with <code>syskit test -rgazebo</code>.</p>
+  </div>
+</div>
+
+<p class="next-page"><strong>Next</strong>: Before we move on to the Syskit runtime aspects, <a href="recap.html">let's recap what we've just seen</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

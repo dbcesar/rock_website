@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child active'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent active'><span class='parent-label'><a href="./">Basics</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="installation.html">Installation</a></li><li class='child active'><a href="day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="getting_started.html">Getting Started</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="constant_generator.html">Constant Generator</a></li><li class='child'><a href="devices.html">Devices</a></li><li class='child'><a href="deployment.html">Deployment</a></li><li class='child'><a href="validation.html">Configuration Consistency</a></li><li class='child'><a href="recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
@@ -48,6 +48,7 @@
   <li><a href="#cli-help" id="markdown-toc-cli-help">CLI help</a></li>
   <li><a href="#layout" id="markdown-toc-layout">Folder Structure</a></li>
   <li><a href="#acd" id="markdown-toc-acd">Moving around</a></li>
+  <li><a href="#error-logs" id="markdown-toc-error-logs">Error Logs</a></li>
   <li><a href="#updating" id="markdown-toc-updating">Updating</a></li>
   <li><a href="#building" id="markdown-toc-building">Building</a></li>
   <li><a href="#configuration" id="markdown-toc-configuration">Configuration</a></li>
@@ -67,44 +68,37 @@ documentation.</p>
 <h3 id="layout">Folder Structure</h3>
 
 <dl>
-  <dt>Workspace root</dt>
-  <dd>
-    <p>Where your ran <a href="index.html">the bootstrap</a>, and where the <code>env.sh</code> script is located&lt;/dd&gt;</p>
-    <dt>The autoproj/ folder</dt>
-    <dd>
-      <p>Located at the root of the workspace, it contains all the build configuration&lt;/dd&gt;</p>
-      <dt>Package</dt>
-      <dd>
-        <p>Packages are the unit that autoproj deals with. The Rock software is split
+<dt>Workspace root</dt>
+<dd>Where your ran <a href="index.html">the bootstrap</a>, and where the <code>env.sh</code> script is located</dd>
+<dt>The autoproj/ folder</dt>
+<dd>Located at the root of the workspace, it contains all the build configuration</dd>
+<dt>Package</dt>
+<dd>Packages are the unit that autoproj deals with. The Rock software is split
 into separate types of packages that are defined in the build configuration.
 The configuration tells Autoproj both the package type (how to install the
 package) and where the package's source code is located (e.g. the github
-repository).&lt;/dd&gt;</p>
-        <dt>OS Depedency or osdep</dt>
-        <dd>
-          <p>Packages in autoproj can either be checked out and built from source.
+repository).</dd>
+<dt>OS Depedency or osdep</dt>
+<dd>Packages in autoproj can either be checked out and built from source.
 Alternatively, autoproj allows to interact with the host OS package system
-(e.g. APT on Ubuntu). The osdep system is what makes this possible.&lt;/dd&gt;</p>
-          <dt>Build folders</dt>
-          <dd>
-            <p>When packages have build byproducts, they are saved within the package
-build folder. This is by default the <code>build/</code> directory under the packages.&lt;/dd&gt;</p>
-            <dt>Prefix folder</dt>
-            <dd>
-              <p>Packages that require an install step will install under this folder. By
-default the <code>install/</code> folder under the workspace root&lt;/dd&gt;</p>
-              <dt>Logs</dt>
-              <dd>
-                <p>The output of all commands ran by autoproj are redirected to separate files under <code>install/log/</code>&lt;/dd&gt;
-&lt;/dl&gt;</p>
+(e.g. APT on Ubuntu). The osdep system is what makes this possible.</dd>
+<dt id="build_directory">Build folders</dt>
+<dd>When packages have build byproducts, they are saved within the package
+build folder. This is by default the <code>build/</code> directory under the packages.</dd>
+<dt id="prefix_directory">Prefix folder</dt>
+<dd>Packages that require an install step will install under this folder. By
+default the <code>install/</code> folder under the workspace root</dd>
+<dt>Logs</dt>
+<dd>The output of all commands ran by autoproj are redirected to separate files under <code>install/log/</code></dd>
+</dl>
 
-                <h3 id="acd">Moving around</h3>
+<h3 id="acd">Moving around</h3>
 
-                <p><code>acd</code> allows to move from package to package within the workspace. Because it
+<p><code>acd</code> allows to move from package to package within the workspace. Because it
 is a very common operation, <code>acd</code> accepts that each part of the package name be
 shortened as long as the result is unambiguous.</p>
 
-                <p>For instance, in the default Rock installation:</p>
+<p>For instance, in the default Rock installation:</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>$ acd s/gaz
 # Now in simulation/gazebo
@@ -115,105 +109,116 @@ $ acd c/kdl
 $ acd c/kdl_par
 # Now in control/kdl_parser
 </code></pre></div>
-                <p class="callout callout-info"><code>acd</code> expects package names. A few packages – mainly orogen, typelib and rtt
-– do not include the package's category in them (they are named e.g. 'orogen'
-but are installed in <code>tools/</code>)</p>
+<p class="callout callout-info"><code>acd</code> expects package names or package directories. A few packages – mainly
+orogen, typelib and rtt – do not include the package's category in them (they
+are named e.g. 'orogen' but are installed in <code>tools/</code>). <code>autoproj show
+path/to/directory</code> will allow you to find this out.</p>
 
-                <p>The <code>-b</code> and <code>-p</code> options allow to move to a package's build and prefix directories.</p>
+<p>The <code>-b</code> and <code>-p</code> options allow to move to a package's <a href="#build_directory">build</a> and <a href="#prefix_directory">prefix</a> directories.</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>$ acd -b s/gaz
 # Now in simulation/gazebo/build
 $ acd -p c/kdl
 # Now in install/
 </code></pre></div>
-                <h3 id="updating">Updating</h3>
+<h3 id="error-logs">Error Logs</h3>
 
-                <p>Most of the time, you will want to update the whole workspace (the <code>-k</code> option
+<p>During build, and less often during updates, the tools autoproj calls will
+error out. However, to keep the output of autoproj manageable, it redirects the
+command output - where the error details usually are - to separate files.</p>
+
+<p>When one error does happen, autoproj displays the last 10 lines of that
+command. The intent is that these 10 lines may contain the error. If it does
+not, the easiest way to display the output of the failed command is to run
+<code>alog</code> with either the name of the failed package or its path</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>alog name/of/package
+alog path/to/package
+</code></pre></div>
+<p>Or, if your shell is already within a folder of said package,</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>alog .
+</code></pre></div>
+<h3 id="updating">Updating</h3>
+
+<p>Most of the time, you will want to update the whole workspace (the <code>-k</code> option
 continues updating even if errors occur). This will also update OS
 dependencies.</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>aup --all -k
 </code></pre></div>
-                <p>If you want to restrict the update to a package and its dependencies, give its
+<p>If you want to restrict the update to a package and its dependencies, give its
 name or path on the command line</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>aup simulation/rock_gazebo
 </code></pre></div>
-                <p>To restrict the update to the package, excluding its dependencies, add <code>--deps=f</code>.</p>
+<p>To restrict the update to the package, excluding its dependencies, add <code>--deps=f</code>.</p>
 
-                <p><code>--checkout-only</code> will not update already checked out packages, but
+<p><code>--checkout-only</code> will not update already checked out packages, but
 only check out not currently present in the system.</p>
 
-                <p class="callout callout-info"><code>aup</code> without arguments is equivalent to <code>aup .</code>, i.e. update the package
+<p class="callout callout-info"><code>aup</code> without arguments is equivalent to <code>aup .</code>, i.e. update the package
 located in the current directory</p>
 
-                <p>In some situations, or if you're trying to keep track of all the changes that
+<p>In some situations, or if you're trying to keep track of all the changes that
 are happening to your system, you want want to check what will be pulled by
 <code>aup</code>. <code>autoproj status</code> allows to compare the status of the workspace w.r.t.
 the repositories.</p>
 
-                <h3 id="building">Building</h3>
+<h3 id="building">Building</h3>
 
-                <p>To ensure that all changes have been built, run</p>
+<p>To ensure that all changes have been built, run</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>amake --all
 </code></pre></div>
-                <p>As with <code>aup</code>, <code>-k</code> can be added to continue even under error. This is less
+<p>As with <code>aup</code>, <code>-k</code> can be added to continue even under error. This is less
 common for <code>amake</code>, though,  as a build error will usually cascade to its
 dependencies.</p>
 
-                <p>If you want to restrict the build to a package and its dependencies, give its
+<p>If you want to restrict the build to a package and its dependencies, give its
 name or path on the command line</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>amake simulation/rock_gazebo
 </code></pre></div>
-                <p>To restrict the build to the package, excluding its dependencies, add <code>--deps=f</code>.</p>
+<p>To restrict the build to the package, excluding its dependencies, add <code>--deps=f</code>.</p>
 
-                <p class="callout callout-info"><code>amake</code> without arguments is equivalent to <code>amake .</code>, i.e. build the package
+<p class="callout callout-info"><code>amake</code> without arguments is equivalent to <code>amake .</code>, i.e. build the package
 located in the current directory</p>
 
-                <h3 id="configuration">Configuration</h3>
+<h3 id="configuration">Configuration</h3>
 
-                <p>Build configurations may have some configuration options that the user needs to
+<p>Build configurations may have some configuration options that the user needs to
 answer on first time building. If you need to change the answers after the first
 run, execute</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>autoproj reconfigure
 </code></pre></div>
-                <h3 id="test">Running Tests</h3>
+<h3 id="test">Running Tests</h3>
 
-                <p>Test suites are expensive to build, and one does not want every test suite from
+<p>Test suites are expensive to build, and one does not want every test suite from
 every package to be available at all time. For this reason, test suite building
 is by default disabled for all packages. If you do want to use/develop the test
 suite of a package (great idea !), you need first to enable it, update and
 rebuild. The 'update' step is needed as some dependencies are only installed
 for the purpose of testing.</p>
 
-                <p>From within the package's directory,</p>
+<p>From within the package's directory,</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>autoproj test enable .
 aup --no-deps
 amake
 </code></pre></div>
-                <p>Use <code>autoproj test list</code> to see which packages do have a test suite and for
+<p>Use <code>autoproj test list</code> to see which packages do have a test suite and for
 which packages it is enabled. Running <code>autoproj test disable</code> disables all test
 suites again.</p>
 
-                <p>Running the tests can either be done using the package's test method, or through
+<p>Running the tests can either be done using the package's test method, or through
 autoproj by running</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>autoproj test .
 </code></pre></div>
-                <p class="next-page"><strong>Next</strong>: let's get to <a href="getting_started.html">create our first system integration</a></p>
+<p class="next-page"><strong>Next</strong>: let's get to <a href="getting_started.html">create our first system integration</a></p>
 
-              </dd>
-            </dd>
-          </dd>
-        </dd>
-      </dd>
-    </dd>
-  </dd>
-</dl>
 
             </div>
         </div>
