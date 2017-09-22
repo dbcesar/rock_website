@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_index">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 id="integrating-functionality">Integrating Functionality</h1>
+
+<p>You should have at this stage read the Basics section of this documentation.
+Where Basics was all about dealing with system integration, we are going to
+discuss in this section how new functionality is presented in a form that
+can be used in a system.</p>
+
+<p>This part will assume that you've understood the notions of
+<a href="../basics/composition.html">dataflow</a> and <a href="../runtime_overview/event_loop.html">execution
+lifecycle</a></p>
+
+<p>We <strong>strongly recommend</strong> that you develop most of your system's functionality
+in <strong>libraries</strong>, instead of doing within the framework itself. For C++, this
+means creating C++ library packages that are then later integrated into Rock
+components to expose that functionality to the system. For Ruby, this means
+creating Ruby packages that are then used within the Ruby layers (e.g. Syskit)</p>
+
+<p><strong>Why ?</strong> Developing libraries is a matter of "general" software engineering
+best practices. Robotics is a small field, software engineering is not. By
+doing most of your work in a framework-independent manner, you ensure that you
+can benefit from the much bigger ecosystem. Moreover, we haven't seen the end
+of the robotic frameworks. By developing libraries that are
+framework-independent, you ensure that you can integrate them elsewhere if needs
+be, cutting the time and effort by <strong>a lot</strong>.</p>
+
+<p class="note"><strong>How does Rock help the library/framework separation ?</strong> Supporting this
+separation during the development process is a main design driver for the
+tooling. For instance, Rock's build system - <code>autoproj</code> - is not assumed to be
+present by the rest of the packages. Second, <code>orogen</code> exposes C++ structures
+directly into the type system. The widespread approach - using IDLs - usually
+end up pushing the developers to integrate code-generated structures in their
+libraries thus tying them to the framework itself.</p>
+
+<p>While we do recommend a separation between framework and libraries, Rock does
+have some guidelines and best practices on how to develop C++ and Ruby
+libraries to ease their integration in a Rock system. The next pages of this
+section will first deal with <a href="cpp_libraries.html">C++ libraries</a> and then <a href="ruby_libraries.html">Ruby
+libraries</a>.</p>
+
+<p>The rest will then deal with the no small matter of integrating this
+functionality in a Rock system.
+If you feel so inclined, Rock provides a C++ library template. This template
+solves some of the common problems with setting up a C++ library (basic build
+system, …) and obviously integrate as-is with the rest of a Rock system.</p>
+
+<p class="next-page"><strong>Next</strong>: let's talk about the development of <a href="cpp_libraries.html">C++ libraries</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="type_system type_system_types_in_ruby">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">The Type System</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="defining_types.html">Defining Types</a></li><li class='child active'><a href="types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../integrating_functionality/">Integrating Functionality</a></span><ul><li class='child'><a href="../integrating_functionality/">Introduction</a></li><li class='child'><a href="../integrating_functionality/cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="../integrating_functionality/ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="../integrating_functionality/components.html">Components</a></li><li class='child'><a href="../integrating_functionality/interface.html">Interface</a></li><li class='child'><a href="../integrating_functionality/state_machine.html">State Machine</a></li><li class='child'><a href="../integrating_functionality/writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="../integrating_functionality/deployment.html">Deployments</a></li><li class='child'><a href="../integrating_functionality/plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="types-in-ruby">Types in Ruby</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#basics" id="markdown-toc-basics">Basics</a></li>
+  <li><a href="#loading-and-accessing-types" id="markdown-toc-loading-and-accessing-types">Loading and Accessing Types</a></li>
+  <li><a href="#converting-between-the-c-definitions-and-more-ruby-ish-types" id="markdown-toc-converting-between-the-c-definitions-and-more-ruby-ish-types">Converting between the C++ definitions and more Ruby-ish types</a></li>
+  <li><a href="#extending-the-rock-types" id="markdown-toc-extending-the-rock-types">Extending the Rock Types</a></li>
+</ul>
+
+<p>You will be using Ruby to interact with a running system (<em>via</em> Syskit) and
+post-process log files. It's important to understand how the types that are
+defined and exchanged from the C++ side end up being manipulated in Ruby.</p>
+
+<h2 id="basics">Basics</h2>
+
+<p>The mapping from C++ to Ruby is mostly as one would expect: one can create, read
+or modify a struct by setting or reading its fields. One can access an array or
+<code>std::vector</code> as one would access a Ruby array and so on.</p>
+
+<p>For instance, an instance of the Time type we
+already <a href="defining_types.html#type_declarations">used as example</a>:</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">namespace</span> <span class="n">base</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Time</span>
+  <span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">microseconds</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">Time</span> <span class="n">fromMilliseconds</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">ms</span><span class="p">);</span>
+    <span class="n">Time</span> <span class="k">operator</span> <span class="o">+</span><span class="p">(</span><span class="n">Time</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>would be accessed with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">obj</span><span class="p">.</span><span class="nf">microseconds</span> <span class="c1"># current value of 'microseconds' as a Ruby integer</span>
+<span class="n">obj</span><span class="p">.</span><span class="nf">microseconds</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># set the value of 'microseconds' to 20</span>
+</code></pre></div>
+<p>A more complex struct such as:</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">namespace</span> <span class="n">base</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Timestamps</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">base</span><span class="o">::</span><span class="n">Time</span><span class="o">&gt;</span> <span class="n">stamps</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>would be accessed with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">obj</span><span class="p">.</span><span class="nf">stamps</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">microseconds</span>
+<span class="n">obj</span><span class="p">.</span><span class="nf">stamps</span> <span class="o">&lt;&lt;</span> <span class="n">new_time</span>
+</code></pre></div>
+<p>Enums are represented as Ruby symbols, so</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">namespace</span> <span class="n">base</span> <span class="p">{</span>
+  <span class="k">enum</span> <span class="n">Result</span> <span class="p">{</span>
+    <span class="n">OK</span><span class="p">,</span> <span class="n">FAILED</span>
+  <span class="p">};</span>
+  <span class="k">struct</span> <span class="n">S</span> <span class="p">{</span>
+    <span class="n">Result</span> <span class="n">status</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>would be manipulated with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">obj</span><span class="p">.</span><span class="nf">status</span> <span class="c1"># =&gt; :OK</span>
+<span class="n">obj</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="ss">:FAILED</span>
+</code></pre></div>
+<h2 id="loading-and-accessing-types">Loading and Accessing Types</h2>
+
+<p>To get access to registered types, one needs to initialize the orocos.rb library and load the corresponding typekits:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'orocos'</span>
+<span class="no">Orocos</span><span class="p">.</span><span class="nf">initialize</span>
+<span class="no">Orocos</span><span class="p">.</span><span class="nf">load_typekit</span> <span class="s1">'base'</span>
+</code></pre></div>
+<p>From their on, all the types that the <code>base</code> typekit define are made available
+under the <code>Types</code> object. For instance, the <code>base::Time</code> type is available
+as <code>Types.base.Time</code>.</p>
+
+<p>New objects can thus be created <code>Types.base.Time.new</code>. New objects - except
+enums - are left uninitialized. Enums are initialized to the first valid value
+in their definition. Call <code>#zero!</code> to zero-initialize an object.</p>
+
+<p>The fields of a struct can be initialized on construction: <code>Types.base.Time.new(microseconds: 0)</code>.</p>
+
+<h2 id="converting-between-the-c-definitions-and-more-ruby-ish-types">Converting between the C++ definitions and more Ruby-ish types</h2>
+
+<p>As it is, the Rock type system is optimized for C++. The types can have a
+proper API, accessors, initialization … These parts of the types are available
+in C++ but are "lost in translation" when passed to Ruby.</p>
+
+<p>However, Ruby also has a rich ecosystem of built-in types and external
+libraries, that sometimes match what the C++ types provide. For instance,
+Rock's existing <code>base::Time</code> type has an equivalent in the Ruby <code>Time</code> class.
+To ease the use of Rock on the Ruby side, the framework provides a way to
+convert to and from pure-Ruby types. Rock's own <code>base/types</code> package defines
+such conversions. The main (but no only) conversions are used to handle Eigen
+types in Ruby (using built-in Eigen bindings), and the <code>Time</code> conversion that
+we just described.</p>
+
+<p>If one defines a conversion to ruby with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Typelib</span><span class="p">.</span><span class="nf">convert_to_ruby</span> <span class="s1">'/base/Time'</span><span class="p">,</span> <span class="no">Time</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
+    <span class="n">microseconds</span> <span class="o">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">microseconds</span>
+    <span class="n">seconds</span> <span class="o">=</span> <span class="n">microseconds</span> <span class="o">/</span> <span class="mi">1_000_000</span>
+    <span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">microseconds</span> <span class="o">%</span> <span class="mi">1_000_000</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Then the framework will automatically convert <code>/base/Time</code> values into Ruby's
+Time using the given block. Note that the Ruby type is optional in this case
+(whatever's returned by the block will be considered "the converted type")</p>
+
+<p><strong>Important</strong> the conversions must be defined <strong>before</strong> the type is loaded</p>
+
+<p><strong>Where to define these ?</strong> One-shot conversions can be defined straight into
+your system (ruby script or Syskit app). For conversions that are too widespread
+for that, consider installing a <code>typelib_plugin.rb</code> file under a folder that is resolved
+by <code>RUBYLIB</code> (e.g. <code>mylib/typelib_plugin.rb</code>). This would either be a plain Ruby package
+or a file installed by a C++ package within the Ruby search path. Both methods are
+described in more details in the <a href="../integrating_functionality/ruby_libraries.html">Creating Functionality</a> section.</p>
+
+<p>The inverse conversion may also be provided</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Typelib</span><span class="p">.</span><span class="nf">convert_to_ruby</span> <span class="no">Time</span><span class="p">,</span> <span class="s1">'/base/Time'</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="p">,</span> <span class="n">type</span><span class="o">|</span>
+  <span class="n">type</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+    <span class="ss">microseconds: </span><span class="n">value</span><span class="p">.</span><span class="nf">tv_sec</span> <span class="o">*</span> <span class="mi">1_000_000</span> <span class="o">+</span> <span class="n">value</span><span class="p">.</span><span class="nf">tv_usec</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="note"><strong>Reminder</strong> if you don't understand the <code>/base/Time</code> syntax, we've covered that
+when we talked about the type system's <a href="defining_types.html#naming_scheme">naming scheme</a>.</p>
+
+<h2 id="extending-the-rock-types">Extending the Rock Types</h2>
+
+<p>An alternative to the conversions mechanism is to extend the types with new
+methods, and/or initializers.</p>
+
+<p>To define methods on the type class itself, one uses
+<code>Typelib.specialize_model</code>. The following would for instance allow to create a
+<code>/base/Angle</code> initialized with NaN by doing <code>Types.base.Angle.Invalid</code></p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Typelib</span><span class="p">.</span><span class="nf">specialize_model</span> <span class="s1">'/base/Angle'</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">Invalid</span>
+    <span class="n">new</span><span class="p">(</span><span class="ss">rad: position: </span><span class="no">Float</span><span class="o">::</span><span class="no">NAN</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>To define methods on the values themselves, one uses <code>Typelib.specialize</code>.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Typelib</span><span class="p">.</span><span class="nf">specialize</span> <span class="s1">'/base/Angle'</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">to_degrees</span>
+    <span class="n">rad</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="no">Math</span><span class="o">::</span><span class="no">PI</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>It is possible to define an initializer this way:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Typelib</span><span class="p">.</span><span class="nf">specialize</span> <span class="s1">'/base/Angle'</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">rad</span> <span class="o">=</span> <span class="no">Float</span><span class="o">::</span><span class="no">NAN</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><strong>Important</strong> the specializations must be defined <strong>before</strong> the type is loaded</p>
+
+<p><strong>Where to define these ?</strong> One-shot conversions can be defined straight into
+your system (ruby script or Syskit app). For conversions that are too widespread
+for that, consider installing a <code>typelib_plugin.rb</code> file under a folder that is resolved
+by <code>RUBYLIB</code> (e.g. <code>mylib/typelib_plugin.rb</code>). This would either be a plain Ruby package
+or a file installed by a C++ package within the Ruby search path. Both methods are
+described in more details in the <a href="../integrating_functionality/ruby_libraries.html">Creating Functionality</a> section.</p>
+
+<p class="next-page"><strong>Next</strong> that's all about the type system. Go back to <a href="../#how_to_read">the documentation
+overview</a> for more.</p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

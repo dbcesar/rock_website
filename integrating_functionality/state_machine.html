@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_state_machine">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child active'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="lifecycle-state-machine">Lifecycle State Machine</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#the-nominal-rtt-state-machine" id="markdown-toc-the-nominal-rtt-state-machine">The nominal RTT state machine</a>    <ul>
+      <li><a href="#configure-and-start" id="markdown-toc-configure-and-start">Configure and Start</a></li>
+    </ul>
+  </li>
+  <li><a href="#error-representation" id="markdown-toc-error-representation">Error representation</a></li>
+  <li><a href="#extended_states" id="markdown-toc-extended_states">Extending the state machine</a></li>
+</ul>
+
+<p>While the component interface tells how to <em>communicate</em> with a component, the
+lifecycle state machine defines how a component can be controlled at runtime.
+All Rock components share the same state machine, which is what allows <a href="../runtime_overview/event_loop.html">the
+generic Syskit integration</a>.</p>
+
+<h2 id="the-nominal-rtt-state-machine">The nominal RTT state machine</h2>
+
+<p>What follows is the <strong>nominal</strong> state machine. On each state
+transition, the italic names are the transition names, and the non-italic name
+the name of the method that will be called on the component so that it does
+something, i.e. the ones that you – the component developer – must implement
+if something is needed for a particular transition.</p>
+
+<p>The <code>configureHook()</code> and <code>startHook()</code> methods may return false, in which case
+the transition is refused.</p>
+
+<p><img src="media/state_machine.svg" alt="The default nominal RTT state machine" class="fullwidth" /></p>
+
+<h3 id="configure-and-start">Configure and Start</h3>
+
+<p>As its name implies, the transition between PreOperational and Stopped is meant
+to encapsulate the need for complex and/or costly configuration. For instance,
+trying to open and configure a device (which can take very long). To give you
+another example, in hard realtime contexts, it is expected that <code>startHook()</code> is
+hard realtime while <code>configureHook()</code> does not need to be.</p>
+
+<p>Additionally, because of <a href="../basics/recap.html">assumptions within Syskit</a>, the
+<code>configureHook()</code> is the only place where dynamic ports can be created (and
+<code>cleanupHook()</code> the place where they must be destroyed).</p>
+
+<p class="important"><strong>Note</strong> the <code>needs_configuration</code> statement within the file generated by
+<code>rock-create-orogen</code> allowed to control whether the component's requires a
+<code>configure</code> step or not. This is still here for historical reasons. All new
+components should have it.</p>
+
+<h2 id="error-representation">Error representation</h2>
+
+<div class="clearfix">
+  <p class="pull-left"><img src="media/error_state_machine.svg" alt="The RTT error handling" /></p>
+
+  <p>Errors are represented in the way depicted on the left. The exception state is
+used to represent errors that demand the component to stop, but can be recovered
+from by restarting it. The fatal error state, however, is a terminal state:
+there is no way to get out of it except by restarting the component's process.</p>
+
+  <p>The components will automatically transition from any state to Exception if a
+C++ exception is "leaked" by one of the hooks (i.e. uncaught exception).
+Because of such a transition, the stopHook and cleanupHook will be called
+before getting into Exception. In addition, one may transition manually to
+the exception state by calling <code>exception()</code> from within the code. Note that
+<code>exception()</code> behaves as a normal function, i.e. will not interrupt the flow
+of the method it is in. Make sure you return after the exception:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>void Task::updateHook()
+{
+  if (something_went_wrong)
+    return exception();
+
+  // Without the 'return', the execution would continue as if everything was
+  // alright
+}
+</code></pre></div>
+  <p>If, while going into Exception, another C++ exception is caught, the component
+will go into Fatal. In general, there should be no reason to transition to
+fatal manually.</p>
+</div>
+
+<h2 id="extended_states">Extending the state machine</h2>
+
+<p>oroGen offers a way to have a more fine-grained reporting mechanism for
+components to their coordination layer. This mechanism is based
+on the definition of sub-states for each of the runtime and terminal states of
+the task context state machine: Running, Exception and Fatal.</p>
+
+<p>These sub-states are declared in the <tt>task_context</tt> block of the oroGen
+specification:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"MotionTask"</span> <span class="k">do</span>
+  <span class="c1"># Sub-states of Running (nominal operations)</span>
+  <span class="n">runtime_states</span> <span class="s1">'GOING_FORWARD'</span><span class="p">,</span> <span class="s1">'TURNING_LEFT'</span>
+  <span class="c1"># Sub-states of Exception (non-nominal end)</span>
+  <span class="n">exception_states</span> <span class="s1">'BLOCKED'</span><span class="p">,</span> <span class="s1">'SLIPPING'</span>
+  <span class="c1"># Sub-states of Fatal (not recoverable error)</span>
+  <span class="n">fatal_states</span> <span class="s1">'TOTALLY_BROKEN'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>On the C++ side, this mechanism is available through two things:</p>
+
+<ul>
+  <li>a States enumeration that defines all the states in a manner that is usable in
+the code</li>
+  <li>the <code>state(States)</code>, <code>exception(States)</code> and <code>fatal(States)</code> methods that
+allow to declare state changes in the C++ code.</li>
+</ul>
+
+<p>For instance, if the updateHook() detects that the system is blocked, it would
+do</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="kt">void</span> <span class="n">MotionTask</span><span class="o">::</span><span class="n">updateHook</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// code
+</span>    <span class="k">if</span> <span class="p">(</span><span class="n">blocked</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">exception</span><span class="p">(</span><span class="n">BLOCKED</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// code
+</span><span class="p">}</span>
+</code></pre></div>
+<p>All these generate notifications can be reacted on at the Syskit level to change
+the system's behavior. Because each of these calls generate a notification, it is
+good practice to avoid transitioning multiple time to the same runtime state. Calls
+to <code>state()</code> can be guarded to avoid this:</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">if</span> <span class="p">(</span><span class="n">state</span><span class="p">()</span> <span class="o">!=</span> <span class="n">GOING_FORWARD</span><span class="p">)</span>
+  <span class="n">state</span><span class="p">(</span><span class="n">GOING_FORWARD</span><span class="p">);</span>
+</code></pre></div>
+<p class="next-page"><strong>Next</strong>: let's see how one should <a href="writing_the_hooks.html">write the <code>*Hook</code> methods</a>.</p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_components">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child active'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="components">Components</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#create" id="markdown-toc-create">Creating and new oroGen packages</a></li>
+  <li><a href="#development-workflow" id="markdown-toc-development-workflow">Development Workflow</a></li>
+  <li><a href="#runtime-workflow" id="markdown-toc-runtime-workflow">Runtime Workflow</a></li>
+</ul>
+
+<p>Within Rock, components are <em>implemented</em> in C++. They are also <em>specified</em> in a
+Ruby domain-specific language that is processed by a code generation tool,
+<strong>oroGen</strong>. This tool ensures that the component's interface matches its
+specification. It also removes most of the crude boilerplate-writing code that
+is the declaration in C++ of the component interfaces.</p>
+
+<p>From a package point of view, components are defined in an orogen package. The
+orogen packages are all placed in the <code>/orogen/</code> subdirectory of one of the
+<a href="../workspace/conventions.html">package categories</a></p>
+
+<p class="note"><strong>Important</strong> an oroGen package and a library can share the same basename (e.g.
+<code>drivers/hokuyo</code> and <code>drivers/orogen/hokuyo</code>). This is even a recommended
+behavior when an orogen package is mainly tied to a certain library.</p>
+
+<p>From this page on, the rest of this section will deal with the integration of
+the functionality from C++ libraries into Rock components by means of orogen.
+But let's first talk about how to create an orogen package.</p>
+
+<h2 id="create">Creating and new oroGen packages</h2>
+
+<p>Packages are created with the <code>rock-create-orogen</code> tool. Let's assume we want
+to create a <code>planning/orogen/sbpl</code> package, the workflow would be to:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>acd
+cd planning/orogen/
+rock-create-orogen sbpl
+cd sbpl
+# Edit sbpl.orogen
+rock-create-orogen
+# Fix potential mistakes and re-run rock-create-orogen until there are no errors
+# …
+</code></pre></div>
+<p class="note"><strong>What does <code>rock-create-orogen</code> do ?</strong> <code>orogen</code> does "private" code generation
+in a <code>.orogen</code> subfolder of the package, and creates a <code>templates/</code> folder.
+<code>rock-create-orogen</code> ensures that the initial repository commit does not
+contain any of these. If you don't want to use <code>git</code>, or if you're confident
+that you know which files and folder to commit and which to leave out, the second
+run is not neeeded.</p>
+
+<p>Once this is done, <a href="../workspace/add_packages.html#orogen">add the package to your build configuration</a></p>
+
+<h2 id="development-workflow">Development Workflow</h2>
+
+<p>Developing a component involves doing mainly three things:</p>
+
+<ul>
+  <li><a href="../type_system/defining_types.html">defining data types</a> for usage on
+its interface. Types do not necessarily have to be defined in standalone
+orogen packages as described in the Type System section, but can also
+be directly imported in an orogen package that defines tasks. When this
+is the case, the explicit <code>export_types</code> statement is not needed, as <code>orogen</code>
+will export all types that are used on the component's interface.</li>
+  <li>defining the component(s) interface(s) in the orogen file</li>
+  <li>implementing the processing parts of the component in C++</li>
+</ul>
+
+<p class="important"><strong>Let's remember</strong> we strongly recommend that you develop the bulk of your
+component's functionality in <strong>libraries</strong>, instead of doing in the components
+themselves.</p>
+
+<p>Each time data types or the orogen specification are modified, one must run
+orogen to re-generate code. After code generation, the package behaves like
+a CMake package.</p>
+
+<p>The best way to do the first code generation is to use
+<a href="../basics/day_to_day.html"><code>amake</code></a>. After this, one can run <code>make regen</code> to
+do code generation and <code>make</code> to build from within the package's build
+directory (which is usually located in <code>build/</code>). This is usually the best way
+to integrate an orogen package in an IDE.</p>
+
+<h2 id="runtime-workflow">Runtime Workflow</h2>
+
+<p>"Developing" a component in C++ within Rock is to write a C++ class that
+interacts with its inputs/outputs. This class does not specify when the
+processing is going to be called, and under which OS resource (threads,
+processes). It is said that the <em>component implementation</em> is separated
+from the <em>system deployment</em>. The first one is really writing the C++ code that
+interacts with the component's interface. The second one is part of system
+integration.</p>
+
+<p>What it means in practice is that a component implement is nothing more than a standalone
+C++ class. This C++ class can be instantiated multiple times in a single
+system, using different periods or triggering mechanisms, different threading
+policies, …</p>
+
+<p>When you define components in oroGen, you create a <em>task library</em>, which is a
+shared library in which the task context classes are defined. Then, you need to
+put these libraries in <em>deployments</em> (which is also done by oroGen). Finally,
+you can start these deployments, connect the tasks together, and monitor them
+using Syskit.</p>
+
+<p><img src="media/deployment_process.svg" alt="Runtime Workflow Diagram" class="fullwidth" /></p>
+
+<p><strong>Next</strong> Let's define the <a href="interface.html">component interface</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

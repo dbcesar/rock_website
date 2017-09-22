@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_writing_the_hooks">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child active'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="writing-the-hooks">Writing the Hooks</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#interface-objects-in-c" id="markdown-toc-interface-objects-in-c">Interface Objects in C++</a></li>
+  <li><a href="#code-generation-and-code-updates" id="markdown-toc-code-generation-and-code-updates">Code Generation and Code Updates</a></li>
+  <li><a href="#properties" id="markdown-toc-properties">Properties</a></li>
+  <li><a href="#ports" id="markdown-toc-ports">Ports</a></li>
+  <li><a href="#dynamic_ports" id="markdown-toc-dynamic_ports">Dynamic Ports</a></li>
+  <li><a href="#operations" id="markdown-toc-operations">Operations</a></li>
+</ul>
+
+<p>This page describes the part of the C++ API, and their usage pattern, that are
+relevant to the implementation of the hooks in a Rock component. You should
+already have familiarized yourself with <a href="interface.html">the component
+interface</a> and its <a href="state_machine.html">lifecycle state
+machine</a>.</p>
+
+<h2 id="interface-objects-in-c">Interface Objects in C++</h2>
+
+<p>There is one C++ object for each declared interface element. The name of the
+object is the name of the element with a leading underscore. For instance,</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Another documentation string</span>
+<span class="n">output_port</span> <span class="s1">'out'</span><span class="p">,</span> <span class="s1">'another_type'</span>
+</code></pre></div>
+<p>is mapped to a C++ attribute of type <code>RTT::InputPort&lt;another_type&gt;</code> called
+<code>_out</code>.</p>
+
+<h2 id="code-generation-and-code-updates">Code Generation and Code Updates</h2>
+
+<p>oroGen will not update a file that is already present on disk. Whenever an
+interface object requires the addition or removal of a method (operations and
+dynamic properties), one must manually modify the corresponding files in
+<code>tasks/</code>. To ease the process, oroGen does update template files in
+<code>templates/</code></p>
+
+<p class="note">In order to achieve this, each component is implemented in two classes: the one
+you modify - which has the name declared in the orogen file - and a <code>Base</code>
+class that is directly modified by orogen. The latter is where the interface
+objects are defined. Have a look if you're interested in understanding more
+about the component's implementation. It's in the <code>.orogen/tasks/</code> directory</p>
+
+<h2 id="properties">Properties</h2>
+
+<p>Plain properties are read only. They must be read either in the <code>configureHook()</code> or
+in the <code>startHook()</code>. Syskit will write them before calling <code>configure</code>.</p>
+
+<p>A property is read with <code>.get()</code>:</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">configuration_type</span> <span class="n">config</span> <span class="o">=</span> <span class="n">_name</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+</code></pre></div>
+<p>Dynamic properties can be read at runtime. However, the property update method
+is called in-between two hooks, and therefore any delay due to the update will
+impact the component's update rate, plus one must take into account that the
+state of the system does change in-between two <code>updateHook</code> calls. In other
+words, dynamic properties have a cost both on the component's implementation
+complexity and on its predictability. <strong>Use them wisely</strong>.</p>
+
+<p>There are two ways to handle dynamic properties. Either by reading the property
+object repeatedly, or by implementing a hook method that is called when the
+property is written at runtime. This hook method is called <code>setPropertyName</code>
+for a <code>property_name</code> property. In doubt, check the template files in
+<code>templates/</code>.</p>
+
+<p>If you do reimplement this method, always call the method from the base class
+(as the generated template instructs you to do).</p>
+
+<h2 id="ports">Ports</h2>
+
+<p>The ports map to C++ attributes on the component class, with the name prefixed
+by an underscore (i.e. <code>_in</code> and <code>_out</code> here. The most common operation is to
+read the input port and write an output port;</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">my_type</span> <span class="n">in_sample</span><span class="p">;</span>
+<span class="n">RTT</span><span class="o">::</span><span class="n">DataFlow</span> <span class="n">status</span> <span class="o">=</span> <span class="n">_in</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">sample</span><span class="p">);</span>
+<span class="n">another_type</span> <span class="n">out_sample</span><span class="p">;</span>
+<span class="n">_out</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">out_sample</span><span class="p">);</span>
+</code></pre></div>
+<p>The <code>status</code> return value indicates whether there was nothing to read
+(<code>RTT::NoData</code>), a new, never-read sample was read (<code>RTT::NewData</code>) or an
+already-read sample was read (<code>RTT::OldData</code>). Let's now look at the common
+port-reading patterns.</p>
+
+<p>All input ports are cleared on <code>startHook</code>, i.e. just after <code>startHook</code>, the
+status will often be <code>NoData</code>. This is done so that the component does not read
+stale data from its last execution.</p>
+
+<p>Input ports can be used in the C++ code in two ways, which one you want to use
+depends on what you actually want to do.</p>
+
+<ul>
+  <li>
+    <p>if you want to read all new samples that are on the input (since an input port
+can be connected to multiple output ports)</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="c1">// my_type is the declared type of the port
+</span><span class="n">my_type</span> <span class="n">sample</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">_in</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="nb">false</span><span class="p">)</span> <span class="o">==</span> <span class="n">RTT</span><span class="o">::</span><span class="n">NewData</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// got a new sample, do something with it
+</span>    <span class="c1">// The 'false' here is a small optimization
+</span><span class="p">}</span>
+</code></pre></div>  </li>
+  <li>
+    <p>if you are just interested by having some data</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="c1">// my_type is the declared type of the port
+</span><span class="n">my_type</span> <span class="n">sample</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">_in</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">!=</span> <span class="n">RTT</span><span class="o">::</span><span class="n">NoData</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// got a sample, do something with it
+</span><span class="p">}</span>
+</code></pre></div>  </li>
+</ul>
+
+<p>Finally, to write on an output, you use 'write':</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="c1">// another_type is the declared type of the port
+</span><span class="n">another_type</span> <span class="n">data</span> <span class="o">=</span> <span class="n">calculateData</span><span class="p">();</span>
+<span class="n">_out</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</code></pre></div>
+<p>Another operation of interest is the <tt>connected()</tt> predicate. It tests if
+there is a data provider that will send data to input ports
+(<tt>in.connected()</tt>) or if there is a listener component that will get the
+samples written on output ports.</p>
+
+<p>For instance,</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">if</span> <span class="p">(</span><span class="n">_out</span><span class="p">.</span><span class="n">connected</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="c1">// generate the data for _out only if somebody may be interested by it. This
+</span>    <span class="c1">// is useful if generating // the data is costly
+</span>    <span class="n">another_type</span> <span class="n">data</span> <span class="o">=</span> <span class="n">calculateData</span><span class="p">();</span>
+    <span class="n">_out</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="dynamic_ports">Dynamic Ports</h2>
+
+<p>Components that have a dynamic port mechanism must create these ports in
+<code>configureHook</code>. They will usually do so based on information on their
+properties.</p>
+
+<p>For the purpose of example, let's assume that we're implementing a time source,
+and need different ports to be at different periods. A valid configuration type
+would be</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">struct</span> <span class="n">PortConfiguration</span>
+<span class="p">{</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">port_name</span><span class="p">;</span>
+   <span class="n">base</span><span class="o">::</span><span class="n">Time</span> <span class="n">period</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>To hold the list of created ports, the task would need an attribute</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">typedef</span> <span class="n">RTT</span><span class="o">::</span><span class="n">InputPort</span><span class="o">&lt;</span><span class="n">type</span><span class="o">::</span><span class="n">of</span><span class="o">::</span><span class="n">the</span><span class="o">::</span><span class="n">Port</span><span class="o">&gt;</span> <span class="n">TimeOutputPort</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TimeOutputPort</span><span class="o">*&gt;</span> <span class="n">mCreatedPorts</span><span class="p">;</span>
+</code></pre></div>
+<p>The task's <code>configureHook</code> would create the ports (after checking for e.g. name
+collisions)</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">conf</span> <span class="o">:</span> <span class="n">_port_configurations</span><span class="p">.</span><span class="n">get</span><span class="p">())</span>
+<span class="p">{</span>
+  <span class="n">TimeOutputPort</span><span class="o">*</span> <span class="n">port</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TimeOutputPort</span><span class="p">(</span><span class="s">"name_of_the_port"</span><span class="p">);</span>
+  <span class="n">ports</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">addPort</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
+  <span class="n">mCreatedPorts</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">port</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>and <code>cleanupHook</code> would remove and delete them</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">mCreatedPorts</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+<span class="p">{</span>
+  <span class="n">TimeOutputPort</span><span class="o">*</span> <span class="n">port</span> <span class="o">=</span> <span class="n">mCreatedPorts</span><span class="p">.</span><span class="n">back</span><span class="p">();</span>
+  <span class="n">mCreatedPorts</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+  <span class="n">ports</span><span class="o">-&gt;</span><span class="n">removePort</span><span class="p">(</span><span class="n">created_port</span><span class="o">-&gt;</span><span class="n">getName</span><span class="p">());</span>
+  <span class="k">delete</span> <span class="n">created_port</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="operations">Operations</h2>
+
+<p>Operations map to a C++ method. E.g. for the declaration</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">operation</span><span class="p">(</span><span class="s1">'operationName'</span><span class="p">).</span>
+    <span class="nf">returns</span><span class="p">(</span><span class="s1">'int'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg0'</span><span class="p">,</span> <span class="s1">'/arg/type'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg1'</span><span class="p">,</span> <span class="s1">'/example/other_arg'</span><span class="p">)</span>
+</code></pre></div>
+<p>oroGen will generate a method with the signature</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">return_type</span> <span class="n">operationName</span><span class="p">(</span><span class="n">arg</span><span class="o">::</span><span class="n">type</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">example</span><span class="o">::</span><span class="n">other_arg</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">arg1</span><span class="p">);</span>
+</code></pre></div>
+<p>By default, the operations are run into the thread of the callee, i.e. the thread of
+the component on which the operation is defined. This is easier from a thread-safety
+point of view, as one thus guarantees that there won't be concurrent access to the task's
+internal state. However, it also means that the operation will be executed only when all
+the task's hooks have returned (waiting potentially long).</p>
+
+<p>If it is desirable, one can design the operation's C++ method to be thread-safe
+and declare it as being executed in the caller thread instead of the callee
+thread. This is done with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">operation</span><span class="p">(</span><span class="s1">'operationName'</span><span class="p">).</span>
+    <span class="nf">returns</span><span class="p">(</span><span class="s1">'int'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg0'</span><span class="p">,</span> <span class="s1">'/arg/type'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg1'</span><span class="p">,</span> <span class="s1">'/example/other_arg'</span><span class="p">).</span>
+    <span class="nf">runs_in_caller_thread</span>
+</code></pre></div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

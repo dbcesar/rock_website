@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_interface">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child active'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="component-interfaces">Component Interfaces</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#abstract" id="markdown-toc-abstract">Abstract Tasks</a></li>
+  <li><a href="#interface-elements" id="markdown-toc-interface-elements">Interface Elements</a>    <ul>
+      <li><a href="#ports" id="markdown-toc-ports">Ports</a></li>
+      <li><a href="#properties" id="markdown-toc-properties">Properties</a></li>
+      <li><a href="#operations" id="markdown-toc-operations">Operations</a></li>
+      <li><a href="#dynamic_ports" id="markdown-toc-dynamic_ports">Dynamic Ports</a></li>
+    </ul>
+  </li>
+  <li><a href="#inheritance" id="markdown-toc-inheritance">Inheritance</a></li>
+</ul>
+
+<p>We'll cover in this page how to define your task's interface. All statements
+presented in this page are to be included in a component definition, i.e.
+between 'do' and 'end' in</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"ClassName"</span> <span class="k">do</span>
+   <span class="n">needs_configuration</span>
+
+   <span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The only constraint on <code>ClassName</code> is that it <em>must</em> be different from the
+project name. How one is meant to interact with these elements in the task's
+own code is dealt with <a href="writing_the_hooks.html">later</a></p>
+
+<p>The <code>needs_configuration</code> statement is historical and should always be present.</p>
+
+<h2 id="abstract">Abstract Tasks</h2>
+
+<p>orogen supports subclassing a component class into another component class. Of
+course, in some cases, one would create a component class that is only meant to
+be subclasses. This is declared with the <code>abstract</code> statement, which ensures that
+orogen will not attempt (nor allow to) create a component instance from this class.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"ClassName"</span> <span class="k">do</span>
+  <span class="n">needs_configuration</span>
+  <span class="n">abstract</span>
+  <span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2 id="interface-elements">Interface Elements</h2>
+
+<p class="fullwidth"><img src="media/orocos_component.svg" alt="RTT Component Interface" /></p>
+
+<ul>
+  <li><strong>Ports</strong> are used to transfer data between the components</li>
+  <li><strong>Properties</strong> are used to store and set configuration parameters</li>
+  <li>Finally, <strong>Operations</strong> (not represented here) are used to do remote method
+calls on the components</li>
+</ul>
+
+<p>As a general rule of thumb, the components should communicate with each other
+only through ports. The properties and operations (as well as the state machine
+covered in <a href="state_machine.html">the next page</a>) are meant to be used by
+a coordination layer, namely Syskit in our case.</p>
+
+<h3 id="ports">Ports</h3>
+<p>Ports are defined with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># A documentation string</span>
+<span class="n">input_port</span> <span class="s1">'in'</span><span class="p">,</span> <span class="s1">'my_type'</span>
+<span class="c1"># Another documentation string</span>
+<span class="n">output_port</span> <span class="s1">'out'</span><span class="p">,</span> <span class="s1">'another_type'</span>
+</code></pre></div>
+<h3 id="properties">Properties</h3>
+
+<p>Properties are defined with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># What this property is about</span>
+<span class="n">property</span> <span class="s1">'name'</span><span class="p">,</span> <span class="s1">'configuration_type'</span>
+</code></pre></div>
+<p>Plain properties must be read by the component only before it is started. If
+one needs to be able to change the value at runtime, the property must be
+declared <code>dynamic</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># What this property is about</span>
+<span class="n">property</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'configuration_type'</span><span class="p">).</span>
+  <span class="nf">dynamic</span>
+</code></pre></div>
+<p class="important"><strong>Don't make everything dynamic</strong>. Use dynamic properties only for things that
+(1) won't affect the component functionality when the property is changed and
+(2) for which the "dynamicity" is easy to implement. A counter example is for
+instance a device whose change in parameter would take a few seconds. This
+should definitely <em>not</em> be dynamic. A good example would be a simple scaling
+parameter, which is only injected in a numerical equation - that is something
+that won't require any internal reinitialization.</p>
+
+<h3 id="operations">Operations</h3>
+
+<p>The operations offer a mechanism from which a task context can expose
+functionality through remote method calls. They are defined with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># Documentation of the operation</span>
+<span class="n">operation</span><span class="p">(</span><span class="s1">'commandName'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg0'</span><span class="p">,</span> <span class="s1">'/arg/type'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg1'</span><span class="p">,</span> <span class="s1">'/example/other_arg'</span><span class="p">)</span>
+</code></pre></div>
+<p>Additionally, a return type can be added with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">operation</span><span class="p">(</span><span class="s1">'operationName'</span><span class="p">).</span>
+    <span class="nf">returns</span><span class="p">(</span><span class="s1">'int'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg0'</span><span class="p">,</span> <span class="s1">'/arg/type'</span><span class="p">).</span>
+    <span class="nf">argument</span><span class="p">(</span><span class="s1">'arg1'</span><span class="p">,</span> <span class="s1">'/example/other_arg'</span><span class="p">)</span>
+</code></pre></div>
+<p>Note the dot at the end of all but the last line. This dot is important and, if
+omitted, will lead to syntax errors. If no return type is provided, the
+operation returns nothing.</p>
+
+<p class="important"><strong>When to use an operation ?</strong> Well, don't. Mostly. Operations should very
+rarely be used, as they create hard synchronization between components. The one
+common case where an operation is actually useful is if something <em>really
+expensive</em> needs to rarely be done in the middle of the component processing,
+such as dumping an internal state that is really expensive to dump.</p>
+
+<h3 id="dynamic_ports">Dynamic Ports</h3>
+
+<p>Some components (e.g. the logger or the canbus components) may create new ports
+at runtime, based on their configuration. To integrate within Syskit, it is
+necessary to declare that such creation is possible. This is done with the
+<code>dynamic_input_port</code> and <code>dynamic_output_port</code> statements, possibly using a
+regular expression as name pattern and either a message type or nil for "type
+unknown".</p>
+
+<p>The following for instance declares, in the Rock
+<a href="https://github.com/rock-drivers/drivers-orogen-canbus">canbus::Task</a>, that
+ports with arbitrary names might be added to the task interface, and that these
+ports will have the /canbus/Message type.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">dynamic_output_port</span> <span class="sr">/.*/</span><span class="p">,</span> <span class="s2">"/canbus/Message"</span>
+</code></pre></div>
+<p>oroGen currently provides no support for dynamic ports at the C++ level.
+<code>dynamic_output_port</code> and <code>dynamic_input_port</code> are purely declarative, it is
+the job of the component implementer to handle their creation and destruction.
+This is details <a href="writing_the_hooks.html#dynamic_ports">later in this section</a></p>
+
+<p>Syskit expects dynamic ports to be created at configuration time and removed at
+cleanup time.</p>
+
+<h2 id="inheritance">Inheritance</h2>
+
+<p>It is possible to make the components inherit from each other, and have the
+other oroGen features play well.</p>
+
+<p>Given a <code>Task</code> base class, the subclass is defined with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"SubTask"</span><span class="p">,</span> <span class="ss">subclasses: </span><span class="s2">"Task"</span> <span class="k">do</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>When one does so, the component's subclass inherits from the parent. This means
+that it has access to the methods defined on the parent class, and also that
+it inherits the parent's class interface.</p>
+
+<p>When inheriting between task contexts, the following constraints will apply:</p>
+
+<ul>
+  <li>it is not possible to add a task interface object (port, property, …) that
+has the same name than one defined by the parent model.</li>
+  <li>the child shares the parent's <a href="state_machine.html">state definitions</a></li>
+</ul>
+
+<p>Finally, "abstract task models", i.e. task models that are used as a base for
+others, but which it would be meaningless to deploy since they don't have any
+functionality can be marked as abstract with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"SubTask"</span> <span class="k">do</span>
+    <span class="n">abstract</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>One can also inherit from a task defined by another oroGen package. Import the
+package first at the top of the <code>.orogen</code> file with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">using_task_library</span> <span class="s2">"base_package"</span>
+</code></pre></div>
+<p>and subclass the task from <code>base_package</code> using its full name:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s1">'Task'</span><span class="p">,</span> <span class="ss">subclasses: </span><span class="s2">"base_package::Task"</span> <span class="k">do</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="next-page"><strong>Next</strong> let's have a look at the component <a href="state_machine.html">lifecycle state machine</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

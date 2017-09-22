@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_cpp_libraries">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="c-library-packages">C++ Library Packages</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#integrating-3rd-party-library" id="markdown-toc-integrating-3rd-party-library">Integrating 3rd-party library</a></li>
+  <li><a href="#creating-a-package" id="markdown-toc-creating-a-package">Creating a Package</a></li>
+  <li><a href="#conventions-for-library-design" id="markdown-toc-conventions-for-library-design">Conventions for library design</a></li>
+  <li><a href="#tests" id="markdown-toc-tests">Tests</a></li>
+  <li><a href="#the-rock-cmake-macros" id="markdown-toc-the-rock-cmake-macros">The Rock CMake macros</a></li>
+  <li><a href="#rockcmake-reference-documentation" id="markdown-toc-rockcmake-reference-documentation">Rock.cmake Reference Documentation</a>    <ul>
+      <li><a href="#executable-targets-rockexecutable" id="markdown-toc-executable-targets-rockexecutable">Executable Targets (<code>rock_executable</code>)</a></li>
+      <li><a href="#library-targets-rocklibrary" id="markdown-toc-library-targets-rocklibrary">Library Targets (<code>rock_library</code>)</a></li>
+      <li><a href="#boost-test-suite-targets-rocktestsuite" id="markdown-toc-boost-test-suite-targets-rocktestsuite">Boost Test Suite Targets (<code>rock_testsuite</code>)</a></li>
+      <li><a href="#gtest-test-suite-targets-rocktestsuite" id="markdown-toc-gtest-test-suite-targets-rocktestsuite">GTest Test Suite Targets (<code>rock_testsuite</code>)</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>While Rock is designed to allow you for the separation between functionality
+and framework, if you feel so inclined, Rock provides a C++ library template.
+This template solves some of the common problems with setting up a C++ library
+(build system, …) and obviously integrate as-is with the rest of a Rock
+system.</p>
+
+<p><strong>However</strong> there is nothing that forces you to use the Rock library template.
+Autoproj generically integrates with autotools and cmake packages. One can also
+set up a custom package for more exotic systems (such as some old packages that
+use "plain make")</p>
+
+<p>The only constraint when the aim is to create a library that will be integrated
+in a Rock component is to provide a pkg-config file for it. This is how orogen
+resolves its dependencies.</p>
+
+<h2 id="integrating-3rd-party-library">Integrating 3rd-party library</h2>
+
+<p>Rock packages - even those using the Rock CMake macros - are <strong>not</strong> dependent
+on autoproj. Autoproj is an external helper tool, but in no way does it interact
+with the package's build process. It is therefore perfectly feasible to build and
+use 3rd party libraries in a Rock system.</p>
+
+<p>When doing so, try to follow these guidelines:</p>
+
+<ul>
+  <li>do not change the package unless strictly necessary. The one exception for
+which there is currently no good solution is to provide a pkg-config file for
+orogen integration. If that is needed, you will probably want to integrate
+this change <a href="../workspace/add_packages.html#patch">as a patch</a> into your build
+configuration. Also, try to get this patch in the package's mainline, it will
+make things easier down the line.</li>
+  <li>provide <a href="../workspace/add_packages.html#manifest_xml">a package manifest</a> in the package set.</li>
+</ul>
+
+<h2 id="creating-a-package">Creating a Package</h2>
+
+<p>You need to first pick a category and a name <a href="../workspace/conventions.html">the workspace
+conventions</a> for information about how to name
+your library package.</p>
+
+<p>Rock then provides a library template. One can create a new library with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>rock-create-lib library_dir
+</code></pre></div>
+<p>e.g.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>cd drivers
+rock-create-lib imu_advanced_navigation_anpp
+</code></pre></div>
+<p>This library creates a dummy class and a dummy executable that uses this class.
+It is great at providing you with the example CMake code for both library and
+tests.</p>
+
+<h2 id="conventions-for-library-design">Conventions for library design</h2>
+
+<p>There's a small number of conventions that Rock libraries follow:</p>
+
+<ul>
+  <li><strong>Extensions</strong> header files are <code>.hpp</code>, source <code>.cpp</code></li>
+  <li><strong>Naming</strong> classes should be <code>CamelCase</code>. The library must be defined under a
+namespace that matches the package basename (e.g.
+<code>imu_advanced_navigation_anpp</code> for <code>drivers/imu_advanced_navigation_anpp</code>). Each class
+has its own file, with named like the class (i.e. the <code>Driver</code> class is in
+<code>src/Driver.hpp</code> and <code>src/Driver.cpp</code>)</li>
+  <li><strong>File Structure</strong> source and header files <em>tests excluded</em> are saved in
+<code>src/</code>. Tests are in <code>test/</code>.</li>
+</ul>
+
+<p>If the ultimate goal of a data type is to be used as an interface type on a
+Rock component, you must have first read and understood the <a href="../type_system">type
+system</a> description.</p>
+
+<h2 id="tests">Tests</h2>
+
+<p>This is 2017 (or later). Testing is now an integral part of modern development
+process, and Rock provides support to integrate unit testing in the development
+workflow.</p>
+
+<p>All libraries that have a <code>test/</code> folder will be assumed to have a test suite.
+However, testing is disabled by default - since building all the tests from all
+the workspace's packages would be fairly expensive. One needs to enable a package
+tests to build them:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>acd package/name
+autoproj test enable .
+aup
+amake
+</code></pre></div>
+<p>The <code>aup</code> step is needed if the package has test-specific dependencies, as
+defined by the <code>test_depend</code> tag of its <a href="../workspace/add_packages.html#manifest_xml">manifest
+file</a>.</p>
+
+<p>Once the tests are built, run them manually if you want to see their results.
+Autoproj can also run them with <code>autoproj test [package]</code>, but will redirect
+the test's output to a log file (that can be visualized later with
+<a href="../basics/day_to_day.html#alog">alog</a>.</p>
+
+<h2 id="the-rock-cmake-macros">The Rock CMake macros</h2>
+
+<p>To ease the use of CMake within a Rock system - i.e. in packages that follow
+Rock conventions, Rock provides CMake macros that are somewhat easier to use.
+The following describes them. The macros can be found in
+<code>base/cmake/modules/Rock.cmake</code> in a rock installation. There are also specific
+support for other tools within the Rock system (such as
+<a href="todo_link_to_vizkit3d">vizkit3d</a>), but these will be introduced when
+applicable.</p>
+
+<p>The end of this page will detail this macro. But unless you need them, you may
+want to go to the next topic: <a href="ruby_libraries.html">the integration of Ruby packages</a></p>
+
+<h2 id="rockcmake-reference-documentation">Rock.cmake Reference Documentation</h2>
+
+<h3 id="executable-targets-rockexecutable">Executable Targets (<code>rock_executable</code>)</h3>
+
+<div class="highlight"><pre class="highlight plaintext"><code>rock_executable(name
+    SOURCES source.cpp source1.cpp ...
+    [LANG_C]
+    [DEPS target1 target2 target3]
+    [DEPS_PKGCONFIG pkg1 pkg2 pkg3]
+    [DEPS_CMAKE pkg1 pkg2 pkg3]
+    [MOC qtsource1.hpp qtsource2.hpp])
+</code></pre></div>
+<p>Creates a C++ executable and (optionally) installs it.</p>
+
+<p>The following arguments are mandatory:</p>
+
+<p><strong>SOURCES</strong>: list of the C++ sources that should be built into that library</p>
+
+<p>The following optional arguments are available:</p>
+
+<p><strong>LANG_C</strong>: build as a C rather than a C++ library</p>
+
+<p><strong>DEPS</strong>: lists the other targets from this CMake project against which the
+library should be linked</p>
+
+<p><strong>DEPS_PKGCONFIG</strong>: list of pkg-config packages that the library depends upon. The
+necessary link and compilation flags are added</p>
+
+<p><strong>DEPS_CMAKE</strong>: list of packages which can be found with CMake's find_package,
+that the library depends upon. It is assumed that the Find*.cmake scripts
+follow the CMake accepted standard for variable naming</p>
+
+<p><strong>MOC</strong>: if the library is Qt-based, this is a list of either source or header
+files of classes that need to be passed through Qt's moc compiler.  If headers
+are listed, these headers should be processed by moc, with the resulting
+implementation files are built into the library. If they are source files, they
+get added to the library and the corresponding header file is passed to moc.</p>
+
+<h3 id="library-targets-rocklibrary">Library Targets (<code>rock_library</code>)</h3>
+
+<div class="highlight"><pre class="highlight plaintext"><code>rock_library(name
+    [SOURCES source.cpp source1.cpp ...]
+    [HEADERS header1.hpp header2.hpp header3.hpp ...]
+    [LANG_C]
+    [DEPS target1 target2 target3]
+    [DEPS_PKGCONFIG pkg1 pkg2 pkg3]
+    [DEPS_CMAKE pkg1 pkg2 pkg3]
+    [MOC qtsource1.hpp qtsource2.hpp]
+    [NOINSTALL])
+</code></pre></div>
+<p>Creates and (optionally) installs a shared library.</p>
+
+<p>As with all rock libraries, the target must have a pkg-config file along, that
+gets generated and (optionally) installed by the macro. The pkg-config file
+needs to be in the same directory and called package_name.pc.in. See the template
+created by <code>rock-create-lib</code> for an example.</p>
+
+<p>The following arguments are mandatory:</p>
+
+<p><strong>SOURCES</strong>: list of the C++ sources that should be built into that library. If
+absent, the library is assumed to be header-only (i.e. only the headers and
+pkg-config file will be installed). Note that even in this case the DEPS_* arguments
+can be provided as they are passed to the pkg-config file generation.</p>
+
+<p><strong>HEADERS</strong>: list of the C++ headers that should be installed. Headers are installed
+in <code>include/&lt;target_name&gt;/</code>.</p>
+
+<p>The following optional arguments are available:</p>
+
+<p><strong>LANG_C</strong>: build as a C rather than a C++ library</p>
+
+<p><strong>DEPS</strong>: lists the other targets from this CMake project against which the
+library should be linked</p>
+
+<p><strong>DEPS_PKGCONFIG</strong>: list of pkg-config packages that the library depends upon. The
+necessary link and compilation flags are added</p>
+
+<p><strong>DEPS_CMAKE</strong>: list of packages which can be found with CMake's find_package,
+that the library depends upon. It is assumed that the Find*.cmake scripts
+follow the CMake accepted standard for variable naming</p>
+
+<p><strong>MOC</strong>: if the library is Qt-based, this is a list of either source or header
+files of classes that need to be passed through Qt's moc compiler.  If headers
+are listed, these headers should be processed by moc, with the resulting
+implementation files are built into the library. If they are source files, they
+get added to the library and the corresponding header file is passed to moc.</p>
+
+<p><strong>NOINSTALL</strong>: by default, the library gets installed on 'make install'. If this
+argument is given, this is turned off</p>
+
+<h3 id="boost-test-suite-targets-rocktestsuite">Boost Test Suite Targets (<code>rock_testsuite</code>)</h3>
+
+<div class="highlight"><pre class="highlight plaintext"><code>rock_testsuite(name
+    SOURCES source.cpp source1.cpp ...
+    [LANG_C]
+    [DEPS target1 target2 target3]
+    [DEPS_PKGCONFIG pkg1 pkg2 pkg3]
+    [DEPS_CMAKE pkg1 pkg2 pkg3]
+    [MOC qtsource1.hpp qtsource2.hpp])
+</code></pre></div>
+<p>Creates a C++ test suite that is using the boost unit test framework</p>
+
+<p>The following arguments are mandatory:</p>
+
+<p><strong>SOURCES</strong>: list of the C++ sources that should be built into that library</p>
+
+<p>The following optional arguments are available:</p>
+
+<p><strong>LANG_C</strong>: build as a C rather than a C++ library</p>
+
+<p><strong>DEPS</strong>: lists the other targets from this CMake project against which the
+library should be linked</p>
+
+<p><strong>DEPS_PKGCONFIG</strong>: list of pkg-config packages that the library depends upon. The
+necessary link and compilation flags are added</p>
+
+<p><strong>DEPS_CMAKE</strong>: list of packages which can be found with CMake's find_package,
+that the library depends upon. It is assumed that the Find*.cmake scripts
+follow the CMake accepted standard for variable naming</p>
+
+<p><strong>MOC</strong>: if the library is Qt-based, this is a list of either source or header
+files of classes that need to be passed through Qt's moc compiler.  If headers
+are listed, these headers should be processed by moc, with the resulting
+implementation files are built into the library. If they are source files, they
+get added to the library and the corresponding header file is passed to moc.</p>
+
+<h3 id="gtest-test-suite-targets-rocktestsuite">GTest Test Suite Targets (<code>rock_testsuite</code>)</h3>
+
+<div class="highlight"><pre class="highlight plaintext"><code>rock_gtest(name
+    SOURCES source.cpp source1.cpp ...
+    [LANG_C]
+    [DEPS target1 target2 target3]
+    [DEPS_PKGCONFIG pkg1 pkg2 pkg3]
+    [DEPS_CMAKE pkg1 pkg2 pkg3]
+    [MOC qtsource1.hpp qtsource2.hpp])
+</code></pre></div>
+<p>Creates a C++ test suite that is using the Google unit test framework</p>
+
+<p>The following arguments are mandatory:</p>
+
+<p><strong>SOURCES</strong>: list of the C++ sources that should be built into that library</p>
+
+<p>The following optional arguments are available:</p>
+
+<p><strong>LANG_C</strong>: build as a C rather than a C++ library</p>
+
+<p><strong>DEPS</strong>: lists the other targets from this CMake project against which the
+library should be linked</p>
+
+<p><strong>DEPS_PKGCONFIG</strong>: list of pkg-config packages that the library depends upon. The
+necessary link and compilation flags are added</p>
+
+<p><strong>DEPS_CMAKE</strong>: list of packages which can be found with CMake's find_package,
+that the library depends upon. It is assumed that the Find*.cmake scripts
+follow the CMake accepted standard for variable naming</p>
+
+<p><strong>MOC</strong>: if the library is Qt-based, this is a list of either source or header
+files of classes that need to be passed through Qt's moc compiler.  If headers
+are listed, these headers should be processed by moc, with the resulting
+implementation files are built into the library. If they are source files, they
+get added to the library and the corresponding header file is passed to moc.</p>
+
+<p><strong>Next</strong> let's look at the creation of <a href="ruby_libraries.html">ruby packages</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

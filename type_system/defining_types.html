@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="type_system type_system_defining_types">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">The Type System</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="defining_types.html">Defining Types</a></li><li class='child'><a href="types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../integrating_functionality/">Integrating Functionality</a></span><ul><li class='child'><a href="../integrating_functionality/">Introduction</a></li><li class='child'><a href="../integrating_functionality/cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="../integrating_functionality/ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="../integrating_functionality/components.html">Components</a></li><li class='child'><a href="../integrating_functionality/interface.html">Interface</a></li><li class='child'><a href="../integrating_functionality/state_machine.html">State Machine</a></li><li class='child'><a href="../integrating_functionality/writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="../integrating_functionality/deployment.html">Deployments</a></li><li class='child'><a href="../integrating_functionality/plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="defining-types">Defining Types</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#creating-an-orogen-package-for-type-definition" id="markdown-toc-creating-an-orogen-package-for-type-definition">Creating an orogen package for type definition</a></li>
+  <li><a href="#type_declarations" id="markdown-toc-type_declarations">Type Declarations</a></li>
+  <li><a href="#naming_scheme" id="markdown-toc-naming_scheme">Type Names</a></li>
+  <li><a href="#import" id="markdown-toc-import">Importing Types</a></li>
+  <li><a href="#templates" id="markdown-toc-templates">Handling of C++ templates</a></li>
+  <li><a href="#opaques" id="markdown-toc-opaques">Opaque Types</a></li>
+</ul>
+
+<p>Types are described using C++. However, not all C++ types can be used in the data
+flow. There are limitations to which types are acceptable, and ways to work
+around these limtations.</p>
+
+<p>They are then injected in Rock's type system through Rock's code generation
+tool, <code>orogen</code>. We will see <a href="../integrating_functionality/components.html">later</a> that this tool is
+also the tool that is used to create components.</p>
+
+<h2 id="creating-an-orogen-package-for-type-definition">Creating an orogen package for type definition</h2>
+
+<p>Packages are created with the <code>rock-create-orogen</code> tool. Let's assume we want
+to create a <code>planning/orogen/sbpl</code> package, the workflow would be to:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>acd
+cd planning/orogen/
+rock-create-orogen sbpl
+cd sbpl
+# Edit sbpl.orogen
+rock-create-orogen
+# Fix potential mistakes and re-run rock-create-orogen until there are no errors
+# …
+</code></pre></div>
+<p>If we are going to use this package only for type definitions, you will have to
+delete all the <code>task_context</code> definitions. The orogen file will end up looking
+like this:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">name</span> <span class="s2">"name_of_package"</span>
+<span class="n">version</span> <span class="s2">"0.1"</span>
+
+<span class="c1"># Import types from other orgen projects as well as</span>
+<span class="c1"># C++ headers within the orogen package itself</span>
+<span class="n">import_types_from</span> <span class="s2">"..."</span>
+<span class="n">import_types_from</span> <span class="s2">"..."</span>
+<span class="n">import_types_from</span> <span class="s2">"..."</span>
+<span class="n">import_types_from</span> <span class="s2">"..."</span>
+
+<span class="c1"># Import types from libraries</span>
+<span class="n">using_library</span> <span class="s2">"other_lib"</span>
+<span class="n">import_types_from</span> <span class="s2">"other_lib/Header.hpp"</span>
+
+<span class="c1"># Choose which types are going to be usable on</span>
+<span class="c1"># component interfaces</span>
+<span class="n">typekit</span><span class="p">.</span><span class="nf">export_types</span> <span class="s2">"/name/of/type"</span><span class="p">,</span>
+  <span class="s2">"/name/of/another/type"</span>
+</code></pre></div>
+<p class="note"><strong>What does <code>rock-create-orogen</code> do ?</strong> <code>orogen</code> does "private" code generation
+in a <code>.orogen</code> subfolder of the package, and creates a <code>templates/</code> folder.
+<code>rock-create-orogen</code> ensures that the initial repository commit does not
+contain any of these. If you don't want to use <code>git</code>, or if you're confident
+that you know which files and folder to commit and which to leave out, the second
+run is not neeeded.</p>
+
+<p>Once this is done, <a href="../workspace/add_packages.html#orogen">add the package to your build
+configuration</a></p>
+
+<h2 id="type_declarations">Type Declarations</h2>
+
+<p>Not all C++ types can be used by Rock's type system. To be usable as-is, a type must:</p>
+
+<ul>
+  <li>be default constructible and copyable (i.e. have a constructor that have no
+arguments and can be copied).</li>
+  <li>have no private fields</li>
+  <li>have only public ancestors, that fit the definition of "acceptable type".</li>
+  <li>not use pointers.</li>
+</ul>
+
+<p>In addition, Rock does support <code>std::string</code> and <code>std::vector</code> standard
+classes, so you can use them freely. Moreover, for types that can't be directly
+managed by oroGen, the mechanism of <a href="#opaques">opaque types</a> allows to
+integrate them in the Rock workflow anyways.</p>
+
+<p>Example: defining a Time class</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">namespace</span> <span class="n">base</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="n">Time</span>
+  <span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">microseconds</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">Time</span> <span class="n">fromMilliseconds</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">ms</span><span class="p">);</span>
+    <span class="n">Time</span> <span class="k">operator</span> <span class="o">+</span><span class="p">(</span><span class="n">Time</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="naming_scheme">Type Names</h2>
+
+<p>The Rock type system does not use the same naming scheme than C++ for types.
+Parts of a type are separated by a forward slash <code>/</code>. A well-formed type name
+is always absolute (always starts with /).</p>
+
+<p>For instance, Rock's <code>base::Time</code> is <code>/base/Time</code> within the type system.</p>
+
+<p>Containers derived from <code>/std/vector</code> do use the <code>&lt;&gt;</code> markers: <code>/std/vector&lt;/base/Time&gt;</code></p>
+
+<h2 id="import">Importing Types</h2>
+
+<p>In an oroGen project, one adds one or more <code>import_types_from</code> statements to
+include headers from within the oroGen package, headers from other packages or
+to import all types that have already been defined within another oroGen
+package. The template generated by <code>rock-create-orogen</code> has created a header
+file for this purpose:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s2">"myprojectTypes.hpp"</span>
+</code></pre></div>
+<p>Such headers must be self-contained, that is include all the headers they,
+themselves, require.  Moreover, only the types that are <em>directly</em> defined in
+the imported header (and the types they themselves use) will be exported in the
+typekit. Finally, one can directly use types defined in a library, provided
+that this library gives a pkg-config file for dependency discovery.</p>
+
+<p>Let's consider a <code>drivers/hokuyo</code> package that would define a
+<code>hokuyo::Statistics</code> structure. Assuming that this package (1) installs a
+<code>hokuyo.pc</code> file - all Rock packages do by default - and (2) installs the
+relevant header as <code>Statistics.hpp</code>, one can import the type with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">using_library</span> <span class="s2">"hokuyo"</span>
+<span class="n">import_types_from</span> <span class="s2">"hokuyo/Statistics.hpp"</span>
+</code></pre></div>
+<p class="note"><strong>Note</strong> the pkg-config name of a Rock library package is the package's basename
+(i.e. <code>hokuyo</code> for <code>drivers/hokuyo</code>).</p>
+
+<p>Finally, if the types you are interested in are already imported by another
+oroGen package, it is recommended to reuse the code already generated there
+(if only to reduce compilation times).</p>
+
+<p>To import types from another project, one does:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s2">"project_name"</span>
+</code></pre></div>
+<p class="note"><strong>Note</strong> the name of an oroGen package as used in <code>import_types_from</code> is the
+package's basename (i.e. <code>hokuyo</code> for <code>drivers/orogen/hokuyo</code>). An oroGen
+package and a library can share the same basename (e.g. <code>drivers/hokuyo</code> and
+<code>drivers/orogen/hokuyo</code>). This is even a recommended behavior when an orogen
+package is mainly tied to a certain library.</p>
+
+<p class="important"><strong>Important</strong> The <code>using_library "library_name"</code> and <code>import_types_from "project_name"</code>
+implicitly create a dependency between the oroGen package you're working on and
+other packages.  These dependencies <strong>must</strong> be made explicit by adding them to
+the oroGen package's <a href="../workspace/add_packages.html#manifest_xml"><code>manifest.xml</code></a>.</p>
+
+<p class="next-page">The following two sections on <a href="#templates">C++ templates</a> and <a href="#opaques">opaque
+types</a> can be passed on a first reading. You can skip it to go
+straight to <a href="types_in_ruby.html">how types will be seen from Ruby</a>.</p>
+
+<h2 id="templates">Handling of C++ templates</h2>
+
+<p>Templates are not directly understood by oroGen. However, explicit
+instantiations of them can be used.</p>
+
+<p>Unfortunately, typedef'ing the type that you need is not enough. You have to
+use the instantiated template directly in a structure. To work around this, you
+can define a structure whose name contains the <code>orogen_workaround</code> string to
+get the template instantiated, and then define the typedefs that you will
+actually use in your typekits and oroGen task interfaces.</p>
+
+<p>For instance, with</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Scalar</span><span class="p">,</span> <span class="kt">int</span> <span class="n">DIM</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="n">Vector</span> <span class="p">{</span>
+  <span class="n">Scalar</span> <span class="n">values</span><span class="p">[</span><span class="n">DIM</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">__orogen_workaround</span> <span class="p">{</span>
+  <span class="n">Vector</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span> <span class="n">vector3</span><span class="p">;</span>
+  <span class="n">Vector</span><span class="o">&lt;</span><span class="mi">4</span><span class="o">&gt;</span> <span class="n">vector4</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>One can use Vector&lt;3&gt; in its orogen interface, and in other structures.
+The <code>__orogen_workaround</code> structure itself will be ignored by oroGen to avoid
+polluting the type system.</p>
+
+<h2 id="opaques">Opaque Types</h2>
+
+<p>Opaque types are a way to enable oroGen to handle types that it cannot handle
+completely automatically. The general idea is that you provide oroGen with a
+"marshalling structure" that (1) <a href="#type_declarations">it can understand</a> and
+(2) can hold all the data that the "real type" holds. Then, you have to
+implement two conversion functions: one that converts from the marshalling type,
+and one to the marshalling type.</p>
+
+<p>So, it involves doing one copy. What is the gain ?</p>
+
+<p>Opaque types provide you with the advantage that other types that use opaque
+types (i.e.  structures with fields that are from opaque types, std::vector,
+arrays) will be automatically handled by oroGen. I.e. you write the conversion
+function for the types that oroGen can't handle and let it do the rest of the
+work.</p>
+
+<p>Moreover, oroGen will be able to generate typekits for all the transports it
+can handle.</p>
+
+<p>Finally, the conversion to and from the marshalling type is only done in
+inter-process transports. When communicating across threads, the data structure
+is copied as-is.</p>
+
+<p>To use opaque types, you first have to create a wrapper type (a.k.a.
+"intermediate type") for the opaque. In the case of <code>Eigen::Vector3d</code>, a
+suitable wrapper would be</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">namespace</span> <span class="n">wrappers</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Vector3d</span>
+    <span class="p">{</span>
+        <span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The wrapper is usually defined within the oroGen package itself, in a
+<code>wrappers/</code> subdirectory placed at the root of the package. It then needs to be
+<a href="#import">imported with <code>import_types_from</code></a>.  Finally, one can use
+<code>opaque_type</code> to declare the opaque.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s2">"wrappers/Vector3d.hpp"</span>
+<span class="n">opaque_type</span> <span class="s2">"/Eigen/Vector3d"</span><span class="p">,</span> <span class="s2">"/wrappers/Vector3d"</span>
+</code></pre></div>
+<p>where <code>wrappers::Vector3d</code> is the marshalling structure defined in
+<code>wrappers/Vector3d.hpp</code>. Moreover, if getting the definition of the opaque type
+requires new include directories that are not yet added to the typekit through
+the <a href="#import">using_library mechanism</a>, you will have to detect them in the
+Ruby code and add them with the <code>include:</code> option</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">import_types_from</span> <span class="s2">"wrappers/Vector3d.hpp"</span>
+<span class="n">opaque_type</span> <span class="s2">"/Eigen/Vector3d"</span><span class="p">,</span> <span class="s2">"/wrappers/Vector3d"</span><span class="p">,</span> <span class="ss">include: </span><span class="n">eigen_prefix</span>
+</code></pre></div>
+<p>Once you have re-generated the project, a typekit/ directory is created with
+two files, <code>Opaques.cpp</code> and <code>Opaques.hpp</code> in it. These files hold the
+<code>toIntermediate</code> and <code>fromIntermediate</code> conversion functions that should be
+used by oroGen to convert the opaque to the wrapper and the wrapper to the
+opaque. Note that any function will do: you may change the plain functions to
+e.g. templates if you need to defined opaques for many types (as
+<code>base/orogen/types</code> does <a href="https://github.com/rock-core/base-orogen-types/blob/master/typekit/Opaques.hpp">for the Eigen
+types</a>).</p>
+
+<p class="important"><strong>Updates to Opaques.hpp/Opaques.cpp</strong> If you add new opaques to an orogen
+project that already has some, you will need to copy the corresponding
+toIntermediate/fromIntermediate conversion functions manually from
+templates/typekit/Opaques.cpp. Note that this is a general behavior: oroGen
+will always refuse to modify a file that already exists, but update a "fresh"
+template within <code>templates/</code>.</p>
+
+<p>As explained, once you have defined an opaque type, oroGen will take care of
+other types that <em>use</em> this opaque. For instance</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="k">struct</span> <span class="n">Position</span>
+<span class="p">{</span>
+    <span class="n">base</span><span class="o">::</span><span class="n">Time</span> <span class="n">time</span><span class="p">;</span>
+    <span class="n">Eigen</span><span class="o">::</span><span class="n">Vector3d</span> <span class="n">position</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>can be used in your task interfaces without any modifications. This works for
+structures, std::vector and static-size arrays. Before you may do this, however,
+you need to <code>import_types_from</code> the orogen package that declared the opaque
+in the first place.</p>
+
+<p class="next-page"><strong>Next</strong> Now that you know all about defining data types, let's get to understand how
+they are seen <a href="types_in_ruby.html">from within Ruby</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>

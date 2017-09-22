@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_deployment">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child active'><a href="deployment.html">Deployments</a></li><li class='child'><a href="plugins.html">Extending oroGen</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="deployments">Deployments</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#default-deployments" id="markdown-toc-default-deployments">Default Deployments</a></li>
+  <li><a href="#explicit-deployments" id="markdown-toc-explicit-deployments">Explicit Deployments</a></li>
+  <li><a href="#use-in-syskit" id="markdown-toc-use-in-syskit">Use in Syskit</a></li>
+  <li><a href="#triggers" id="markdown-toc-triggers">Triggers</a>    <ul>
+      <li><a href="#periodic-triggering-periodic" id="markdown-toc-periodic-triggering-periodic">Periodic Triggering (<code>periodic</code>)</a></li>
+      <li><a href="#port-driven-triggering-portdriven" id="markdown-toc-port-driven-triggering-portdriven">Port-Driven Triggering (<code>port_driven</code>)</a></li>
+      <li><a href="#fd-driven-triggering-fddriven" id="markdown-toc-fd-driven-triggering-fddriven">FD-Driven Triggering (<code>fd_driven</code>)</a></li>
+      <li><a href="#threading" id="markdown-toc-threading">Threading</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>In Rock, each deployment is a separate binary (UNIX process) in which a certain
+number of tasks have been <em>instanciated</em>. The role of the deployment is to:
+ - group threads in processes
+ - group tasks into threads (and specify the thread parameters)
+ - assign each task to a triggering mechanism, that defines in which conditions
+   the task's <code>updateHook</code> will be called.</p>
+
+<p>The combination of thread information and triggering mechanism is called an
+<strong>activity</strong>.</p>
+
+<h2 id="default-deployments">Default Deployments</h2>
+
+<p>orogen creates a default deployment for each declared
+<a href="interface.html#abstract">non-abstract</a> task. This default deployment puts each
+component in a single thread, in its own process. It uses a default triggering
+mechanism that is defined on the task context. This default activity should be
+considered a "sane default", but components should in general not rely on this
+activity being "the" component activity.</p>
+
+<p>In some cases, it is beneficial to deploy components differently than the
+default. This is done by defining explicit deployments.</p>
+
+<h2 id="explicit-deployments">Explicit Deployments</h2>
+
+<p>Deployment blocks declare one binary, that is a set of components along with
+their activities that are grouped into a single process.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">deployment</span> <span class="s2">"test"</span> <span class="k">do</span>
+  <span class="o">&lt;</span><span class="n">deployment</span> <span class="n">statements</span><span class="o">&gt;</span>
+  <span class="n">add_default_logger</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>This statement generates a "test" binary which will be installed by CMake. If
+that is not desired, for instance if it is for testing purposes only, add the
+<tt>do_not_install</tt> statement in the block:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">deployment</span> <span class="s2">"test"</span> <span class="k">do</span>
+  <span class="n">do_not_install</span>
+  <span class="o">&lt;</span><span class="n">other</span> <span class="n">deployment</span> <span class="n">statements</span><span class="o">&gt;</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The most basic thing that can be done in a deployment is listing the tasks that
+should be instantiated. It is done by using the 'task' statement:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task</span> <span class="s1">'TaskName'</span><span class="p">,</span> <span class="s1">'orogen_project::TaskClass'</span>
+</code></pre></div>
+<p>It will create a task with the given name and class. By default, that task will
+have its own thread. Use <code>using_task_library</code> to import tasks from another project.</p>
+
+<h2 id="use-in-syskit">Use in Syskit</h2>
+
+<p>To use a task's default deployment, one adds</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'model::Task'</span> <span class="o">=&gt;</span> <span class="s1">'task_name'</span>
+</code></pre></div>
+<p>Which deploys a task called <code>task_name</code> using the component's default
+deployment. Explicit deployments can be used as-is</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'test'</span>
+</code></pre></div>
+<p>however, this way, only one of the <code>test</code> deployment can be started at a given
+time. To start multiple ones, one must prefix the task's names:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'test'</span> <span class="o">=&gt;</span> <span class="s1">'left:'</span>
+<span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'test'</span> <span class="o">=&gt;</span> <span class="s1">'right:'</span>
+</code></pre></div>
+<p>This prefixes the task names with resp. <code>left:</code> and <code>right:</code>. If <code>test</code> had a
+task called <code>task</code>, the deployed tasks would be called <code>left:task</code> and
+<code>right:task</code>.</p>
+
+<h2 id="triggers">Triggers</h2>
+
+<p>Trigger statements can be placed either in the component's <code>task_context</code>
+block, or as a refinement of an explicit deployment's <code>task</code> statement.</p>
+
+<p>The first case looks like</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
+  <span class="n">periodic</span> <span class="mf">0.1</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The second case looks like</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">deployment</span> <span class="s1">'test'</span> <span class="k">do</span>
+  <span class="n">task</span><span class="p">(</span><span class="s1">'task'</span><span class="p">,</span> <span class="s1">'Task'</span><span class="p">).</span>
+    <span class="nf">periodic</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>When a task is added in the explicit deployment, the component's default
+activity will be used (as defined in its <code>task_context</code> block).  However, the
+<code>periodic</code> and <code>fd_driven</code> activity statements that are available within the
+<code>task_context</code> statement can also be used in a deployment's definition to
+change. <code>port_driven</code> cannot. This overrides the default.</p>
+
+<p class="important"><strong>Note</strong> the dot at the end of the <code>task</code> statement. This is a fluid
+interface, don't forget that each modifier for the task definition is actually
+a chain of method calls, and require the dots.</p>
+
+<h3 id="periodic-triggering-periodic">Periodic Triggering (<code>periodic</code>)</h3>
+
+<p>This is the most simple triggering method. When a task is declared periodic, its
+<code>updateHook</code> will be called with a fixed time period. The task is within its own
+thread.</p>
+
+<p>To use this triggering mechanism, simply add the <code>periodic(period)</code> statement
+to the task context:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s1">'Task'</span> <span class="k">do</span>
+  <span class="o">...</span>
+  <span class="n">periodic</span> <span class="mf">0.01</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The period is given in seconds. The periodic activity cannot be combined with
+other triggering mechanisms.</p>
+
+<h3 id="port-driven-triggering-portdriven">Port-Driven Triggering (<code>port_driven</code>)</h3>
+
+<p>A port-driven task is a task that wants to perform computations whenever new
+data is available on its input ports. In general, data-processing tasks (as for
+instance image processing tasks) fall into that category: their goal is to take
+data from their input, process it, and push it to their outputs.</p>
+
+<p>A port-driven task is declared by using the <code>port_driven</code> statement.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
+    <span class="n">input_port</span>  <span class="s1">'image'</span><span class="p">,</span> <span class="s1">'/Camera/Frame'</span>
+    <span class="n">input_port</span>  <span class="s1">'parameters'</span><span class="p">,</span> <span class="s1">'/SIFT/Parameters'</span>
+    <span class="n">output_port</span> <span class="s1">'features'</span> <span class="s1">'/SIFT/FeatureSet'</span>
+
+    <span class="n">port_driven</span> <span class="s1">'image'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>During runtime, the <code>updateHook</code> method will be called when new data arrives on
+the listed ports (in this case 'image').  Other input ports are ignored by the
+triggering mechanism. Obviously, the listed ports must be input ports. In
+addition, they must be declared <em>before</em> the call to <code>port_driven</code>.</p>
+
+<p>Finally, if called without arguments, <code>port_driven</code> will activate the port
+triggering on all input ports declared before it is called. This means that, in</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
+    <span class="n">input_port</span>  <span class="s1">'image'</span><span class="p">,</span> <span class="s1">'/Camera/Frame'</span>
+    <span class="n">input_port</span>  <span class="s1">'parameters'</span><span class="p">,</span> <span class="s1">'/SIFT/Parameters'</span>
+    <span class="n">output_port</span> <span class="s1">'features'</span> <span class="s1">'/SIFT/FeatureSet'</span>
+
+    <span class="n">port_driven</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>both 'parameters' and 'image' are triggering. Now, in</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s2">"Task"</span> <span class="k">do</span>
+    <span class="n">input_port</span>  <span class="s1">'image'</span><span class="p">,</span> <span class="s1">'/Camera/Frame'</span>
+    <span class="n">port_driven</span>
+    <span class="n">input_port</span>  <span class="s1">'parameters'</span><span class="p">,</span> <span class="s1">'/SIFT/Parameters'</span>
+    <span class="n">output_port</span> <span class="s1">'features'</span> <span class="s1">'/SIFT/FeatureSet'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>only 'image' is.</p>
+
+<h3 id="fd-driven-triggering-fddriven">FD-Driven Triggering (<code>fd_driven</code>)</h3>
+
+<p>In the IO triggering scheme, <code>updateHook</code> is called whenever new data is made
+available on a file descriptor. It allows to very easily implement drivers,
+that are waiting for new data on the driver communication line(s). The task
+has its own thread.</p>
+
+<p><strong>Note</strong> if you're writing a task that has to interact with I/O, consider using
+Rock's <a href="https://github.com/rock-core/drivers-iodrivers_base">iodrivers_base</a>
+library and the corresponding <a href="https://github.com/rock-core/drivers-orogen-iodrivers_base">orogen
+integration</a></p>
+
+<p>To use the IO-driven mechanism, use the <code>fd_driven</code> statement. fd-driven and
+port-driven triggering can be combined.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s1">'Task'</span> <span class="k">do</span>
+  <span class="o">...</span>
+  <span class="n">fd_driven</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>To access more detailed information on the trigger reason, and to set up the
+trigger mechanism, one must access the underlying activity. Two parts are
+needed, one in <code>configureHook</code> to tell the activity which file descriptors to watch
+for, and one in <code>cleanupHook</code> to remove all the watches (<strong>that last part is
+mandatory</strong>)</p>
+
+<p>First of all, include the header in the task's cpp file:</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="cp">#include &lt;rtt/extras/FileDescriptorActivity.hpp&gt;
+</span></code></pre></div>
+<p>Second, set up the watches in <code>configureHook</code></p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="kt">bool</span> <span class="n">MyTask</span><span class="o">::</span><span class="n">configureHook</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// Here, "fd" is the file descriptor of the underlying device
+</span>    <span class="c1">// it is usually created in configureHook()
+</span>    <span class="n">RTT</span><span class="o">::</span><span class="n">extras</span><span class="o">::</span><span class="n">FileDescriptorActivity</span><span class="o">*</span> <span class="n">activity</span> <span class="o">=</span>
+        <span class="n">getActivity</span><span class="o">&lt;</span><span class="n">RTT</span><span class="o">::</span><span class="n">extras</span><span class="o">::</span><span class="n">FileDescriptorActivity</span><span class="o">&gt;</span><span class="p">();</span>
+    <span class="c1">// This is mandatory so that the task can be deployed
+</span>    <span class="c1">// with e.g. a port-driven or periodic activity
+</span>    <span class="k">if</span> <span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+        <span class="n">activity</span><span class="o">-&gt;</span><span class="n">watch</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>It is possible to list multiple file descriptors by having multiple calls to
+watch().</p>
+
+<p>One can set a timeout in milliseconds, in which case <code>updateHook</code> with be
+called after that many milliseconds after the last successful trigger.</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">activity</span><span class="o">-&gt;</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</code></pre></div>
+<p>Finally, you <strong>must</strong> clear all watches in stopHook():</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="kt">void</span> <span class="n">MyTask</span><span class="o">::</span><span class="n">cleanupHook</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">RTT</span><span class="o">::</span><span class="n">extras</span><span class="o">::</span><span class="n">FileDescriptorActivity</span><span class="o">*</span> <span class="n">activity</span> <span class="o">=</span>
+        <span class="n">getActivity</span><span class="o">&lt;</span><span class="n">RTT</span><span class="o">::</span><span class="n">extras</span><span class="o">::</span><span class="n">FileDescriptorActivity</span><span class="o">&gt;</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">activity</span><span class="p">)</span>
+        <span class="n">activity</span><span class="o">-&gt;</span><span class="n">clearAllWatches</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The FileDescriptorActivity class offers a few ways to get more information
+related to the trigger reason (data availability, timeout, error on a file
+descriptor). These different conditions can be tested with:</p>
+
+<div class="highlight"><pre class="highlight cpp"><code><span class="n">RTT</span><span class="o">::</span><span class="n">extras</span><span class="o">::</span><span class="n">FileDescriptorActivity</span><span class="o">*</span> <span class="n">fd_activity</span> <span class="o">=</span>
+    <span class="n">getActivity</span><span class="o">&lt;</span><span class="n">RTT</span><span class="o">::</span><span class="n">extras</span><span class="o">::</span><span class="n">FileDescriptorActivity</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">fd_activity</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">fd_activity</span><span class="o">-&gt;</span><span class="n">hasError</span><span class="p">())</span>
+  <span class="p">{</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">fd_activity</span><span class="o">-&gt;</span><span class="n">hasTimeout</span><span class="p">())</span>
+  <span class="p">{</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="c1">// If there is more than one FD, discriminate. Otherwise,
+</span>    <span class="c1">// we don't need to use isUpdated
+</span>    <span class="k">if</span> <span class="p">(</span><span class="n">fd_activity</span><span class="o">-&gt;</span><span class="n">isUpdated</span><span class="p">(</span><span class="n">device_fd</span><span class="p">))</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">fd_activity</span><span class="o">-&gt;</span><span class="n">isUpdated</span><span class="p">(</span><span class="n">another_fd</span><span class="p">))</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="threading">Threading</h3>
+
+<p>When in an explicit deployment, one has the option to fine-tune the assignment
+of tasks to threads.</p>
+
+<p>The first option is to associate a task with a thread. When there is a trigger,
+the thread is woken up and the task will be asynchronously executed when the OS
+scheduler decides to do so. It is the safest option (and the default) as the
+different tasks are made independent from each other.</p>
+
+<p>The second option is to <em>not</em> associate the task with its own thread. Instead,
+the thread that triggers it will be used to run the task. This is really only
+useful for port-driven tasks: the task that wrote on the triggering port
+will also execute the triggered task's <code>updateHook</code>. The main advantage is that
+the OS scheduler is removed from the equation, which can reduce latency.  The
+periodic and IO triggering mechanisms <em>require</em> the task to be in its own
+thread.</p>
+
+<p>When using a separate thread, the underlying thread can be parametrized with a
+scheduling class (realtime/non-realtime) and a priority. By default, a task is
+non-realtime and with the lowest priority possible. Changing it is done with
+the following statements:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code>  <span class="n">task</span><span class="p">(</span><span class="s1">'TaskName'</span><span class="p">,</span> <span class="s1">'orogen_project::TaskClass'</span><span class="p">).</span>
+    <span class="nf">realtime</span><span class="p">.</span>
+    <span class="nf">priority</span><span class="p">(</span><span class="o">&lt;</span><span class="n">priority</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">)</span>
+</code></pre></div>
+<p>Where the priority value is a number between 1 (lowest) and 99 (highest).</p>
+
+<p class="important"><strong>Note</strong> the dot at the end of the <code>task</code> statement. This is a fluid
+interface, don't forget that each modifier for the task definition is actually
+a chain of method calls, and require the dots.</p>
+
+<p>The second case is called a sequential activity and is declared with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code>  <span class="n">task</span><span class="p">(</span><span class="s1">'TaskName'</span><span class="p">,</span> <span class="s1">'orogen_project::TaskClass'</span><span class="p">).</span>
+    <span class="nf">sequential</span>
+</code></pre></div>
+<p class="next-page"><strong>Next</strong> this is mostly all. <a href="plugins.html">The next page</a> describes how it is
+possible to extend the oroGen specification. You may want to simply remember
+that it exists on first read and come back to it later. And instead go to the
+<a href="../#how_to_read">documentation's overview</a>.</p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+        </footer>
+    </body>
+</html>
