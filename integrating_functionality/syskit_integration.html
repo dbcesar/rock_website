@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_syskit_integration">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="timestamping.html">Timestamping</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child active'><a href="syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="syskit-integration">Syskit Integration</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#component-model" id="markdown-toc-component-model">Component Model</a></li>
+  <li><a href="#configuration-files" id="markdown-toc-configuration-files">Configuration Files</a></li>
+  <li><a href="#component-extension-file" id="markdown-toc-component-extension-file">Component Extension File</a></li>
+</ul>
+
+<p>When new components are created, they can be used as-is within a Syskit app.
+The only thing one has to do is declare them as <a href="../basics/deployment.html#use_deployment">a new
+deployment</a> in the Syskit
+configuration.</p>
+
+<p>To use a task's default deployment, one adds</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">model</span><span class="o">.</span><span class="no">Task</span> <span class="o">=&gt;</span> <span class="s1">'task_name'</span>
+</code></pre></div>
+<p>Which deploys a task called <code>task_name</code> using the component's <a href="deployment.html#default">default
+deployment</a>. Explicit deployments can be used as-is</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'test'</span>
+</code></pre></div>
+<p>However, this way, only one of the <code>test</code> deployment can be started at a given
+time. To start multiple ones, one must prefix the task's names:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'test'</span> <span class="o">=&gt;</span> <span class="s1">'left:'</span>
+<span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="s1">'test'</span> <span class="o">=&gt;</span> <span class="s1">'right:'</span>
+</code></pre></div>
+<p>This prefixes the task names with resp. <code>left:</code> and <code>right:</code>. For instance, if
+<code>test</code> had a task called <code>task</code>, the deployed tasks would be called <code>left:task</code>
+and <code>right:task</code>.</p>
+
+<h2 id="component-model">Component Model</h2>
+
+<p>Component models are made loaded using the <code>using_task_library</code> statement, that is, at toplevel:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">using_task_library</span> <span class="s1">'imu_advanced_navigation_anpp'</span>
+</code></pre></div>
+<p>The components are then available using the <code>OroGen.</code> syntax, e.g. <code>OroGen.imu_advanced_navigation_anpp.Task</code>.</p>
+
+<h2 id="configuration-files">Configuration Files</h2>
+
+<p>Configuration files are YAML files that contain values for a component's
+properties. A component's available configurations is to be saved in
+<code>config/orogen/</code> with a file name of <code>project::Task.yml</code>. For instance,
+<code>config/orogen/imu_advanced_navigation_anpp::Task.yml</code>.</p>
+
+<p>A configuration file, which contains property documentation and default values,
+can be generated with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen orogenconf imu_advanced_navigation_anpp::Task
+</code></pre></div>
+<p>The YAML file is split into named sections. The section separator is <code>---
+name:SECTION_NAME</code>. If no section name is given, then <code>default</code> is assumed. The
+default configuration is what is being applied if no other configurations is
+specified.</p>
+
+<p>Whenever an oroGen component, that is either in a
+<a href="../basics/composition.thml">composition</a> or <a href="../basics/devices.html">in a Syskit
+profile</a>, a non-default configuration can be selected
+with the <code>with_conf</code> call, e.g.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">OroGen</span><span class="p">.</span><span class="nf">imu_advanced_navigation_anpp</span><span class="o">.</span><span class="no">Task</span><span class="p">.</span>
+  <span class="nf">with_conf</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'high_dynamics'</span><span class="p">)</span>
+</code></pre></div>
+<p>The configurations are overlaid one on top of each other, from left to right.
+In the example above, the values in the <code>high_dynamics</code> section will override
+those in the <code>default</code> section.</p>
+
+<h2 id="component-extension-file">Component Extension File</h2>
+
+<p>To handle a Syskit app's configuration needs, one often has to create a
+component extension file. This file is part of the app, and allows to extend
+the component model, built from the oroGen file, with Syskit-specific things, such
+as task arguments and auto-configuration based on the SDF world or</p>
+
+<p>The component extension files are in the <code>models/orogen/</code> folder, named as the
+oroGen project, for instance <code>models/orogen/imu_advanced_navigation_anpp.rb</code>. They are generated
+using <code>syskit gen orogen</code>:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen orogen myproject
+</code></pre></div>
+<p>In this file, each task model may be extended by a block of the form</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">extend_model</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">imu_advanced_navigation_anpp</span><span class="o">.</span><span class="no">Task</span> <span class="k">do</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The most common extension point is the <code>configure</code> method, in which the task model
+can extract information out of the Syskit app to validate and/or auto-configure
+the component. Properties within Syskit are accessed with the <code>properties</code> accessor, e.g.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">extend_model</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">imu_advanced_navigation_anpp</span><span class="o">.</span><span class="no">Task</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">configure</span>
+    <span class="k">super</span> <span class="c1"># fill configuration from the configuration files</span>
+    <span class="n">properties</span><span class="p">.</span><span class="nf">timeout</span> <span class="o">=</span> <span class="mi">100</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="next-page">This is all on the subject of adding new functionality in a Rock system. Go
+back to the <a href="../#how_to_read">documentation's overview</a> if you're
+looking for more.</p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Building Robots with Rock and Syskit</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/doudou" property="cc:attributionName" rel="cc:attributionURL">Sylvain Joyeux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. Copyright Sylvain Joyeux and Contributors
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Robot Construction Toolkit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="integrating_functionality integrating_functionality_timestamping">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child active'><a href="timestamping.html">Timestamping</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child'><a href="syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_coordination/">Coordination</a></span><ul><li class='child'><a href="../syskit_coordination/">Introduction</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="data-and-timestamps">Data and Timestamps</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#timestamping" id="markdown-toc-timestamping">Timestamping</a></li>
+</ul>
+
+<p>One major design difference between component systems commonly found in the software
+engineering community and the ones developed by the robotics community is that, in the
+former, interaction between components is mostly done through messaging and protocols
+(synchronous or asynchronous RPC) while, in the second one, the dominant model is the one
+of dataflow (one-way transmission of data samples). The main reason for that difference is
+that the consensus in the robotics community is to see the component layer as a data
+processing layer, i.e. a set of mingled pipelines in which data flows and gets
+processed, while the software engineering community is more focussed on business
+processes, in which transmission of information needs to be done through two-way protocols.</p>
+
+<p>In other words: in robotics, when it comes to develop components, <em>data is king</em>. The
+major implication of that, when one develops a robotic toolchain, is that both tools and
+components need to be designed so as to handle the issue raising with data, originating
+from the world and being processed in an asynchronous way <em>but in realtime</em>.</p>
+
+<p>This has a lot of ramifications. We will deal with in this page with the one that has
+the most impact on writing libraries and components for the robotics world: <em>timestamping</em>.
+A related issue, the one of time-ordered data processing, will be dealt with <a href="../dataflow_design/stream_aligner.html">in the dataflow
+design</a> section.</p>
+
+<h2 id="timestamping">Timestamping</h2>
+
+<p>Since robotics is all about managing physical systems that evolve in a physical
+environment, and modify it, the relationship between the data that are being processed and
+this environment is central to the problem of data processing. Key to that is the ability
+to associate data temporally: the ability to mark when a particular information was
+sensed from the physical world. This process is usually referred as <em>timestamping</em>.</p>
+
+<p>In the following example, since the two data acquisition pipelines have
+(tremendously) different processing times, the point cloud generated from the
+stereo pair and the IMU readings <em>that have originate from the same point in
+time in the real world</em> are going to reach the pose estimator component at very
+different times. It is therefore important for the pose estimation component to
+be able to know their actual order <em>in the real world</em>. This is what data
+timestamping is meant to achieve: not mark when a particular data structure has
+been filled, but when the information contained in this data structure was
+sensed in the real world.</p>
+
+<p><img src="media/timestamping.svg" alt="Time in a processing graph" class="fullwidth" /></p>
+
+<p>Moreover, at the output of the pose estimator, the generated pose should also be
+timestamped properly, i.e. mark the time at which the pose estimate was the pose
+of the robot <em>in the real world</em>. Most estimation algorithms do provide this information
+(they provide a timestamped best estimate).</p>
+
+<p>It is unfortunately a not so well understood issue. Indeed, a recurrent idea is
+that the framework itself could timestamp data. Which it could, but only if it
+had a model of how information propagates through the components – something
+that to our knowledge none of the mainstream frameworks does.</p>
+
+<p>From an abstract point of view, the main guidelines about timestamps are:</p>
+
+<ul>
+  <li>timestamp <em>everything</em></li>
+  <li>for a data sample, the timestamp represents the time at which the data was
+valid <em>in the real world</em>. In simple processing pipelines, the timestamp of
+the output is usually the timestamp of the processed input. Fusion algorithms
+usually specify this (i.e. a Kalman filter produces the best estimate for the
+sample received at the last update step).</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Building Robots with Rock and Syskit</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/doudou" property="cc:attributionName" rel="cc:attributionURL">Sylvain Joyeux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. Copyright Sylvain Joyeux and Contributors
+        </footer>
+    </body>
+</html>
