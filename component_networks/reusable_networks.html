@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Building Robots with Rock and Syskit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="component_networks component_networks_reusable_networks">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../integrating_functionality/">Integrating Functionality</a></span><ul><li class='child'><a href="../integrating_functionality/">Introduction</a></li><li class='child'><a href="../integrating_functionality/cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="../integrating_functionality/ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="../integrating_functionality/components.html">Components</a></li><li class='child'><a href="../integrating_functionality/interface.html">Interface</a></li><li class='child'><a href="../integrating_functionality/state_machine.html">State Machine</a></li><li class='child'><a href="../integrating_functionality/writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="../integrating_functionality/timestamping.html">Timestamping</a></li><li class='child'><a href="../integrating_functionality/deployment.html">Deployments</a></li><li class='child'><a href="../integrating_functionality/syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Designing Component Networks</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="profiles.html">Profiles</a></li><li class='child active'><a href="reusable_networks.html">Reusable Networks</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="designing-reusable-networks">Designing Reusable Networks</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#data-services-definition" id="markdown-toc-data-services-definition">Data Services Definition</a></li>
+  <li><a href="#data-service-providers" id="markdown-toc-data-service-providers">Data Service Providers</a></li>
+  <li><a href="#relationships-between-data-services" id="markdown-toc-relationships-between-data-services">Relationships between Data Services</a></li>
+  <li><a href="#using-data-services-as-children-in-compositions" id="markdown-toc-using-data-services-as-children-in-compositions">Using Data Services as Children in Compositions</a></li>
+  <li><a href="#dependency-injection" id="markdown-toc-dependency-injection">Dependency Injection</a></li>
+  <li><a href="#managing-reusability-in-profiles" id="markdown-toc-managing-reusability-in-profiles">Managing Reusability in Profiles</a></li>
+  <li><a href="#deployments" id="markdown-toc-deployments">Deployments</a></li>
+  <li><a href="#a-word-of-warning" id="markdown-toc-a-word-of-warning">A Word of Warning</a></li>
+</ul>
+
+<p>So far, in this chapter as well as in the <a href="../basics">Basics</a>, we have designed
+fairly specific networks - all the components they use are fully specified. The
+only thing that was not a proper component was the device in the <a href="../basics/devices.html">Basics
+section</a>.</p>
+
+<p>This is very constraining. The networks and profile we built in the Basics
+chapter could for instance not been adapted to a system where the arm control
+is not a single device, but a whole sub-network. Generally speaking, it is not enough.</p>
+
+<p>The first tool we will introduce in this section, that allows for more general
+networks, is the <strong>data service</strong>. Data services are placeholders for real
+components, a type system of sorts, that can be replaced in profiles by actual
+component implementations.</p>
+
+<p>Other mechanisms are then built on top of the data services. Profiles can
+inherit from each other, gradually replacing data services or sub-networks by
+more specific ones. Compositions can also be subclassed to refine their
+children in the same way.  The core mechanism that make this possible is
+<em>dependency injection</em>, that is the ability to transform a network into another
+by replacing sub-parts of the network.  This what the <code>use</code> statement we
+<a href="profiles.html#dependency_injection">saw</a> in
+<a href="../basics/devices.html#profile_define">passing</a></p>
+
+<h2 id="data-services-definition">Data Services Definition</h2>
+
+<p>Defining a data service entails giving it a name, which represents what the
+data service represents, and providing it with a dataflow interface (input and
+output ports).</p>
+
+<p>Data services are defined using a <code>data_service_type</code> statement in a class or module
+context. The data service name must be in <code>CamelCase</code>, and the new data service
+is registered on the enclosing module, e.g.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">CommonModels</span>
+  <span class="k">module</span> <span class="nn">DataServices</span>
+    <span class="n">data_service_type</span> <span class="s1">'Pose'</span> <span class="k">do</span>
+      <span class="n">output_port</span> <span class="s1">'pose_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="important">The types used in the data service must be imported first by adding the
+relevant <a href="../type_system/types_in_ruby.html#import_types_from"><code>import_types_from</code> statement at toplevel</a></p>
+
+<p><strong>Naming Convention</strong> data services are by convention defined in the <code>AppName::Services</code>
+module, and are saved in <code>models/services/name_of_service.rb</code>. For instance,
+the <code>Pose</code> data service in the <code>CommonModels</code> bundle is saved in
+<code>models/services/pose.rb</code> and the full service name would be
+<code>CommonModels::Services::Pose</code>.</p>
+
+<p><strong>Generation</strong> A template for a new data service, following Syskit's naming
+conventions and file system structure, can be generated with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv namespace/name_of_service
+</code></pre></div>
+<p>for instance</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv pose
+</code></pre></div>
+<p>Data services do not have tests.</p>
+
+<h2 id="data-service-providers">Data Service Providers</h2>
+
+<p>Components and compositions can <strong>provide</strong> data services. That is, they model
+that they are providing a service. In its simplest form, this is done by using
+the <code>provide</code> statement with the service model and a service name. The latter has
+to be unique in the context of the component.</p>
+
+<p>Let's assume a <code>gps::Task</code> component which has the following interface definition:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s1">'Task'</span> <span class="k">do</span>
+  <span class="n">output_port</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>One can declare that this component provides the position data service from <code>common_models</code> with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">extend_model</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">gps</span><span class="o">.</span><span class="no">Task</span> <span class="k">do</span>
+  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">Position</span><span class="p">,</span>
+    <span class="ss">as: </span><span class="s1">'position'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>To be able to call <code>provide</code> like this, each of the data services ports must
+have a <strong>single port</strong> on the component (exported port in the case of
+compositions) that matches the port direction and type. If there case more
+there is more than one match, the ports must be matched explicitly by passing a
+mapping from the service's position name to the component's. If our gps
+component had an interface like:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">task_context</span> <span class="s1">'Task'</span> <span class="k">do</span>
+  <span class="c1"># Position in the local frame</span>
+  <span class="n">output_port</span> <span class="s1">'local_position_samples'</span><span class="p">,</span>
+    <span class="s1">'/base/samples/RigidBodyState'</span>
+  <span class="c1"># Position in the UTM frame</span>
+  <span class="n">output_port</span> <span class="s1">'utm_position_samples'</span><span class="p">,</span>
+    <span class="s1">'/base/samples/RigidBodyState'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Then attempting to provide the service without mapping information would cause the following error:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>OroGen.gps.Task does not provide the 'CommonModels::Services::Position' service's interface
+ there are multiple candidates to map position_samples[/base/samples/RigidBodyState]: local_position_samples, utm_position_samples
+</code></pre></div>
+<p id="multiple_data_services">The mapping must be provided explicitly:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">extend_model</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">gps</span><span class="o">.</span><span class="no">Task</span> <span class="k">do</span>
+  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">Position</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'local_position'</span><span class="p">,</span>
+    <span class="s1">'position_samples'</span> <span class="o">=&gt;</span> <span class="s1">'local_position_samples'</span>
+  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">Position</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'utm_position'</span><span class="p">,</span>
+    <span class="s1">'position_samples'</span> <span class="o">=&gt;</span> <span class="s1">'utm_position_samples'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="important"><strong>Data services and component subclassing</strong> The data service system in effect
+allows to exchange components that are unrelated code-wise but have a
+relationship from a semantic point of view. This is the preferred way. Don't
+subclass two orogen components if they don't share a significant amount of
+code.</p>
+
+<h2 id="relationships-between-data-services">Relationships between Data Services</h2>
+
+<p>Data types sometimes are semantically complex, that is combine more than one
+data into a single sample. The canonical example is a pose, which provides both
+a position and an orientation. However, there are other systems that may provide
+only an orientation or only a pose. Within Rock, in order to allow a pose
+output to be connected to an orientation input, one must use the same data
+type. This means that the type (in our pose example,
+<code>/base/samples/RigidBodyState</code>) can represent a complex data (the full pose) as
+well as its parts (position and orientation).</p>
+
+<p>These relationships can be represented within the data service system. The
+relationships between the data services are modelled by declaring that
+a service <code>provides</code> another. In this case, no name has to be provided
+since there is no ambiguity - a service cannot provide the same other service
+multiple times.</p>
+
+<p>Unlike with components, <code>provides</code> in this case does not attempt to map the
+provided service ports to the provider's. It will instead, by default, <strong>add</strong>
+the provided service ports to the provider interface. Port mappings are instead
+required to avoid the port creation.</p>
+
+<p>For instance, if one would define the <code>Position</code>, <code>Orientation</code> and <code>Pose</code> services like this:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">data_service_type</span> <span class="s1">'Position'</span> <span class="k">do</span>
+  <span class="n">output_port</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+<span class="k">end</span>
+<span class="n">data_service_type</span> <span class="s1">'Orientation'</span> <span class="k">do</span>
+  <span class="n">output_port</span> <span class="s1">'orientation_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+<span class="k">end</span>
+<span class="n">data_service_type</span> <span class="s1">'Pose'</span> <span class="k">do</span>
+  <span class="n">output_port</span> <span class="s1">'pose_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+  <span class="n">provides</span> <span class="no">Position</span>
+  <span class="n">provides</span> <span class="no">Orientation</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The resulting data service would be this:</p>
+
+<p><img src="media/pose_service_without_port_mappings.svg" alt="Pose service without port mappings" class="fullwidth" /></p>
+
+<p>By explicitly mapping the provided service ports with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">data_service_type</span> <span class="s1">'Pose'</span> <span class="k">do</span>
+  <span class="n">output_port</span> <span class="s1">'pose_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+  <span class="n">provides</span> <span class="no">Position</span><span class="p">,</span> <span class="s1">'position_samples'</span> <span class="o">=&gt;</span> <span class="s1">'pose_samples'</span>
+  <span class="n">provides</span> <span class="no">Orientation</span><span class="p">,</span> <span class="s1">'orientation_samples'</span> <span class="o">=&gt;</span> <span class="s1">'pose_samples'</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>One gets the expected:</p>
+
+<p><img src="media/pose_service_with_port_mappings.svg" alt="Pose service with port mappings" class="fullwidth" /></p>
+
+<p class="note"><strong>Note</strong> the Syskit IDE shows the list of provided services, along with the port mappings for them.</p>
+
+<h2 id="using-data-services-as-children-in-compositions">Using Data Services as Children in Compositions</h2>
+
+<p id="armcartesiancontrol_with_data_service">Data services can be used as-is in compositions. In fact, the device model <a href="../basics/composition.html">we
+have used in the basics chapter</a> is at its core a
+data service.  The joint control composition
+<a href="../basics/composition.html">from the Basics</a> should be rewritten using a data service.
+This requires to replace the device model by the data service, but also to change the
+port names (obviously)</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># This is in bundles/common_models. The _control_loop files define a set of</span>
+<span class="c1"># data services related to controlling using the /base/samples/Joints data type</span>
+<span class="nb">require</span> <span class="s1">'models/services/joints_control_loop'</span>
+<span class="c1"># Load the oroGen projects</span>
+<span class="n">using_task_library</span> <span class="s1">'cart_ctrl_wdls'</span>
+<span class="n">using_task_library</span> <span class="s1">'robot_frames'</span>
+
+<span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">CartCtrl</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'position2twist'</span>
+      <span class="c1"># This was a device</span>
+      <span class="n">add</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">JointsControlledSystem</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'arm'</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">robot_frames</span><span class="o">.</span><span class="no">SingleChainPublisher</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'joint2pose'</span>
+
+      <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">ctrl_out_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">desired_twist_port</span>
+      <span class="c1"># Needed to update the ports</span>
+      <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">solver_output_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">arm_child</span><span class="p">.</span><span class="nf">command_in_port</span>
+      <span class="n">arm_child</span><span class="p">.</span><span class="nf">status_out_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">joint_status_port</span>
+      <span class="n">arm_child</span><span class="p">.</span><span class="nf">status_out_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">joint2pose_child</span><span class="p">.</span><span class="nf">joints_samples_port</span>
+      <span class="n">joint2pose_child</span><span class="p">.</span><span class="nf">tip_pose_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">cartesian_status_port</span>
+
+      <span class="n">export</span> <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">command_port</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="note"><strong>Devices vs. data services ?</strong> Generally speaking, one seldom use a device in
+a compositions. Do you really need a Garmin GPS in a particular network ? Can't
+it work with any other receiver ? Or even a complete network that does pose
+estimation instead of a GPS ? Using devices in compositions breaks generality
+with zero advantage, since one still has to do things at the profile level to
+use the composition.</p>
+
+<p>A data service child within a composition can be refined in subclasses by using
+the <code>overload</code> statement. A data service child can be overloaded by either
+another data service that provides it, or a component that does. If one still
+<em>really</em> wanted to use the device model in a joint control composition, he could with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">GazeboCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">ArmCartesianControlWdls</span>
+  <span class="n">overload</span> <span class="n">arm_child</span><span class="p">,</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Model</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2 id="dependency-injection">Dependency Injection</h2>
+
+<p>Data services are obviously abstract in nature. One cannot run a network that
+contains a data service, we therefore need a mechanism to transform composition
+models to replace services by concrete components. While overloading
+compositions would be a possibility, it would lead to having dense forest of
+composition models, as one would need to define a single composition model for
+each assignation of concrete components to the services.</p>
+
+<p>Syskit has another mechanism for this, the <code>use</code> statement we already
+discussed.  When <code>.use('child_name' =&gt; NewModel, …)</code> is called on a composition
+model, the result is the composition model with the given child replaced by the
+new model. If a child is itself a composition, a grandchild can be selected by
+separating the names with dots (e.g. <code>.use('child.grandchild' =&gt; NewModel)</code>).</p>
+
+<p>The composition overload we did just above could equivalent have been using a
+<code>use</code> statement:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">ArmCartesianControlWdls</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="s1">'arm'</span> <span class="o">=&gt;</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Model</span><span class="p">)</span>
+</code></pre></div>
+<p>Syskit validates type compatibility, of course, that is the replacement is
+valid only if it is another service that provides the child's or a component
+that does. If the types are incompatible, one gets the following message:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>invalid selection for arm
+got OroGen.cart_ctrl_wdls.CartCtrl
+which provides
+  OroGen.cart_ctrl_wdls.CartCtrl
+  OroGen.RTT.TaskContext
+  Syskit::TaskContext
+  Syskit::Component
+  Roby::Task
+expected something that provides child arm of type CommonModels::Services::JointsControlledSystem
+</code></pre></div>
+<p>If multiple services match the requested service type, one can select one
+explicitly by passing the service instead of the component. A component model
+can be accessed with the <code>${service_name}_srv</code> accessor. In our <a href="#multiple_data_services">fake GPS
+task</a>, one would access the UTM position service with
+<code>OroGen.gps.Task.utm_position_srv</code> and the local position service with
+<code>OroGen.gps.Task.local_position_srv</code>.</p>
+
+<p>The result of the <code>use</code> statements can be used anywhere a component or service
+can be used, as for instance as a composition child or profile definition. It
+can be chained with other model modifiers such as <code>with_arguments</code> or
+<code>with_conf</code>. This is how we injected <a href="../basics/devices.html">the robot device in out control
+compositions</a>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
+  <span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
+    <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
+      <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
+  <span class="n">define</span> <span class="s1">'arm_joint_position_constant_control'</span><span class="p">,</span>
+  	<span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantControl</span><span class="p">.</span>
+  	  <span class="nf">use</span><span class="p">(</span><span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span><span class="p">)</span>
+  <span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span>
+  	<span class="n">arm_joint_position_constant_control_def</span><span class="p">.</span>
+  	  <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">UR10_SAFE_POSITION</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2 id="managing-reusability-in-profiles">Managing Reusability in Profiles</h2>
+
+<p>Profiles are the objects that expose the "final" networks, that is the networks
+that are going to be used at runtime. As such, they usually are the place where
+the replacement of services by actual concrete components happen, rather by doing
+it with subclassing of compositions.</p>
+
+<p class="important"><strong>Composition overload vs. injection in profiles</strong> As the saying goes, there
+are only two hard things in computer science: caching invalidation and naming
+things. Doing the data service replacements using dependency injection avoid
+polluting the composition namespaces with all the possible combinations of
+services. Use subclassing when the subclass need changes related to
+coordination. Stick to profiles in all other cases.</p>
+
+<p>In complex systems, one often ends up two or three layers of profiles, to share
+the definitions between the simulated and real systems. The two layer structure
+is:</p>
+
+<ol>
+  <li>Root layer, defines networks that are still generic, but are already tuned
+to the needs of your application</li>
+  <li>Configuration-specific layer, where the networks are ready to run.</li>
+</ol>
+
+<p>The third layer (actually, layer 0) exists when one creates a domain-specific
+bundle, that is defines networks that are meant to be used widely by whole
+communities (i.e. manipulation, …). In this case, Layer 1 would refine these
+networks and add new ones that are specific to your application.</p>
+
+<p>When used in profiles, one does not see which data services a composition has.
+In complex systems, relying on the knowledge of which data services need to be
+replaced is borderline impossible. In order to keep this manageable, profiles
+define <em>tags</em>. Tags are profile-level services that represent a so-called
+<em>inflexion point</em>, that is a point that is available for adaptation of the
+profile. These tags can then be injected in the definitions to "replace" the
+composition's data services. A tag is defined with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">tag</span> <span class="s1">'tag_name'</span><span class="p">,</span> <span class="no">Services</span><span class="o">::</span><span class="no">Model</span>
+</code></pre></div>
+<p>and are then accessed with the <code>${tag_name}_tag</code> pattern. For instance, the arm
+control based on data services <a href="#armcartesiancontrol_with_data_service">we just defined</a>
+would be integrated in a Root profile with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
+      <span class="n">tag</span> <span class="s1">'arm'</span><span class="p">,</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">JointsControlledSystem</span>
+
+      <span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
+        <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span><span class="p">.</span>
+          <span class="nf">use</span><span class="p">(</span><span class="n">arm_tag</span><span class="p">)</span>
+      <span class="n">define</span> <span class="s1">'arm_joint_position_constant_control'</span><span class="p">,</span>
+        <span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantControl</span><span class="p">.</span>
+          <span class="nf">use</span><span class="p">(</span><span class="n">arm_tag</span><span class="p">)</span>
+      <span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span>
+        <span class="n">arm_joint_position_constant_control_def</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="note"><strong>Note</strong> that we removed the default joint position in the <code>arm_safe_position</code>
+definition, which is obviously UR10-specific</p>
+
+<p>A root profile is then imported within the configuration-specific layer with
+the <code>use_profile</code> statement. Tags are replaced by providing the <code>"tag_name"
+=&gt; tag_replacement</code> syntax. Our UR10 profile would be defined with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="k">module</span> <span class="nn">Gazebo</span>
+      <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
+        <span class="n">use_profile</span> <span class="no">Profiles</span><span class="o">::</span><span class="no">ArmControl</span><span class="p">,</span>
+          <span class="s1">'arm'</span> <span class="o">=&gt;</span> <span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>If further refinement, such as default arguments, are necessary, they are using
+the <code>define</code> syntax, but then use the <code>_def</code> accessor directly:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="k">module</span> <span class="nn">Gazebo</span>
+      <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
+        <span class="n">use_profile</span> <span class="no">Profiles</span><span class="o">::</span><span class="no">ArmControl</span><span class="p">,</span>
+          <span class="s1">'arm'</span> <span class="o">=&gt;</span> <span class="no">Base</span><span class="p">.</span><span class="nf">ur10_dev</span>
+        <span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span> <span class="n">arm_safe_position_def</span><span class="p">.</span>
+          <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">UR10_SAFE_POSITION</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="note"><strong>Naming scheme and file structure</strong> root ("generic") profiles are defined
+within the root <code>${appname}::Profiles</code> namespace, and saved within <code>models/profiles/</code>.
+Configuration-specific profiles are saved within
+<code>${appname}::Profiles::${ConfigurationName}</code> (e.g. <code>Profiles::Gazebo</code>) and saved within
+<code>models/profiles/configuration_name/</code> (e.g. <code>models/profiles/gazebo</code>). Use the
+<code>-r</code> option of <code>syskit gen profile</code> can be used to create the new profile under
+the right folder, e.g. <code>syskit gen profile -rgazebo arm_control</code></p>
+
+<p><strong>Profile properties</strong> a profile can be <em>self-contained</em>, <em>ready to
+instanciate</em> and <em>ready to deploy</em> (and it is <strong>broken</strong> if it is none of
+these).</p>
+
+<p>A <strong>self contained profiles</strong> is a profile where the only abstract parts are
+tags defined within itself. The default tests for profiles contain the <code>it {
+is_self_contained }</code> lines which verifies this property. Being self-contained
+ensures that, when reusing the profile, the only thing the developer needs to
+know are this profile's tags, which can be easily read and documented. As the
+generated test file says: "You usually want this. Really. Keep it there.". This
+is the only test you usually will want in layer 0 and 1 profiles.</p>
+
+<p>A <strong>ready-to-instanciate profile</strong> is a profile that has no abstract parts.
+This is what you want in the layer 2 profiles and is tested with <code>it {
+can_instanciate }</code>. It obviously implies that the profile is self-contained.
+But as the generated tests say, keep both. This ensures that if you remove
+the <code>can_instanciate</code> test, you'll still be testing that the profile is
+self-contained.</p>
+
+<p>A <strong>ready-to-deployed profile</strong> is a profile that has no abstract parts and for
+which all components are assigned a proper deployment. This is usually what
+you want in the layer 2 profiles and is tested with <code>it { can_deploy }</code>. It
+obviously implies that the profile is self-contained and can be instantiated.
+But as the generated tests say, keep all three. This ensures that if you remove the
+<code>can_deploy</code> test, you'll still be testing for the two other properties.</p>
+
+<h2 id="deployments">Deployments</h2>
+
+<p>During the basics, we've seen that one must define
+<a href="../basics/deployment.html#use_deployment">deployments</a> to be able to run the
+network. We also discussed have seen in more details how deployments are
+created <a href="../integrating_functionality/deployment.html">within oroGen projects</a>.</p>
+
+<p>Defining deployments within a robot's configuration <code>requires</code> block is often
+the only thing you need to do. The only case where you will need more is when
+more than one deployment exists of a certain component. In this case, you will
+need to specify which deployment the networks should use with the
+<code>prefer_deployed_tasks</code> specification. The specification either takes a string
+- in which case it must match the deployment name exactly - or a regular
+expression.</p>
+
+<p>A canonical example would be a robot with two arms. Our <code>ArmControl</code> profile
+could be refined into two, one for each arm:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'LeftArmControl'</span> <span class="k">do</span>
+  <span class="n">use_profile</span> <span class="no">Profiles</span><span class="o">::</span><span class="no">ArmControl</span><span class="p">,</span>
+    <span class="s1">'arm'</span> <span class="o">=&gt;</span> <span class="no">Base</span><span class="p">.</span><span class="nf">left_arm_dev</span>
+
+  <span class="n">each_definition</span> <span class="k">do</span> <span class="o">|</span><span class="n">definition</span><span class="o">|</span>
+    <span class="n">define</span> <span class="n">definition</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="n">definition</span><span class="p">.</span>
+      <span class="nf">prefer_deployed_tasks</span><span class="p">(</span><span class="sr">/^left_/</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>and</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'RightArmControl'</span> <span class="k">do</span>
+  <span class="n">use_profile</span> <span class="no">ArmControl</span><span class="p">,</span>
+    <span class="s1">'arm'</span> <span class="o">=&gt;</span> <span class="no">Base</span><span class="p">.</span><span class="nf">left_arm_dev</span>
+
+  <span class="n">each_definition</span> <span class="k">do</span> <span class="o">|</span><span class="n">definition</span><span class="o">|</span>
+    <span class="n">define</span> <span class="n">definition</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="n">definition</span><span class="p">.</span>
+      <span class="nf">prefer_deployed_tasks</span><span class="p">(</span><span class="sr">/^right_/</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><strong>Note</strong> the two profiles share the same definition names, which means that
+they cannot be directly used at the same time <a href="../basics/#actions">in the action
+interface</a>. It is possible to transform the definition
+names within the <code>use_profile</code> statement with the <code>transform_names</code> option:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'RightArmControl'</span> <span class="k">do</span>
+  <span class="n">use_profile</span> <span class="no">ArmControl</span><span class="p">,</span>
+    <span class="s1">'arm'</span> <span class="o">=&gt;</span> <span class="no">Base</span><span class="p">.</span><span class="nf">left_arm_dev</span><span class="p">,</span>
+    <span class="ss">transform_names: </span><span class="o">-&gt;</span><span class="p">(</span><span class="n">base_name</span><span class="p">)</span> <span class="p">{</span> <span class="s2">"left_</span><span class="si">#{</span><span class="n">base_name</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2 id="a-word-of-warning">A Word of Warning</h2>
+
+<p>The Syskit type system is <em>rich</em>. It has a tendency to play with the software
+engineer aspiration of making everything general and reusable.</p>
+
+<p>So <strong>be careful with this</strong>. A Syskit model set that is all-general will be
+also all-unmanageable. In most cases, make <em>resonably large</em> compositions that
+contain few data services. Don't reuse compositions just because the other
+composition existed. Reuse compositions because there is either a semantic link
+between the two, or because there is a practical reason to. There is no clear
+rule to follow, so it is something that you have to keep in mind so that you
+keep it under control.</p>
+
+<p>Syskit acts as a type and test system. Its aim is to make refactoring as easy
+as it can be. Don't over-think your designs in advance. Rather, be too specific
+and refactor as necessary.</p>
+
+<p>Now that we know how networks are built and exposed in a Syskit system, let's
+see how Syskit <a href="network_merge.html">merges them together</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Building Robots with Rock and Syskit</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/doudou" property="cc:attributionName" rel="cc:attributionURL">Sylvain Joyeux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. Copyright Sylvain Joyeux and Contributors
+        </footer>
+    </body>
+</html>

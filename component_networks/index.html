@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Building Robots with Rock and Syskit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="component_networks component_networks_index">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../integrating_functionality/">Integrating Functionality</a></span><ul><li class='child'><a href="../integrating_functionality/">Introduction</a></li><li class='child'><a href="../integrating_functionality/cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="../integrating_functionality/ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="../integrating_functionality/components.html">Components</a></li><li class='child'><a href="../integrating_functionality/interface.html">Interface</a></li><li class='child'><a href="../integrating_functionality/state_machine.html">State Machine</a></li><li class='child'><a href="../integrating_functionality/writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="../integrating_functionality/timestamping.html">Timestamping</a></li><li class='child'><a href="../integrating_functionality/deployment.html">Deployments</a></li><li class='child'><a href="../integrating_functionality/syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Designing Component Networks</a></span><ul><li class='child active'><a href="./">Introduction</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child'><a href="profiles.html">Profiles</a></li><li class='child'><a href="reusable_networks.html">Reusable Networks</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="building-component-networks">Building Component Networks</h1>
+
+<p>This chapter will give you a complete view on the different aspects of how
+components are composed within a Rock/Syskit system. This touches a lot of
+different subjects, but we're going to start with the basics, that is how
+component networks are modelled and integrated in Syskit. The first few
+sections will thus go into more details about what we've seen <a href="../basics/">in the basics
+chapter</a>. The one major addition being the aspects
+of the modelling that allow to reuse networks and models across systems
+(most importantly, between the real and simulated systems).</p>
+
+<p>After that, we will broach more complex subject related to the component
+network:
+- how the system designer can influence how data flows between the components
+- time-ordered data processing
+- modelling and integration of transformations</p>
+
+<h2 id="component-networks-in-a-syskit-application">Component Networks in a Syskit Application</h2>
+
+<p>A Syskit application can be understood, or "read" in two different ways.</p>
+
+<p>The <em>functional</em> structure. These are the separate functions - sometimes also
+called <em>behaviors</em> that are offered by the application, as well as how these
+functions are related to each other. One way to build these functions is to use
+Rock components. This will be the subject of this chapter. Other ways to build
+and compose functions will be presented in the <a href="../coordination">coordination
+chapter</a>.</p>
+
+<p>The <em>temporal</em> structure. This is the main subject of the <a href="../coordination">coordination
+chapter</a>. It deals with how one can make a Syskit application
+represents what happens in the real world, and how the system can evolve in
+response to these events.</p>
+
+<p>On the subject of component networks, the main concepts are <em>compositions</em> and
+<em>profiles</em>. The former allows to combine components together, the aim being the
+building of a library of generic functions. The latter allows to fine-tune
+these functions to adapt them to a specific robot configuration and/or to a
+specific situation. The networks are exposed on a profile are what is actually
+exposed to the coordination layer.</p>
+
+<h2 id="structure-of-this-chapter">Structure of this Chapter</h2>
+
+<p>In this chapter, we will start by detailing and expanding what we have already
+seen in the <a href="../basics">basics</a> chapter. We are assuming that you have read the
+<a href="../integrating_functionality/syskit_integration.html">Syskit integration section</a> of the
+Integrating Functionality chapter, so we're going to jump straight at
+<a href="composition.html">compositions</a> and <a href="profiles.html">profiles</a>. We will then go
+into the mechanisms that allow to build <a href="reusable_networks.html">reusable
+models</a>, a.k.a.  how to make most of the models
+robot-independent, to then fine-tune the models for each system.</p>
+
+<p>The next step will be to detail Syskit's <a href="network_merge.html">network merge
+algorithm</a>, which is how Syskit combines networks in a
+system to form a single runnable network. Most of the time, this is transparent
+to the system designer <em>except</em> when networks that can't be merged are deployed
+together. The goal will be to give you the tools to understand these errors.</p>
+
+<p>The rest of the chapter will details more advanced aspects of the design of the
+component network(s). <a href="connection_policies.html">Connection policies</a> and
+<a href="transports.html">transports</a> are important tuning knobs within a Rock/Syskit
+system. The handling of transformation
+(<a href="transformation_modelling.html">modelling</a> and <a href="transformation_in_components.html">handling in
+components</a>) are a critical tool to build
+components that are (mostly) system-independent, promoting reuse.</p>
+
+<p>We will then conclude on some <a href="best_practices.html">words of advice</a> about
+modelling component networks in Syskit.</p>
+
+<p class="next-page">Let's now get into the first item of business, the <a href="composition.html">compositions</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Building Robots with Rock and Syskit</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/doudou" property="cc:attributionName" rel="cc:attributionURL">Sylvain Joyeux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. Copyright Sylvain Joyeux and Contributors
+        </footer>
+    </body>
+</html>

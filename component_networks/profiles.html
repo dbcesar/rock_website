@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Building Robots with Rock and Syskit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="component_networks component_networks_profiles">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../integrating_functionality/">Integrating Functionality</a></span><ul><li class='child'><a href="../integrating_functionality/">Introduction</a></li><li class='child'><a href="../integrating_functionality/cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="../integrating_functionality/ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="../integrating_functionality/components.html">Components</a></li><li class='child'><a href="../integrating_functionality/interface.html">Interface</a></li><li class='child'><a href="../integrating_functionality/state_machine.html">State Machine</a></li><li class='child'><a href="../integrating_functionality/writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="../integrating_functionality/timestamping.html">Timestamping</a></li><li class='child'><a href="../integrating_functionality/deployment.html">Deployments</a></li><li class='child'><a href="../integrating_functionality/syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Designing Component Networks</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="composition.html">Compositions</a></li><li class='child active'><a href="profiles.html">Profiles</a></li><li class='child'><a href="reusable_networks.html">Reusable Networks</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="profiles">Profiles</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#definition" id="markdown-toc-definition">Definition</a></li>
+  <li><a href="#registering-networks-on-profiles" id="markdown-toc-registering-networks-on-profiles">Registering Networks on Profiles</a></li>
+  <li><a href="#common-patterns" id="markdown-toc-common-patterns">Common Patterns</a>    <ul>
+      <li><a href="#specifying-configuration-and-arguments" id="markdown-toc-specifying-configuration-and-arguments">Specifying Configuration and Arguments</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><a href="composition.html">Compositions</a> allow to define self-contained networks.
+These networks have to be exposed as <em>actions</em> into the system, which is what
+is accessible to the <a href="../coordination">coordination layer</a> and externally to
+the user. Moreover, these networks aim ultimately at being as system- and
+application-independent as possible, allowing their reuse in different contexts
+and/or with different configurations.</p>
+
+<p>The place where they are exported as actions, and fine-tuned to an
+application/system need is the <strong>Profile</strong>. We will go through the basics
+about profiles in this section, to significantly expand in the next, where we
+talk about <a href="reusable_networks.html">reusable models</a>.</p>
+
+<h2 id="definition">Definition</h2>
+
+<p>Profiles are defined inside a module with the <code>profile</code> statement, which
+creates and registers a profile object in the enclosing module. For instance,
+the following code snippet creates a profile whose full name is
+<code>AppName::Profiles::ProfileName</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">AppName</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="n">profile</span> <span class="s2">"ProfileName"</span> <span class="k">do</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><strong>Naming Convention</strong> Profiles are by convention defined under the <code>AppName::Profiles</code>
+namespace (e.g. <code>CommonModels::Profiles</code> for the <code>common_models</code> bundle). 
+They are saved in <code>models/profiles/</code>. The file
+names should be the snake_case version of the profile name (e.g.
+<code>models/profiles/profile_name.rb</code> for the profile defined above).</p>
+
+<p><strong>Generation</strong> Template for a profile, following Syskit's naming and filesystem
+conventions, can be created with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen profile name/of_profile
+</code></pre></div>
+<p>for instance</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen profile rovers/localization
+</code></pre></div>
+<h2 id="registering-networks-on-profiles">Registering Networks on Profiles</h2>
+
+<p>A component network when registered on a profile is called a <strong>definition</strong> and is created with the <code>define</code> statement. From the <a href="../basics/devices.html">basics</a>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Profiles</span>
+    <span class="n">profile</span> <span class="s1">'ArmControl'</span> <span class="k">do</span>
+      <span class="n">define</span> <span class="s1">'arm_cartesian_constant_control'</span><span class="p">,</span>
+        <span class="no">Compositions</span><span class="o">::</span><span class="no">ArmCartesianConstantControlWdls</span>
+      <span class="n">define</span> <span class="s1">'arm_joint_position_constant_control'</span><span class="p">,</span>
+        <span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantControl</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="important"><strong>Note</strong> models used within the composition need to be loaded at the toplevel
+of the composition file, before the composition definition. orogen models with
+the <code>using_task_library</code> statement, other models by <code>require</code>'ing the file that
+defines it.</p>
+
+<p>Once created, the definition is available as a method on the profile object,
+using the pattern <code>${definition_name}_def</code>. This allows to create new
+definitions based on other ones. Modifiers can directly be called on the model
+object passed as argument to <code>define</code>.</p>
+
+<p>An example that combines both can be found in the
+<a href="../basics/devices.html">basics</a> section:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'arm_joint_position_constant_control'</span><span class="p">,</span>
+  <span class="no">Compositions</span><span class="o">::</span><span class="no">JointPositionConstantControl</span>
+<span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span> <span class="n">arm_joint_position_constant_control_def</span><span class="p">.</span>
+  <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">UR10_SAFE_POSITION</span><span class="p">)</span>
+</code></pre></div>
+<p class="next-page">We will also talk more about compositions in the <a href="reusable_networks.html">next
+section</a>. The rest of this section will deal with common
+patterns related to profiles. You may want to skim through it quickly at first
+read, and come back to it later.</p>
+
+<h2 id="common-patterns">Common Patterns</h2>
+
+<h3 id="specifying-configuration-and-arguments">Specifying Configuration and Arguments</h3>
+
+<p>To set the configuration and/or arguments of a toplevel model before defining
+it, pass the <code>with_conf</code> (resp. <code>with_arguments</code>) call to the model, as:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'arm_safe_position'</span><span class="p">,</span> <span class="n">arm_joint_position_constant_control_def</span><span class="p">.</span>
+  <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="no">UR10_SAFE_POSITION</span><span class="p">)</span>
+</code></pre></div>
+<p id="dependency_injection">In addition, it is possible to change the configuration/arguments of a child of
+a composition. This uses dependency injection mechanisms that will be detailed
+<a href="reusable_networks.html">in the next section</a>, but the pattern is easy enough to use:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">define</span> <span class="s1">'cartesian_control_wdls_slow'</span><span class="p">,</span> <span class="n">arm_cartesian_constant_control_def</span><span class="p">.</span>
+  <span class="nf">use</span><span class="p">(</span><span class="s1">'control.twist2joint_velocity'</span> <span class="o">=&gt;</span>
+    <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">WDLSSolver</span><span class="p">.</span><span class="nf">with_conf</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'slow'</span><span class="p">))</span>
+</code></pre></div>
+<p>The string in the <code>use</code> statement is the path to the child that is being
+refined (in this case, the <code>twist2joint_velocity</code> child of the <code>control</code> child
+in the <code>arm_cartesian_constant_control</code> definition).</p>
+
+<p class="note"><strong><code>use</code> vs composition configurations</strong> This mechanism
+looks very much like the <a href="composition.html#configurations">composition configurations</a>.
+Composition configurations are meant to be used when some configurations are
+really <strong>expected</strong> to be present on the composition, as for instance if these
+configurations are used by a higher-level mechanism. The <code>use</code> statement is
+better for the other cases, as it does not assume that all useful
+configurations will be known at the composition's design time.</p>
+
+<p class="note"><strong><code>use</code> vs composition argument forwarding</strong> This mechanism
+also looks very much like the argument forwarding. 
+Use argument forwarding when the argument makes sense on the composition. In
+the basics section, it <em>really makes sense</em> that a constant control composition
+has a <code>setpoint</code> argument, and that is therefore how it has been implemented.
+<code>use</code> is for the other cases.</p>
+
+<p class="next-page">This is all the basics about profiles. Let's now deepen our understanding of
+how we can make <a href="reusable_networks.html">reusable models</a> using these basic tools
+and one additional: the data service.</p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Building Robots with Rock and Syskit</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/doudou" property="cc:attributionName" rel="cc:attributionURL">Sylvain Joyeux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. Copyright Sylvain Joyeux and Contributors
+        </footer>
+    </body>
+</html>

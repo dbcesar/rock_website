@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Building Robots with Rock and Syskit</title>
+
+        <link href="../images/favicon.ico" rel="icon" type="image/ico" relative="true" />
+        <link href="../stylesheets/site.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+
+    <body class="component_networks component_networks_composition">
+            <!-- top navbar -->
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="../">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3" role="complementary">
+                <nav class="docs-sidebar" data-spy="affix">
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../integrating_functionality/">Integrating Functionality</a></span><ul><li class='child'><a href="../integrating_functionality/">Introduction</a></li><li class='child'><a href="../integrating_functionality/cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="../integrating_functionality/ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="../integrating_functionality/components.html">Components</a></li><li class='child'><a href="../integrating_functionality/interface.html">Interface</a></li><li class='child'><a href="../integrating_functionality/state_machine.html">State Machine</a></li><li class='child'><a href="../integrating_functionality/writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="../integrating_functionality/timestamping.html">Timestamping</a></li><li class='child'><a href="../integrating_functionality/deployment.html">Deployments</a></li><li class='child'><a href="../integrating_functionality/syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Designing Component Networks</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child active'><a href="composition.html">Compositions</a></li><li class='child'><a href="profiles.html">Profiles</a></li><li class='child'><a href="reusable_networks.html">Reusable Networks</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../syskit_error_handling/">Error Handling</a></span><ul><li class='child'><a href="../syskit_error_handling/">Introduction</a></li></ul></li></ul>
+                </nav>
+            </div>
+            <div class="col-md-9" role="main">
+                <h1 class="no_toc" id="compositions">Compositions</h1>
+
+<ul id="markdown-toc">
+  <li><a href="#definition" id="markdown-toc-definition">Definition</a></li>
+  <li><a href="#building-the-compositions-network" id="markdown-toc-building-the-compositions-network">Building the Compositions' Network</a></li>
+  <li><a href="#exporting-ports-on-compositions" id="markdown-toc-exporting-ports-on-compositions">Exporting ports on Compositions</a></li>
+  <li><a href="#configurations" id="markdown-toc-configurations">Configuration</a></li>
+  <li><a href="#subclassing-compositions" id="markdown-toc-subclassing-compositions">Subclassing Compositions</a></li>
+  <li><a href="#common-patterns" id="markdown-toc-common-patterns">Common Patterns</a>    <ul>
+      <li><a href="#forwarding-arguments-from-composition-to-children" id="markdown-toc-forwarding-arguments-from-composition-to-children">Forwarding Arguments from Composition to Children</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>In the system modelling, compositions are what bind components together: they
+define, for a specific task, behaviour or subsystem (depending from which side
+of robotics you come from), what components are needed and how these components
+should be connected together to perform the required function.</p>
+
+<h2 id="definition">Definition</h2>
+
+<p>Compositions are classed, defined with</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">ModelName</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+  <span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div>
+<p><strong>Naming Convention</strong> compositions are by convention defined in the
+<code>AppName::Compositions</code> module, and are saved in
+<code>models/compositions/name_of_composition.rb</code>. For instance, a
+<code>Localization::GlobalPoseEstimator</code> composition in the <code>CommonModels</code> bundle would be saved
+in <code>models/compositions/localization/global_pose_estimator.rb</code> and the full class
+name would be <code>CommonModels::Compositions::Localization::GlobalPoseEstimator</code>.</p>
+
+<p><strong>Generation</strong> A template for a new composition as well as its related unit
+tests, following Syskit's naming conventions and file system structure, can be
+generated with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen cmp namespace/name_of_composition
+</code></pre></div>
+<p>for instance</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen cmp localization/global_pose_estimator
+</code></pre></div>
+<h2 id="building-the-compositions-network">Building the Compositions' Network</h2>
+
+<p>The main statements in a composition are <code>add</code> and <code>connect</code>. From the
+<a href="../basics/composition.html">basics</a> chapter:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">CartCtrl</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'position2twist'</span>
+      <span class="n">add</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Model</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'arm'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The <code>add</code> statement adds a child to the composition's network. Once defined,
+children are referred to with the <code>${child_name}_child</code> syntax, as e.g.
+<code>position2twist_child</code>. A child's port is by calling <code>${port_name}_port</code> on the
+child.  Children need to be given a name (which should reflect the child's
+role).  Obviously, these children need to be connected together.  This is done
+with <code>connect_to</code>:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">CartCtrl</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'position2twist'</span>
+      <span class="n">add</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Devices</span><span class="o">::</span><span class="no">Gazebo</span><span class="o">::</span><span class="no">Model</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'arm'</span>
+
+      <span class="n">position2twist_child</span><span class="p">.</span><span class="nf">ctrl_out_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">desired_twist_port</span>
+      <span class="n">twist2joint_velocity_child</span><span class="p">.</span><span class="nf">solver_output_port</span><span class="p">.</span>
+        <span class="nf">connect_to</span> <span class="n">arm_child</span><span class="p">.</span><span class="nf">joints_cmd_port</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="important"><strong>Note</strong> models used within the composition need to be loaded at the toplevel
+of the composition file, before the composition definition. orogen models with
+the <code>using_task_library</code> statement, other models by <code>require</code>'ing the file that
+defines it.</p>
+
+<p>Modifiers on the children have to be added to the return value of the <code>add</code>
+statement. The
+<a href="../integrating_functionality/syskit_integration.html"><code>with_conf</code></a> statement
+for components for instance would be added like this:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">add</span><span class="p">(</span><span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span><span class="p">).</span>
+  <span class="nf">with_conf</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'high_velocity'</span><span class="p">)</span>
+</code></pre></div>
+<p>The result of this composition definition can be checked graphically using the <code>syskit ide</code>:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit ide models/compositions/arm_cartesian_control_wdls.rb
+</code></pre></div>
+<h2 id="exporting-ports-on-compositions">Exporting ports on Compositions</h2>
+
+<p>Within the networks of a Syskit system, compositions can be used whenever a
+Rock component is. This is made possible by the ability to give ports to
+compositions.</p>
+
+<p>However, since compositions are not "active components", but only combination
+of other components, these ports are actually ports that come from the
+composition's children. This is done by <em>exporting</em> a child's port
+onto the composition interface. The following snippet creates a port named
+<code>command</code> onto the composition, that is in fact the <code>position2twist</code>'s port of
+the same name:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>export position2twist_child.command_port
+</code></pre></div>
+<p>If desired, the composition port may have a different name than the component port using the <code>as:</code> argument:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>export position2twist_child.command_port,
+  as: 'position_command`
+</code></pre></div>
+<p>In the IDE, an exported port is shown on the composition interface, and linked
+to the composition's child port that defines it.</p>
+
+<p>TODO: add figure</p>
+
+<p class="note"><strong>Note</strong> since compositions can be used as composition children, a
+composition's exported port can be itself exported in a parent compositions,
+and so on and so forth.</p>
+
+<h2 id="configurations">Configuration</h2>
+
+<p>In the same way than compositions do not really have ports, but only "export"
+the ports of its children, compositions do not have configurations by
+themselves. Instead, configurations are defined as a list of configurations for
+the children.</p>
+
+<p>For instance:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">add</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">cart_ctrl_wdls</span><span class="o">.</span><span class="no">WDLSSolver</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'twist2joint_velocity'</span>
+      <span class="o">...</span>
+      <span class="n">conf</span> <span class="s1">'high_speed'</span><span class="p">,</span>
+        <span class="n">twist2joint_velocity_child</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'high_sampling_rate'</span><span class="p">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="important">Unlike what is possible with task contexts, one cannot "merge" configurations on
+top of each other (i.e. only one configuration can be selected at a time).
+Moreover, the configuration names are not verified at declaration time.</p>
+
+<h2 id="subclassing-compositions">Subclassing Compositions</h2>
+
+<p>Compositions can subclass each other, in which case they of course inherit
+their children, exported ports and connections. This is done by subclassing
+the composition model class instead of <code>Syskit::Composition</code>, e.g.</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Root</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+<span class="k">end</span>
+<span class="k">class</span> <span class="nc">Submodel</span> <span class="o">&lt;</span> <span class="no">Root</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>At this stage of the chapter, this would be only useful to create a "core"
+network that is refined in subclasses. We will see momentarily that it has also
+its usefulness in the <a href="reusable_networks.html">reusable networks</a> and later in
+building <a href="../coordination/index.html">coordination code</a></p>
+
+<p class="next-page">We will also talk more about compositions when we get into the
+<a href="reusable_networks.html">reusable networks</a> section. The rest of this section will
+deal with common implementation patterns related to compositions. You may want
+to skim through it quickly at first read, and come back to it later. The next
+subject is <a href="profiles.html">Profiles</a></p>
+
+<h2 id="common-patterns">Common Patterns</h2>
+
+<h3 id="forwarding-arguments-from-composition-to-children">Forwarding Arguments from Composition to Children</h3>
+
+<p>This is the pattern we have seen and used in the
+<a href="../basics/constant_generator.html#composition_forward_argument">basics section</a>.  The
+goal is to allow for arguments on the composition to be passed to its children.
+The general mechanism is to pass <code>from(:parent_task).name_of_argument</code> in place
+of the actual argument. This can only be used for a <strong>whole</strong> argument. It cannot be
+used as e.g. a value in a hash or array.</p>
+
+<p>For instance (from the Basics chapter):</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">SyskitBasics</span>
+  <span class="k">module</span> <span class="nn">Compositions</span>
+    <span class="k">class</span> <span class="nc">ArmCartesianConstantControlWdls</span> <span class="o">&lt;</span> <span class="no">Syskit</span><span class="o">::</span><span class="no">Composition</span>
+      <span class="n">argument</span> <span class="ss">:setpoint</span>
+
+      <span class="n">add</span><span class="p">(</span><span class="no">ArmCartesianConstantCommandGenerator</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'command'</span><span class="p">).</span>
+        <span class="nf">with_arguments</span><span class="p">(</span><span class="ss">setpoint: </span><span class="n">from</span><span class="p">(</span><span class="ss">:parent_task</span><span class="p">).</span><span class="nf">setpoint</span><span class="p">)</span>
+      <span class="o">...</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p class="note">A component's configuration, specified with the <code>with_conf</code> specifier, is really only 
+syntactic sugar on top of the <code>with_arguments</code> call. One can therefore pass configuration
+from parent to child: <code>add(...).with_arguments(conf: from(:parent_task).conf)</code>.</p>
+
+<p class="next-page">This is all the basics about compositions. We will come back to it once we talk
+about <a href="reusable_networks.html">reusing networks</a>. But first, the next subject is
+<a href="profiles.html">Profiles</a></p>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $('.docs-sidebar').affix({
+        offset: {
+            top: $('.docs-sidebar').offset().top
+        }
+    });
+    </script>
+
+
+        <footer class="container-fluid text-center">
+            <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Building Robots with Rock and Syskit</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/doudou" property="cc:attributionName" rel="cc:attributionURL">Sylvain Joyeux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. Copyright Sylvain Joyeux and Contributors
+        </footer>
+    </body>
+</html>
