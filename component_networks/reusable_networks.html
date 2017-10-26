@@ -118,10 +118,25 @@ conventions and file system structure, can be generated with</p>
 
 <h2 id="data-service-providers">Data Service Providers</h2>
 
-<p>Components and compositions can <strong>provide</strong> data services. That is, they model
-that they are providing a service. In its simplest form, this is done by using
-the <code>provide</code> statement with the service model and a service name. The latter has
-to be unique in the context of the component.</p>
+<p>Components and compositions <strong>provide</strong> data services. That is, they offer to
+the system the port interface, and pledge to offer the service's role in the
+system through that interface.</p>
+
+<p>For instance, a camera obviously provides an image service. Most cameras,
+however, would not provide a depth image service. Even if both use the same
+data type for data representation, the data service system allows to make the
+difference.</p>
+
+<p>Another example, <code>common_models</code> <code>JointsControlledSystem</code> service. This
+represents a set of joints that can be controlled <strong>in addition to</strong> a feedback
+stream. In case the motor driver implementation requires one component per
+motor, one would export a whole arm using multiplexer/demultiplexer and a
+composition. The composition would then provide the <code>JointsControlledSystem</code>
+service.</p>
+
+<p>In its simplest form, the <code>provide</code> statement with the service model and a
+service name can be added to the component or composition. The name has to be
+unique in the context of the component.</p>
 
 <p>Let's assume a <code>gps::Task</code> component which has the following interface definition:</p>
 
@@ -138,7 +153,7 @@ to be unique in the context of the component.</p>
 </code></pre></div>
 <p>To be able to call <code>provide</code> like this, each of the data services ports must
 have a <strong>single port</strong> on the component (exported port in the case of
-compositions) that matches the port direction and type. If there case more
+compositions) that matches the port direction and type. In case
 there is more than one match, the ports must be matched explicitly by passing a
 mapping from the service's position name to the component's. If our gps
 component had an interface like:</p>
@@ -166,10 +181,10 @@ component had an interface like:</p>
     <span class="s1">'position_samples'</span> <span class="o">=&gt;</span> <span class="s1">'utm_position_samples'</span>
 <span class="k">end</span>
 </code></pre></div>
-<p class="important"><strong>Data services and component subclassing</strong> The data service system in effect
+<p class="important"><strong>Data services and component subclassing</strong> The data service system
 allows to exchange components that are unrelated code-wise but have a
-relationship from a semantic point of view. This is the preferred way. Don't
-subclass two orogen components if they don't share a significant amount of
+relationship from a semantic point of view. This is the preferred way.
+Subclass two orogen components only if they share a significant amount of
 code.</p>
 
 <h2 id="relationships-between-data-services">Relationships between Data Services</h2>
@@ -269,7 +284,7 @@ port names (obviously)</p>
 <span class="k">end</span>
 </code></pre></div>
 <p class="note"><strong>Devices vs. data services ?</strong> Generally speaking, one seldom use a device in
-a compositions. Do you really need a Garmin GPS in a particular network ? Can't
+a composition. Do you really need a Garmin GPS in a particular network ? Can't
 it work with any other receiver ? Or even a complete network that does pose
 estimation instead of a GPS ? Using devices in compositions breaks generality
 with zero advantage, since one still has to do things at the profile level to
@@ -357,7 +372,7 @@ polluting the composition namespaces with all the possible combinations of
 services. Use subclassing when the subclass need changes related to
 coordination. Stick to profiles in all other cases.</p>
 
-<p>In complex systems, one often ends up two or three layers of profiles, to share
+<p>In complex systems, one often ends up with two or three layers of profiles, to share
 the definitions between the simulated and real systems. The two layer structure
 is:</p>
 
@@ -481,13 +496,41 @@ created <a href="../integrating_functionality/deployment.html">within oroGen pro
 <p>Defining deployments within a robot's configuration <code>requires</code> block is often
 the only thing you need to do. The only case where you will need more is when
 more than one deployment exists of a certain component. In this case, you will
-need to specify which deployment the networks should use with the
+need to create <a href="../integrating_functionality/syskit_integration.html">multiple deployments of the same task
+model</a>, and Syskit will
+require you to specify which deployment the networks should use with the
 <code>prefer_deployed_tasks</code> specification. The specification either takes a string
 - in which case it must match the deployment name exactly - or a regular
-expression.</p>
+expression. The preferred patterns are inherited in the hierarchy, so the
+specification can be given at the composition level to be applied to the
+components. With a systematic use of patterns in deployment names, one can use
+regular expressions to disambiguate whole networks. Strings are used to match
+the names exactly</p>
 
-<p>A canonical example would be a robot with two arms. Our <code>ArmControl</code> profile
-could be refined into two, one for each arm:</p>
+<p>For instance, the left and right camera deployments of a stereo processing
+composition could be selected with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'Perception'</span> <span class="k">do</span>
+  <span class="n">define</span> <span class="s1">'stereo_depth_processing'</span><span class="p">,</span> <span class="no">Compositions</span><span class="o">::</span><span class="no">StereoDepthProcessing</span><span class="p">.</span>
+    <span class="nf">use</span><span class="p">(</span><span class="s1">'left_camera'</span> <span class="o">=&gt;</span> <span class="no">Camera</span><span class="p">.</span><span class="nf">prefer_deployed_tasks</span><span class="p">(</span><span class="s1">'left_camera'</span><span class="p">),</span>
+        <span class="s1">'right_camera'</span> <span class="o">=&gt;</span> <span class="no">Camera</span><span class="p">.</span><span class="nf">prefer_deployed_tasks</span><span class="p">(</span><span class="s1">'right_camera'</span><span class="p">))</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>But if one needs whole processing chains for both cameras, one could decide
+that all deployments related to the left camera are prefixed with <code>left_</code> and
+all deployments related to the right camera are prefixed with <code>right_</code>. Regular
+expressions will then help:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'Perception'</span> <span class="k">do</span>
+  <span class="n">define</span> <span class="s1">'left_preprocessed_camera'</span><span class="p">,</span> <span class="no">Compositions</span><span class="o">::</span><span class="no">CameraPreprocessing</span><span class="p">.</span>
+    <span class="nf">prefer_deployed_tasks</span><span class="p">(</span><span class="sr">/^left_/</span><span class="p">)</span>
+  <span class="n">define</span> <span class="s1">'right_preprocessed_camera'</span><span class="p">,</span> <span class="no">Compositions</span><span class="o">::</span><span class="no">CameraPreprocessing</span><span class="p">.</span>
+    <span class="nf">prefer_deployed_tasks</span><span class="p">(</span><span class="sr">/^right_/</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>The last example would be to select a deployed tasks pattern on a whole
+profile. The Profile API does not allow to do this directly, but it can
+easily be done with:</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="n">profile</span> <span class="s1">'LeftArmControl'</span> <span class="k">do</span>
   <span class="n">use_profile</span> <span class="no">Profiles</span><span class="o">::</span><span class="no">ArmControl</span><span class="p">,</span>
