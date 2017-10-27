@@ -14,7 +14,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
-    <body class="integrating_functionality integrating_functionality_syskit_integration">
+    <body class="integrating_functionality integrating_functionality_runtime">
             <!-- top navbar -->
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -38,16 +38,18 @@
         <div class="row">
             <div class="col-md-3" role="complementary">
                 <nav class="docs-sidebar" data-spy="affix">
-                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="timestamping.html">Timestamping</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child active'><a href="syskit_integration.html">Syskit Integration</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../component_networks/">Designing Component Networks</a></span><ul><li class='child'><a href="../component_networks/">Introduction</a></li><li class='child'><a href="../component_networks/composition.html">Compositions</a></li><li class='child'><a href="../component_networks/profiles.html">Profiles</a></li><li class='child'><a href="../component_networks/reusable_networks.html">Reusable Networks</a></li></ul></li></ul>
+                    <ul class="nav"><li class='child'><a href="../">Building robots with Rock and Syskit</a></li><li class='parent'><span class='parent-label'><a href="../basics/">Basics</a></span><ul><li class='child'><a href="../basics/">Introduction</a></li><li class='child'><a href="../basics/installation.html">Installation</a></li><li class='child'><a href="../basics/day_to_day.html">Day-to-day Workspace Commands</a></li><li class='child'><a href="../basics/getting_started.html">Getting Started</a></li><li class='child'><a href="../basics/composition.html">Compositions</a></li><li class='child'><a href="../basics/constant_generator.html">Constant Generator</a></li><li class='child'><a href="../basics/devices.html">Profiles and Devices</a></li><li class='child'><a href="../basics/deployment.html">Deployment</a></li><li class='child'><a href="../basics/validation.html">Configuration Consistency</a></li><li class='child'><a href="../basics/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../runtime_overview/">Runtime Overview</a></span><ul><li class='child'><a href="../runtime_overview/">Introduction</a></li><li class='child'><a href="../runtime_overview/task_structure.html">Task Structures</a></li><li class='child'><a href="../runtime_overview/event_loop.html">Event Loop</a></li><li class='child'><a href="../runtime_overview/exceptions.html">Errors</a></li><li class='child'><a href="../runtime_overview/live_data.html">Live Data Visualization</a></li><li class='child'><a href="../runtime_overview/recap.html">Recap</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../workspace/">Workspace and Packages</a></span><ul><li class='child'><a href="../workspace/">Introduction</a></li><li class='child'><a href="../workspace/conventions.html">Conventions</a></li><li class='child'><a href="../workspace/setup.html">Starting a New Project</a></li><li class='child'><a href="../workspace/add_packages.html">Adding new packages</a></li><li class='child'><a href="../workspace/os_dependencies.html">OS Dependencies</a></li><li class='child'><a href="../workspace/managing.html">Build configuration design</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../type_system/">The Type System</a></span><ul><li class='child'><a href="../type_system/">Introduction</a></li><li class='child'><a href="../type_system/defining_types.html">Defining Types</a></li><li class='child'><a href="../type_system/types_in_ruby.html">Types in Ruby</a></li></ul></li><li class='parent active'><span class='parent-label'><a href="./">Integrating Functionality</a></span><ul><li class='child'><a href="./">Introduction</a></li><li class='child'><a href="cpp_libraries.html">C++ Library Packages</a></li><li class='child'><a href="ruby_libraries.html">Ruby Library Packages</a></li><li class='child'><a href="components.html">Components</a></li><li class='child'><a href="interface.html">Interface</a></li><li class='child'><a href="state_machine.html">State Machine</a></li><li class='child'><a href="writing_the_hooks.html">Writing the Hooks</a></li><li class='child'><a href="timestamping.html">Timestamping</a></li><li class='child'><a href="deployment.html">Deployments</a></li><li class='child active'><a href="runtime.html">Runtime</a></li></ul></li><li class='parent'><span class='parent-label'><a href="../component_networks/">Designing Component Networks</a></span><ul><li class='child'><a href="../component_networks/">Introduction</a></li><li class='child'><a href="../component_networks/composition.html">Compositions</a></li><li class='child'><a href="../component_networks/profiles.html">Profiles</a></li><li class='child'><a href="../component_networks/reusable_networks.html">Reusable Networks</a></li></ul></li></ul>
                 </nav>
             </div>
             <div class="col-md-9" role="main">
-                <h1 class="no_toc" id="syskit-integration">Syskit Integration</h1>
+                <h1 class="no_toc" id="running-components">Running Components</h1>
 
 <ul id="markdown-toc">
   <li><a href="#component-model" id="markdown-toc-component-model">Component Model</a></li>
   <li><a href="#configuration-files" id="markdown-toc-configuration-files">Configuration Files</a></li>
+  <li><a href="#quickly-running-new-components" id="markdown-toc-quickly-running-new-components">Quickly Running New Components</a></li>
   <li><a href="#component-extension-file" id="markdown-toc-component-extension-file">Component Extension File</a></li>
+  <li><a href="#runtime-environment" id="markdown-toc-runtime-environment">Runtime Environment</a></li>
 </ul>
 
 <p>When new components are created, they can be used as-is within a Syskit app.
@@ -164,6 +166,33 @@ with the <code>with_conf</code> call, e.g.</p>
 In the example above, the values in the <code>high_dynamics</code> section will override
 those in the <code>default</code> section.</p>
 
+<h2 id="quickly-running-new-components">Quickly Running New Components</h2>
+
+<p>One usually wants to quickly run a new component "just to check". Having to
+integrate it all the way in the app, through the profile, action and robot
+configuration is a hassle at this stage. You may run a single-file "app"
+instead of a whole robot configuration for this purpose. For instance, to run
+Rock's <code>imu_advanced_navigation_anpp::Task</code> driver one would create a <code>test.rb</code>
+file with:</p>
+
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">using_task_library</span> <span class="s1">'imu_advanced_navigation_anpp'</span>
+<span class="no">Syskit</span><span class="p">.</span><span class="nf">conf</span><span class="p">.</span><span class="nf">use_deployment</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">imu_advanced_navigation_anpp</span><span class="o">.</span><span class="no">Task</span> <span class="o">=&gt;</span> <span class="s1">'imu'</span>
+<span class="no">Robot</span><span class="p">.</span><span class="nf">controller</span> <span class="k">do</span>
+  <span class="n">plan</span><span class="p">.</span><span class="nf">add_mission_task</span><span class="p">(</span><span class="no">OroGen</span><span class="p">.</span><span class="nf">imu_advanced_navigation_anpp</span><span class="o">.</span><span class="no">Task</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>which you can then run with</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit run test.rb
+</code></pre></div>
+<p>You can put anything in the <code>add_mission_task</code> that you would put in a
+profile's <code>define</code> statement. I.e. you may define a composition in the file and
+run it, reuse definition from your app's profiles, … If you provide a robot
+configuration with <code>-r</code>, the app's <code>requires</code> block is executed first, so all
+models loaded by the configuration can also be used as-is in the file.</p>
+
+<p>If you have an IDE opened, it will connect to this app and give you its status.</p>
+
 <h2 id="component-extension-file">Component Extension File</h2>
 
 <p>To handle a Syskit app's configuration needs, one often has to create a
@@ -193,6 +222,31 @@ the component. Properties within Syskit are accessed with the <code>properties</
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
+<h2 id="runtime-environment">Runtime Environment</h2>
+
+<p>Syskit starts all the components under a common log directory, within the app's
+<code>logs</code> directory. The log directory of the last started Syskit instance is
+available as <code>logs/current</code>. If your component saves files in relative paths,
+they will be saved there (which is a good thing). The output of each component
+process is redirected into a file in this folder, with the name
+<code>${deployment_name}-${PID}.txt</code>. Assuming that the process ID of following deployment
+is <code>2345</code>, the log file name would be <code>imu-2345.txt</code>.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>Syskit.conf.use_deployment OroGen.imu_advanced_navigation_anpp.Task =&gt; 'imu'
+</code></pre></div>
+<p>For debugging purposes, Syskit natively supports starting deployments under a
+<code>gdbserver</code> instance.  IDEs commonly support connecting to these <code>gdbserver</code>
+and debug it.</p>
+
+<p>To enable this, just add the <code>gdb: true</code> option to the <code>use_deployment</code> statement:</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>Syskit.conf.use_deployment OroGen.imu_advanced_navigation_anpp.Task =&gt; 'imu', gdb: true
+</code></pre></div>
+<p>The first job that use this deployment will stay in <code>READY</code> state in the IDE
+until you connect a debugger to the process. The port at which one must connect
+is contained in the component's log file. Look for a message of the form
+<code>Listening to port XXXXX</code></p>
+
 <p class="next-page">This is all on the subject of adding new functionality in a Rock system. Go
 back to the <a href="../#how_to_read">documentation's overview</a> if you're
 looking for more.</p>
