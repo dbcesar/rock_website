@@ -72,6 +72,8 @@ documentation.</p>
 <dd>Where your ran <a href="index.html">the bootstrap</a>, and where the <code>env.sh</code> script is located</dd>
 <dt>The autoproj/ folder</dt>
 <dd>Located at the root of the workspace, it contains all the build configuration</dd>
+<dt>Remotes</dt>
+<dd>The package build configuration downloaded by Autoproj, they are made available in autoproj/remotes/</dd>
 <dt>Package</dt>
 <dd>Packages are the unit that autoproj deals with. The Rock software is split
 into separate types of packages that are defined in the build configuration.
@@ -156,21 +158,47 @@ name or path on the command line</p>
 
 <div class="highlight"><pre class="highlight plaintext"><code>aup simulation/rock_gazebo
 </code></pre></div>
-<p>To restrict the update to the package, excluding its dependencies, add <code>-n</code>.
-<code>--checkout-only</code> will not update already checked out packages, but only check
-out not currently present in the system. This is useful if you want to install
-new packages, but not modify the already-installed ones.</p>
+<p>If given the path to a directory (as opposed to an actual package), it will
+update all packages under this directory</p>
 
-<p class="callout callout-info"><code>aup</code> without arguments is equivalent to <code>aup .</code>: update the package
-located in the current directory. If called outside of a package, it means
-"update all packages under this directory". <code>aup</code> in the root of the workspace
-is therefore equivalent to <code>aup --all</code>.</p>
+<div class="highlight"><pre class="highlight plaintext"><code># Update all drivers libraries and orogen packages
+aup drivers/
+</code></pre></div>
+<p>Without arguments, it will update the package within the current directory</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>aup
+# Which is basically equivalent to
+aup .
+</code></pre></div>
+<p>If you want to update a package but not its dependencies, use <code>-n</code>, e.g.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>aup -n
+aup -n simulation/rock_gazebo
+cd simulation
+aup -n rock_gazebo
+</code></pre></div>
+<p>Finally, if you want to checkout missing packages, but without updating already
+checked out packages, use <code>--checkout-only</code>. This is useful if you want to
+install new packages, but not modify the already-installed ones.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code># Checkout all missing packages in the dependency chain of drivers/orogen/iodrivers_base
+aup --checkout-only drivers/orogen/iodrivers_base
+</code></pre></div>
+<p class="callout callout-info">All <code>aup</code> commands that concern specific package(s) will <strong>not</strong> update the
+workspace configuration. To update everything <strong>including the configuration</strong>,
+either run <code>aup</code> from within the workspace root, or <code>aup --all</code> from any
+directory. If you want to only update the configuration, do <code>aup --config</code></p>
 
 <p>In some situations, or if you're trying to keep track of all the changes that
 are happening to your system, you want want to check what will be pulled by
 <code>aup</code>. <code>autoproj status</code> allows to compare the status of the workspace w.r.t.
-the repositories.</p>
+the repositories. In case the changes would modify the configuration, it's a
+good idea to first update the configuration and re-run <code>autoproj status</code> to
+include possible changes in the package source information:</p>
 
+<div class="highlight"><pre class="highlight plaintext"><code>aup --config
+autoproj status
+</code></pre></div>
 <h3 id="building">Building</h3>
 
 <p>To ensure that all changes have been built, run</p>

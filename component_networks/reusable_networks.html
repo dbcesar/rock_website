@@ -89,9 +89,9 @@ context. The data service name must be in <code>CamelCase</code>, and the new da
 is registered on the enclosing module, e.g.</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="k">module</span> <span class="nn">CommonModels</span>
-  <span class="k">module</span> <span class="nn">DataServices</span>
-    <span class="n">data_service_type</span> <span class="s1">'Pose'</span> <span class="k">do</span>
-      <span class="n">output_port</span> <span class="s1">'pose_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+  <span class="k">module</span> <span class="nn">Services</span>
+    <span class="n">data_service_type</span> <span class="s1">'GlobalPosition'</span> <span class="k">do</span>
+      <span class="n">output_port</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -102,18 +102,24 @@ relevant <a href="../type_system/types_in_ruby.html#import_types_from"><code>imp
 <p><strong>Naming Convention</strong> data services are by convention defined in the <code>AppName::Services</code>
 module, and are saved in <code>models/services/name_of_service.rb</code>. For instance,
 the <code>Pose</code> data service in the <code>CommonModels</code> bundle is saved in
-<code>models/services/pose.rb</code> and the full service name would be
-<code>CommonModels::Services::Pose</code>.</p>
+<code>models/services/global_position.rb</code> and the full service name would be
+<code>CommonModels::Services::GlobalPosition</code>.</p>
 
 <p><strong>Generation</strong> A template for a new data service, following Syskit's naming
 conventions and file system structure, can be generated with</p>
 
-<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv namespace/name_of_service
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv name_of_service
 </code></pre></div>
 <p>for instance</p>
 
-<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv pose
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv global_position
 </code></pre></div>
+<p>If needed, service models can be defined in namespaces, with e.g.</p>
+
+<div class="highlight"><pre class="highlight plaintext"><code>syskit gen srv control/joints
+</code></pre></div>
+<p>which defines the service as <code>Services::Control::Joints</code></p>
+
 <p>Data services do not have tests.</p>
 
 <h2 id="data-service-providers">Data Service Providers</h2>
@@ -144,10 +150,10 @@ unique in the context of the component.</p>
   <span class="n">output_port</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>One can declare that this component provides the position data service from <code>common_models</code> with:</p>
+<p>One can declare that this component provides the <code>GlobalPosition</code> data service from <code>common_models</code> with:</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">extend_model</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">gps</span><span class="o">.</span><span class="no">Task</span> <span class="k">do</span>
-  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">Position</span><span class="p">,</span>
+  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">GlobalPosition</span><span class="p">,</span>
     <span class="ss">as: </span><span class="s1">'position'</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -169,7 +175,7 @@ component had an interface like:</p>
 </code></pre></div>
 <p>Then attempting to provide the service without mapping information would cause the following error:</p>
 
-<div class="highlight"><pre class="highlight plaintext"><code>OroGen.gps.Task does not provide the 'CommonModels::Services::Position' service's interface
+<div class="highlight"><pre class="highlight plaintext"><code>OroGen.gps.Task does not provide the 'CommonModels::Services::GlobalPosition' service's interface
  there are multiple candidates to map position_samples[/base/samples/RigidBodyState]: local_position_samples, utm_position_samples
 </code></pre></div>
 <p id="multiple_data_services">The mapping must be provided explicitly:</p>
@@ -177,7 +183,7 @@ component had an interface like:</p>
 <div class="highlight"><pre class="highlight ruby"><code><span class="no">Syskit</span><span class="p">.</span><span class="nf">extend_model</span> <span class="no">OroGen</span><span class="p">.</span><span class="nf">gps</span><span class="o">.</span><span class="no">Task</span> <span class="k">do</span>
   <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">Position</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'local_position'</span><span class="p">,</span>
     <span class="s1">'position_samples'</span> <span class="o">=&gt;</span> <span class="s1">'local_position_samples'</span>
-  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">Position</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'utm_position'</span><span class="p">,</span>
+  <span class="n">provides</span> <span class="no">CommonModels</span><span class="o">::</span><span class="no">Services</span><span class="o">::</span><span class="no">GlobalPosition</span><span class="p">,</span> <span class="ss">as: </span><span class="s1">'utm_position'</span><span class="p">,</span>
     <span class="s1">'position_samples'</span> <span class="o">=&gt;</span> <span class="s1">'utm_position_samples'</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -209,10 +215,13 @@ provided service ports to the provider's. It will instead, by default, <strong>a
 the provided service ports to the provider interface. Port mappings are instead
 required to avoid the port creation.</p>
 
-<p>For instance, if one would define the <code>Position</code>, <code>Orientation</code> and <code>Pose</code> services like this:</p>
+<p>For instance, if one would define the <code>GlobalPosition</code>, <code>Position</code>, <code>Orientation</code> and <code>Pose</code> services like this:</p>
 
 <div class="highlight"><pre class="highlight ruby"><code><span class="n">data_service_type</span> <span class="s1">'Position'</span> <span class="k">do</span>
   <span class="n">output_port</span> <span class="s1">'position_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
+<span class="k">end</span>
+<span class="n">data_service_type</span> <span class="s1">'GlobalPosition'</span> <span class="k">do</span>
+  <span class="n">provides</span> <span class="no">Position</span>
 <span class="k">end</span>
 <span class="n">data_service_type</span> <span class="s1">'Orientation'</span> <span class="k">do</span>
   <span class="n">output_port</span> <span class="s1">'orientation_samples'</span><span class="p">,</span> <span class="s1">'/base/samples/RigidBodyState'</span>
